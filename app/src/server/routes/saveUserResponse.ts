@@ -1,11 +1,9 @@
 import type { Request, Response } from "express";
-import { normalizeSurveyRow } from "../../domain/survey/normalizeSurveyRow";
 import { BUTTON_QUESTIONS } from "../../onboarding/questionnaire/button-input/button-questions";
 import { STAFF_IDS, STUDENT_IDS } from "../../domain/survey/sections";
 import { optionalEnv } from "../env";
 import { consumeRateLimits, type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
-import { upsertSurveyResponseRow } from "../services/surveyResponseFeed";
 import { sanityWriteClient } from "../upstreams/sanity/writeClient";
 import { editTokenHash, sha256 } from "../utils/hash";
 import { isRecord, readOptionalId, rejectDisallowedOrigin } from "./shared";
@@ -199,10 +197,6 @@ export async function saveUserResponseRoute(req: Request, res: Response) {
       submittedAt,
     };
     res.status(200).json(responseBody);
-    upsertSurveyResponseRow(normalizeSurveyRow({
-      ...responseBody,
-      _createdAt: submittedAt,
-    }));
   } catch (error) {
     console.error("[save-user-response] Sanity write failed:", error);
     res.status(503).json({

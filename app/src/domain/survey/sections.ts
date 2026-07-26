@@ -27,9 +27,27 @@ export const NON_VISITOR_MASSART = Array.from(new Set([...STUDENT_IDS, ...STAFF_
 
 const STUDENT_ID_SET = new Set(STUDENT_IDS);
 const STAFF_ID_SET = new Set(STAFF_IDS);
+const NON_VISITOR_MASSART_SET = new Set(NON_VISITOR_MASSART);
 
 export function parentAggregateForSection(section: string) {
   if (STUDENT_ID_SET.has(section)) return 'all-students';
   if (STAFF_ID_SET.has(section)) return 'all-staff';
   return null;
+}
+
+export const AGGREGATE_SECTIONS = new Set(['all', 'all-massart', 'all-students', 'all-staff']);
+
+export const ALLOWED_SECTIONS = new Set<string>([
+  'visitor',
+  ...AGGREGATE_SECTIONS,
+  ...STUDENT_IDS,
+  ...STAFF_IDS,
+]);
+
+export function filterRowsForSection<T extends { section: string }>(rows: T[], section: string): T[] {
+  if (!section || section === 'all') return rows;
+  if (section === 'all-massart') return rows.filter((row) => NON_VISITOR_MASSART_SET.has(row.section));
+  if (section === 'all-students') return rows.filter((row) => STUDENT_ID_SET.has(row.section));
+  if (section === 'all-staff') return rows.filter((row) => STAFF_ID_SET.has(row.section));
+  return rows.filter((row) => row.section === section);
 }

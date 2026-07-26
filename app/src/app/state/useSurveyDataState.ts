@@ -111,7 +111,7 @@ export default function useSurveyDataState({
     let unsub = noopUnsubscribe;
     let closed = false;
 
-    void import('../../client-api/read-api/api')
+    void import('../../client-api/read-api/surveyResponseStream')
       .then(({ subscribeSurveyData }) => {
         if (closed) return;
         unsub = subscribeSurveyData({

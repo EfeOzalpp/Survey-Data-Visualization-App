@@ -1,41 +1,19 @@
 import type { Response } from "express";
 import type { ListenEvent } from "@sanity/client";
 
-import { NON_VISITOR_MASSART, STAFF_IDS, STUDENT_IDS } from "../../domain/survey/sections";
+import { filterRowsForSection } from "../../domain/survey/sections";
 import { normalizeSurveyRow } from "../../domain/survey/normalizeSurveyRow";
 import type { RawSurveyRow, SurveyRow } from "../../domain/survey/types";
-import { sanityReadClient } from "../upstreams/sanity/readClient";
+import {
+  fetchSnapshotPage,
+  listenToSurveyResponses,
+  SNAPSHOT_CHUNK_SIZE,
+  type SnapshotCursor,
+} from "../upstreams/sanity/surveyResponseQueries";
 
-const PROJECTION = `
-  _id, section,
-  q1, q2, q3, q4, q5,
-  avgWeight,
-  soloMessage,
-  soloMessageUpdatedAt,
-  submittedAt,
-  _createdAt
-`;
-
-const LISTEN_FILTER = `!(_id in path("drafts.**")) && _type == "userResponseV4"`;
-const SNAPSHOT_PAGE_QUERY = `*[${LISTEN_FILTER} && (
-  !defined($cursorTime) ||
-  coalesce(submittedAt, _createdAt) < $cursorTime ||
-  (coalesce(submittedAt, _createdAt) == $cursorTime && _id < $cursorId)
-)] | order(coalesce(submittedAt, _createdAt) desc, _id desc)[0...$limit]{ ${PROJECTION} }`;
-const DEFAULT_ROWS_LIMIT = 300;
-const MAX_NUMERIC_ROWS_LIMIT = 5000;
-const SNAPSHOT_CHUNK_SIZE = 250;
 const PATCH_COALESCE_MS = 750;
 const HEARTBEAT_MS = 25_000;
 const RECONNECT_DELAY_MS = 15_000;
-
-const AGGREGATE_SECTIONS = new Set(["all", "all-massart", "all-students", "all-staff"]);
-const ALLOWED_SECTIONS = new Set<string>([
-  "visitor",
-  ...AGGREGATE_SECTIONS,
-  ...STUDENT_IDS,
-  ...STAFF_IDS,
-]);
 
 interface StreamClient {
   id: number;
@@ -45,12 +23,7 @@ interface StreamClient {
   heartbeat: NodeJS.Timeout;
 }
 
-type SurveyResponseLimit = number | "all";
-
-interface SnapshotCursor {
-  time: string;
-  id: string;
-}
+export type SurveyResponseLimit = number | "all";
 
 let nextClientId = 1;
 let rowsCache: SurveyRow[] = [];
@@ -63,18 +36,6 @@ const pendingUpserts = new Map<string, SurveyRow>();
 const pendingDeletes = new Set<string>();
 
 const clients = new Map<number, StreamClient>();
-
-export function readSurveyResponseLimit(value: unknown): SurveyResponseLimit {
-  if (value === "all") return "all";
-  const parsed = typeof value === "string" ? Number(value) : NaN;
-  if (!Number.isInteger(parsed)) return DEFAULT_ROWS_LIMIT;
-  return Math.max(1, Math.min(parsed, MAX_NUMERIC_ROWS_LIMIT));
-}
-
-export function readSurveyResponseSection(value: unknown) {
-  const section = typeof value === "string" && value.trim() ? value.trim() : "all";
-  return ALLOWED_SECTIONS.has(section) ? section : null;
-}
 
 function newestTimestampOf(row: SurveyRow) {
   const raw = row.submittedAt ?? row._createdAt;
@@ -99,23 +60,6 @@ function mergeRows(rows: SurveyRow[], nextRows: SurveyRow[]) {
   return sortNewestFirst([...byId.values()]);
 }
 
-function filterRowsForSection(rows: SurveyRow[], section: string) {
-  if (!section || section === "all") return rows;
-  if (section === "all-massart") {
-    const allowed = new Set(NON_VISITOR_MASSART);
-    return rows.filter((row) => allowed.has(row.section));
-  }
-  if (section === "all-students") {
-    const allowed = new Set(STUDENT_IDS);
-    return rows.filter((row) => allowed.has(row.section));
-  }
-  if (section === "all-staff") {
-    const allowed = new Set(STAFF_IDS);
-    return rows.filter((row) => allowed.has(row.section));
-  }
-  return rows.filter((row) => row.section === section);
-}
-
 function rowsForClient(client: StreamClient) {
   const rows = filterRowsForSection(rowsCache, client.section);
   return client.limit === "all" ? rows : rows.slice(0, client.limit);
@@ -127,7 +71,7 @@ function writeEvent(client: StreamClient, event: string, data: unknown) {
     client.res.write(`data: ${JSON.stringify(data)}\n\n`);
     return true;
   } catch (error) {
-    console.warn("[surveyResponseFeed] failed to write SSE event:", error);
+    console.warn("[surveyResponseStream] failed to write SSE event:", error);
     return false;
   }
 }
@@ -137,7 +81,7 @@ function writeComment(client: StreamClient, comment: string) {
     client.res.write(`: ${comment}\n\n`);
     return true;
   } catch (error) {
-    console.warn("[surveyResponseFeed] failed to write SSE heartbeat:", error);
+    console.warn("[surveyResponseStream] failed to write SSE heartbeat:", error);
     return false;
   }
 }
@@ -207,12 +151,7 @@ async function refreshSnapshot() {
   let sentAnyChunk = false;
 
   while (clients.size > 0) {
-    const rawRows: RawSurveyRow[] = await sanityReadClient.fetch<RawSurveyRow[]>(SNAPSHOT_PAGE_QUERY, {
-      limit: SNAPSHOT_CHUNK_SIZE,
-      cursorTime: cursor?.time ?? null,
-      cursorId: cursor?.id ?? null,
-    });
-    const rows: SurveyRow[] = rawRows.map(normalizeSurveyRow);
+    const rows: SurveyRow[] = await fetchSnapshotPage(cursor);
     const complete = rows.length < SNAPSHOT_CHUNK_SIZE;
 
     rowsCache = mergeRows(rowsCache, rows);
@@ -256,7 +195,7 @@ function scheduleListenerRestart() {
     reconnectTimer = null;
     startSanityListener();
     void ensureSnapshot().catch((error: unknown) => {
-      console.error("[surveyResponseFeed] snapshot refresh failed after reconnect:", error);
+      console.error("[surveyResponseStream] snapshot refresh failed after reconnect:", error);
       broadcastStreamError(error);
     });
   }, RECONNECT_DELAY_MS);
@@ -318,7 +257,7 @@ function handleSanityEvent(event: ListenEvent<RawSurveyRow>) {
 
   if (!event.result) {
     void ensureSnapshot().catch((error: unknown) => {
-      console.error("[surveyResponseFeed] snapshot refresh failed after mutation:", error);
+      console.error("[surveyResponseStream] snapshot refresh failed after mutation:", error);
       broadcastStreamError(error);
     });
     return;
@@ -333,25 +272,15 @@ function startSanityListener() {
   if (listenerSubscription || clients.size === 0) return;
   clearReconnectTimer();
 
-  listenerSubscription = sanityReadClient
-    .listen<RawSurveyRow>(
-      `*[${LISTEN_FILTER}]`,
-      {},
-      {
-        includeResult: true,
-        includeMutations: false,
-        visibility: "query",
-      }
-    )
-    .subscribe({
-      next: handleSanityEvent,
-      error: (error: unknown) => {
-        console.error("[surveyResponseFeed] Sanity listener failed:", error);
-        listenerSubscription = null;
-        broadcastStreamError(error);
-        scheduleListenerRestart();
-      },
-    });
+  listenerSubscription = listenToSurveyResponses({
+    onEvent: handleSanityEvent,
+    onError: (error: unknown) => {
+      console.error("[surveyResponseStream] Sanity listener failed:", error);
+      listenerSubscription = null;
+      broadcastStreamError(error);
+      scheduleListenerRestart();
+    },
+  });
 }
 
 function stopSanityListenerIfIdle() {
@@ -410,7 +339,7 @@ export function openSurveyResponseStream({
   startSanityListener();
   if (!hasSnapshot || isFirstClient) {
     void ensureSnapshot().catch((error: unknown) => {
-      console.error("[surveyResponseFeed] initial snapshot failed:", error);
+      console.error("[surveyResponseStream] initial snapshot failed:", error);
       sendStreamError(client, error);
     });
   }
@@ -418,38 +347,4 @@ export function openSurveyResponseStream({
   return () => {
     removeClient(id);
   };
-}
-
-export function upsertSurveyResponseRow(row: SurveyRow) {
-  rowsCache = upsertRow(rowsCache, row);
-  queuePatch({ upserts: [row] });
-}
-
-export function patchSurveyResponseRowMessage({
-  responseId,
-  soloMessage,
-  soloMessageUpdatedAt,
-}: {
-  responseId: string;
-  soloMessage?: string;
-  soloMessageUpdatedAt?: string;
-}) {
-  const index = rowsCache.findIndex((row) => row._id === responseId);
-  if (index < 0) return;
-
-  const next = { ...rowsCache[index] };
-  if (soloMessage) {
-    next.soloMessage = soloMessage;
-    next.soloMessageUpdatedAt = soloMessageUpdatedAt;
-  } else {
-    delete next.soloMessage;
-    delete next.soloMessageUpdatedAt;
-  }
-
-  rowsCache = [
-    ...rowsCache.slice(0, index),
-    next,
-    ...rowsCache.slice(index + 1),
-  ];
-  queuePatch({ upserts: [next] });
 }
