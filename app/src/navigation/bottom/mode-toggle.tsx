@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
 import type { Mode } from "../../app/state/ui-store";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { useIdentity } from "../../app/state/identity-context";
 import { avgWeightOf } from "../../lib/utils/score";
 import { useAbsoluteScore } from "../../lib/hooks/useAbsoluteScore";
@@ -32,7 +32,7 @@ function ModeToggle() {
       personalPanelOpen: s.personalPanelOpen,
     }))
   );
-  const { allFilteredRows: data } = useSurveyData();
+  const data = useSurveyDataStore((s) => s.allFilteredRows);
   const { myEntryId } = useIdentity();
 
   const poolValues = useMemo(

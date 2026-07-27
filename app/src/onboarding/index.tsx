@@ -1,34 +1,21 @@
 // src/onboarding/index.tsx
-import React, { Profiler, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Profiler, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { profilerOnRender, recordOwnRender } from '../dev/renderProfilerStats';
 
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";
-import { useSurveyData } from "../app/state/survey-data-context";
-import { useIdentity } from "../app/state/identity-context";
-import { useCanvasRuntimeStore } from "../app/state/canvas-runtime-store";
+import { useSurveyDataStore } from "../app/state/survey-data-store";
 import "../styles/onboarding-info.css";
 import "../styles/section-questionnaire.css";
 
 import { ROLE_SECTIONS } from "./section-picker/sections";
 import type { RoleSection, SectionItem, SectionOption } from "./section-picker/sections";
-import type { RoleValue } from "./role-picker";
-import { ButtonQuestionnaireFlow, BUTTON_QUESTIONS } from "./questionnaire";
-import { showDuplicateSurveyNotice, showRateLimitNotice } from "../app/notices";
-
-import {
-  beginUserResponseEditSession,
-  createOptimisticUserResponse,
-  persistUserResponseSession,
-  saveUserResponse,
-  savedUserResponseToSurveyRow,
-} from "../client-api/response-api/saveUserResponse";
-import { WriteApiError } from "../client-api/response-api/writeApi";
-import { parentAggregateForSection } from "../domain/survey/sections";
+import { ButtonQuestionnaireFlow } from "./questionnaire";
+import { showDuplicateSurveyNotice } from "../app/notices";
+import { surveyReducer, initialSurveyState, type Audience } from "./survey-reducer";
+import { useSurveySubmission } from "./useSurveySubmission";
 import { track } from "../lib/posthog";
-import { getSessionItem, removeSessionItems, setSessionItem } from "../app/session";
-
-type Audience = RoleValue | '';
+import { getSessionItem } from "../app/session";
 
 const RoleStep = React.lazy(() => import("./role-picker/role-step"));
 const CanvasInfo = React.lazy(() => import("./information/canvas-info"));
@@ -36,49 +23,25 @@ const SectionPickerIntro = React.lazy(
   () => import("./section-picker")
 );
 
-// Module scope (not a Survey-local closure) so its reference stays stable
-// across renders — handleSubmitFromQuestions's useCallback depends on it.
-function answersToWeights(answers: Record<string, number | null>) {
-  const getVal = (i: number) => {
-    const id = BUTTON_QUESTIONS[i]?.id;
-    const v = id ? answers[id] : undefined;
-    return typeof v === 'number' && Number.isFinite(v) ? v : undefined;
-  };
-  return {
-    q1: getVal(0),
-    q2: getVal(1),
-    q3: getVal(2),
-    q4: getVal(3),
-    q5: getVal(4),
-  };
-}
-
 function Survey({
   onAnswersUpdate,
 }: {
   onAnswersUpdate?: (answers: Record<string, number | null>) => void;
 }) {
   recordOwnRender("Survey");
-  const [stage, setStage] = useState<'role' | 'section' | 'questions'>('role');
-  const [audience, setAudience] = useState<Audience>('visitor');
-  const [surveySection, setSurveySection] = useState('');
-  const [error, setError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [fadeState, setFadeState] = useState<'fade-in' | 'fade-out'>('fade-in');
+  const [state, dispatch] = useReducer(surveyReducer, initialSurveyState);
+  const { stage, audience, surveySection, error, submitting, fadeState, finished } = state;
   const [introActive, setIntroActive] = useState(true);
   const shouldScrollToSectionRef = useRef(false);
 
   // latches
-  const [finished, setFinished] = useState(false); // hide questionnaire immediately after submit
   const prevCompletedRef = useRef(false);
 
   const {
     setAnimationVisible,
     setSurveyActive,
-    setHasCompletedSurvey,
     observerMode,
     openGraph,
-    closeGraph,
     hasCompletedSurvey,
     setQuestionnaireOpen,
     setSectionOpen,
@@ -88,10 +51,8 @@ function Survey({
     useShallow((s) => ({
       setAnimationVisible: s.setAnimationVisible,
       setSurveyActive: s.setSurveyActive,
-      setHasCompletedSurvey: s.setHasCompletedSurvey,
       observerMode: s.observerMode,
       openGraph: s.openGraph,
-      closeGraph: s.closeGraph,
       hasCompletedSurvey: s.hasCompletedSurvey,
       setQuestionnaireOpen: s.setQuestionnaireOpen,
       setSectionOpen: s.setSectionOpen,
@@ -99,9 +60,9 @@ function Survey({
       resetToStart: s.resetToStart,
     }))
   );
-  const { section, setSection, counts, upsertLocalSurveyRow } = useSurveyData();
-  const { setMySection, setMyEntryId, setMyRole } = useIdentity();
-  const setLiveAvg = useCanvasRuntimeStore((s) => s.setLiveAvg);
+  const { section, setSection } = useSurveyDataStore(
+    useShallow((s) => ({ section: s.section, setSection: s.setSection }))
+  );
 
   // Keep questionnaireOpen in sync with our stage (and finished latch).
   // No cleanup: the effect body always computes the correct value on re-run,
@@ -150,13 +111,7 @@ function Survey({
 
   useEffect(() => {
     if (prevCompletedRef.current && !hasCompletedSurvey) {
-      setStage('role');
-      setAudience('visitor');
-      setSurveySection('');
-      setError('');
-      setSubmitting(false);
-      setFinished(false);
-      setFadeState('fade-in');
+      dispatch({ type: 'RESET' });
       setQuestionnaireOpen(false);
       setSectionOpen(false);
       setAnimationVisible(false);
@@ -174,26 +129,19 @@ function Survey({
   useEffect(() => {
     if (surveyResetKey === prevResetKeyRef.current) return;
     prevResetKeyRef.current = surveyResetKey;
-    setStage('role');
-    setAudience('visitor');
-    setSurveySection('');
-    setError('');
-    setSubmitting(false);
-    setFinished(false);
-    setFadeState('fade-in');
+    dispatch({ type: 'RESET' });
     setQuestionnaireOpen(false);
     setSectionOpen(false);
     setAnimationVisible(false);
   }, [surveyResetKey, setAnimationVisible, setQuestionnaireOpen, setSectionOpen]);
 
-  const transitionTo = (next: typeof stage, side?: () => void) => {
-    setFadeState('fade-out');
+  const transitionTo = useCallback((next: typeof stage, side?: () => void) => {
+    dispatch({ type: 'FADE_OUT' });
     setTimeout(() => {
       side?.();
-      setStage(next);
-      setFadeState('fade-in');
+      dispatch({ type: 'ENTER_STAGE', stage: next });
     }, 70);
-  };
+  }, []);
 
   // Normalize role sections into the picker contract and add headers for staff mode.
   const availableSections = useMemo<SectionItem[]>(() => {
@@ -230,154 +178,37 @@ function Survey({
     }
 
     if (!audience) {
-      setError('Choose whether you are Student, Staff, or Visitor.');
+      dispatch({ type: 'SET_ERROR', error: 'Choose whether you are Student, Staff, or Visitor.' });
       return;
     }
-    setError('');
+    dispatch({ type: 'SET_ERROR', error: '' });
     track({ name: 'Role Selected', props: { role: audience } });
     if (audience === 'visitor') {
       track({ name: 'Survey Started', props: { role: audience } });
       transitionTo('questions', () => {
-        setSurveySection('visitor');
+        dispatch({ type: 'SELECT_SECTION', surveySection: 'visitor' });
         setAnimationVisible(false);
       });
       return;
     }
     shouldScrollToSectionRef.current = true;
-    transitionTo('section', () => { setSurveySection(''); });
+    transitionTo('section', () => {
+      dispatch({ type: 'SELECT_SECTION', surveySection: '' });
+    });
   };
 
   const handleBeginFromSection = () => {
     if (!surveySection) {
-      setError('Select your section.');
+      dispatch({ type: 'SET_ERROR', error: 'Select your section.' });
       return;
     }
-    setError('');
+    dispatch({ type: 'SET_ERROR', error: '' });
     track({ name: 'Section Selected', props: { section: surveySection, role: audience } });
     track({ name: 'Survey Started', props: { role: audience } });
     transitionTo('questions', () => { setAnimationVisible(false); });
   };
 
-  const handleSubmitFromQuestions = useCallback(async (answers: Record<string, number | null>) => {
-    if (submitting) return;
-
-    const savedEntryId = getSessionItem('be.myEntryId');
-    const savedSection = getSessionItem('be.mySection');
-    if (savedEntryId && savedSection) {
-      showDuplicateSurveyNotice();
-      resetToStart();
-      return;
-    }
-
-    setSubmitting(true);
-    setError('');
-
-    // Hide questions immediately and drop the open flag
-    setFinished(true);
-    setQuestionnaireOpen(false);
-
-    const weights = answersToWeights(answers);
-    const avgValues = Object.values(answers).filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
-    if (avgValues.length > 0) {
-      const finalAvg = avgValues.reduce((s, v) => s + v, 0) / avgValues.length;
-      setLiveAvg(finalAvg);
-      setSessionItem('be.myAvg', String(finalAvg));
-    }
-    beginUserResponseEditSession();
-    const optimistic = createOptimisticUserResponse(surveySection, weights);
-    const optimisticRow = savedUserResponseToSurveyRow(optimistic, surveySection);
-    const sectionCountBeforeSubmit = counts[surveySection] ?? 0;
-    const parentAggregate = parentAggregateForSection(surveySection);
-    const postSubmitSection = parentAggregate && sectionCountBeforeSubmit === 0
-      ? parentAggregate
-      : surveySection;
-
-    persistUserResponseSession(optimistic, surveySection);
-    upsertLocalSurveyRow(optimisticRow);
-    setSection(postSubmitSection);
-    setMySection(surveySection);
-    setMyEntryId(optimistic._id);
-    setMyRole(audience || null);
-    setHasCompletedSurvey(true);
-    openGraph();
-    setSurveyActive(false);
-    setAnimationVisible(true);
-    if (audience) setSessionItem('be.myRole', audience);
-
-    try {
-      const created = await saveUserResponse(surveySection, weights);
-      upsertLocalSurveyRow(
-        savedUserResponseToSurveyRow(created, surveySection),
-        optimistic._id
-      );
-
-      setSection(postSubmitSection);
-      setMySection(surveySection);
-      setMyEntryId(created._id);
-      setMyRole(audience || null);
-
-      track({ name: 'Survey Completed', props: { section: surveySection, role: audience } });
-
-    } catch (err) {
-      console.error('[Survey] submit error:', err);
-      const submitErrorMessage = err instanceof WriteApiError
-        ? err.code === 'RATE_LIMITED'
-          ? 'Too many submissions from this network. Please wait a moment and try again.'
-          : err.code === 'INVALID_SURVEY_RESPONSE'
-            ? 'One of the selected answers could not be saved. Please adjust your answer and try again.'
-            : `We could not save your response. (${String(err.code ?? err.status)})`
-        : 'We could not save your response. Please try again.';
-      if (err instanceof WriteApiError && err.code === 'RATE_LIMITED') {
-        showRateLimitNotice({
-          message: submitErrorMessage,
-          resetAt: err.resetAt,
-        });
-      }
-      // If saving failed, allow returning to questions
-      removeSessionItems([
-        'be.myEntryId',
-        'be.mySection',
-        'be.myRole',
-        'be.myEditToken',
-        'be.justSubmitted',
-        'be.myDoc',
-        'be.openPersonalOnNext',
-      ]);
-      setFinished(false);
-      closeGraph();
-      setMyEntryId(null);
-      setMySection(null);
-      setMyRole(null);
-      setHasCompletedSurvey(false);
-      setSurveyActive(true);
-      setQuestionnaireOpen(true);
-      setAnimationVisible(false);
-      setError(submitErrorMessage);
-    } finally {
-      setSubmitting(false);
-    }
-  }, [
-    submitting,
-    resetToStart,
-    setSubmitting,
-    setError,
-    setFinished,
-    setQuestionnaireOpen,
-    surveySection,
-    setLiveAvg,
-    counts,
-    setSection,
-    upsertLocalSurveyRow,
-    setMySection,
-    setMyEntryId,
-    setMyRole,
-    setHasCompletedSurvey,
-    openGraph,
-    setSurveyActive,
-    setAnimationVisible,
-    audience,
-    closeGraph,
-  ]);
+  const handleSubmitFromQuestions = useSurveySubmission({ dispatch, surveySection, audience, submitting });
 
   const handleSubmit = useCallback(
     (answers: Record<string, number | null>) => { void handleSubmitFromQuestions(answers); },
@@ -385,9 +216,6 @@ function Survey({
   );
 
   const handleAudienceChange = (role: Audience) => {
-    setAudience(role);
-    setError('');
-
     // Only index ROLE_SECTIONS when role is student/staff
     const allowed = role === 'staff'
       ? [...ROLE_SECTIONS.student, ...ROLE_SECTIONS.staff].map((sectionOption) => sectionOption.value)
@@ -395,12 +223,12 @@ function Survey({
         ? ROLE_SECTIONS.student.map((sectionOption) => sectionOption.value)
         : [];
 
-    setSurveySection((prev) => (allowed.includes(prev) ? prev : role === 'visitor' ? 'visitor' : ''));
+    const nextSurveySection = allowed.includes(surveySection) ? surveySection : role === 'visitor' ? 'visitor' : '';
+    dispatch({ type: 'SELECT_AUDIENCE', audience: role, surveySection: nextSurveySection });
   };
 
   const handleSectionChange = (val: string) => {
-    setSurveySection(val);
-    setError('');
+    dispatch({ type: 'SELECT_SECTION', surveySection: val });
   };
 
   if (hasCompletedSurvey && !observerMode) {

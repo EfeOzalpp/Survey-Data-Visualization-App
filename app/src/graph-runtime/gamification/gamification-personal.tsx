@@ -1,6 +1,6 @@
 // src/graph-runtime/gamification/gamification-personal.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import CloseIcon from '../../assets/svg/close/CloseIcon';
 
 import "../../styles/gamification.css";
@@ -46,6 +46,71 @@ function stopGraphEventPropagation(event: React.SyntheticEvent<HTMLElement>) {
   event.stopPropagation();
   event.nativeEvent.stopPropagation();
   event.nativeEvent.stopImmediatePropagation();
+}
+
+// Consolidates what used to be three separate `{ entryId, ... }`-keyed useState
+// slots (savedMessageOverride, draftState, messageStatus) into one state shape,
+// so "does this belong to the currently displayed entry" is checked once at
+// the read site instead of three times, and a save always updates every
+// related field together instead of relying on three separate setters agreeing.
+interface MessageEditState {
+  entryId: string;
+  draftValue: string;
+  dirty: boolean;
+  savedOverride: string | null;
+  status: MessageStatus;
+  error: string;
+}
+
+type MessageEditAction =
+  | { type: 'DRAFT_CHANGED'; entryId: string; value: string }
+  | { type: 'SAVE_START'; entryId: string }
+  | { type: 'SAVE_SUCCEEDED'; entryId: string; value: string }
+  | { type: 'SAVE_FAILED'; entryId: string; error: string };
+
+function messageEditReducer(state: MessageEditState | null, action: MessageEditAction): MessageEditState | null {
+  const current = state?.entryId === action.entryId ? state : null;
+
+  switch (action.type) {
+    case 'DRAFT_CHANGED':
+      return {
+        entryId: action.entryId,
+        draftValue: action.value,
+        dirty: true,
+        savedOverride: current?.savedOverride ?? null,
+        status: 'idle',
+        error: '',
+      };
+    case 'SAVE_START':
+      return {
+        entryId: action.entryId,
+        draftValue: current?.draftValue ?? '',
+        dirty: current?.dirty ?? false,
+        savedOverride: current?.savedOverride ?? null,
+        status: 'saving',
+        error: '',
+      };
+    case 'SAVE_SUCCEEDED':
+      return {
+        entryId: action.entryId,
+        draftValue: action.value,
+        dirty: false,
+        savedOverride: action.value,
+        status: 'saved',
+        error: '',
+      };
+    case 'SAVE_FAILED':
+      return {
+        entryId: action.entryId,
+        draftValue: current?.draftValue ?? '',
+        dirty: current?.dirty ?? false,
+        savedOverride: current?.savedOverride ?? null,
+        status: 'error',
+        error: action.error,
+      };
+    default:
+      return state;
+  }
 }
 
 function classifyBand({ below: b, equal: e, above: a }: { below: number; equal: number; above: number }) {
@@ -118,20 +183,7 @@ export default function GamificationPersonalized({
 
   // Title stays in the CMS contract, but this panel only renders the secondary line.
   const [open, setOpen] = useState(true);
-  const [savedMessageOverride, setSavedMessageOverride] = useState<{
-    entryId: string;
-    value: string;
-  } | null>(null);
-  const [draftState, setDraftState] = useState<{
-    entryId: string;
-    value: string;
-    dirty: boolean;
-  } | null>(null);
-  const [messageStatus, setMessageStatus] = useState<{
-    entryId: string;
-    state: MessageStatus;
-    error: string;
-  } | null>(null);
+  const [messageEditState, dispatchMessageEdit] = useReducer(messageEditReducer, null);
   const {
     visible: savedNoticeVisible,
     show: showSavedNotice,
@@ -146,22 +198,14 @@ export default function GamificationPersonalized({
   const editToken = getSessionItem('be.myEditToken');
   const messageStateKey = editToken ? `edit:${editToken}` : `entry:${entryId}`;
   const sourceSoloMessage = typeof userData?.soloMessage === 'string' ? userData.soloMessage : '';
-  const savedSoloMessage =
-    savedMessageOverride?.entryId === messageStateKey || savedMessageOverride?.entryId === entryId
-      ? savedMessageOverride.value
-      : sourceSoloMessage;
-  const draftForEntry = draftState?.entryId === messageStateKey || draftState?.entryId === entryId
-    ? draftState
-    : null;
-  const messageDraft = draftForEntry?.dirty ? draftForEntry.value : savedSoloMessage;
-  const currentMessageStatus =
-    messageStatus?.entryId === messageStateKey || messageStatus?.entryId === entryId
-      ? messageStatus.state
-      : 'idle';
-  const messageError =
-    messageStatus?.entryId === messageStateKey || messageStatus?.entryId === entryId
-      ? messageStatus.error
-      : '';
+  const currentEdit =
+    messageEditState?.entryId === messageStateKey || messageEditState?.entryId === entryId
+      ? messageEditState
+      : null;
+  const savedSoloMessage = currentEdit?.savedOverride ?? sourceSoloMessage;
+  const messageDraft = currentEdit?.dirty ? currentEdit.draftValue : savedSoloMessage;
+  const currentMessageStatus = currentEdit?.status ?? 'idle';
+  const messageError = currentEdit?.error ?? '';
   const normalizedDraft = messageDraft.trim().replace(/\s+/g, ' ');
   const normalizedSavedMessage = savedSoloMessage.trim().replace(/\s+/g, ' ');
   const canSaveSoloMessage = Boolean(
@@ -179,19 +223,17 @@ export default function GamificationPersonalized({
     event.stopPropagation();
     if (saveMessageDisabled) return;
 
-    setMessageStatus({ entryId: messageStateKey, state: 'saving', error: '' });
+    dispatchMessageEdit({ type: 'SAVE_START', entryId: messageStateKey });
     try {
       const updated = await saveSoloMessage(messageDraft);
       const next = updated.soloMessage ?? '';
-      setSavedMessageOverride({ entryId: messageStateKey, value: next });
-      setDraftState({ entryId: messageStateKey, value: next, dirty: false });
-      setMessageStatus({ entryId: messageStateKey, state: 'saved', error: '' });
+      dispatchMessageEdit({ type: 'SAVE_SUCCEEDED', entryId: messageStateKey, value: next });
       showSavedNotice();
     } catch (error) {
       console.error('[GamificationPersonalized] save solo message failed:', error);
-      setMessageStatus({
+      dispatchMessageEdit({
+        type: 'SAVE_FAILED',
         entryId: messageStateKey,
-        state: 'error',
         error: error instanceof Error ? error.message : 'Message could not be saved.',
       });
     }
@@ -369,8 +411,7 @@ export default function GamificationPersonalized({
                   onClick={(event) => { event.stopPropagation(); }}
                   onKeyDown={handleSoloMessageKeyDown}
                   onChange={(event) => {
-                    setDraftState({ entryId: messageStateKey, value: event.currentTarget.value, dirty: true });
-                    setMessageStatus({ entryId: messageStateKey, state: 'idle', error: '' });
+                    dispatchMessageEdit({ type: 'DRAFT_CHANGED', entryId: messageStateKey, value: event.currentTarget.value });
                     hideSavedNotice();
                   }}
                 />

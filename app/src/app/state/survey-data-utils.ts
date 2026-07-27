@@ -1,5 +1,5 @@
 // src/app/state/survey-data-utils.ts
-// Pure survey row transforms. Keeping these here makes useSurveyDataState about flow.
+// Pure survey row transforms. Keeping these here makes survey-data-store about flow.
 
 import type { SurveyRow } from '../../domain/survey/types';
 import { NON_VISITOR_MASSART, STAFF_IDS, STUDENT_IDS } from '../../domain/survey/sections';

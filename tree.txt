@@ -1,5 +1,5 @@
 ﻿Folder PATH listing for volume Windows-SSD
-Volume serial number is 0000021F 8829:2B60
+Volume serial number is 000002E7 8829:2B60
 C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |   index.tsx
 |   vite-env.d.ts
@@ -18,12 +18,11 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |   |   |   canvas-runtime-store.ts
 |   |   |   identity-context.ts
 |   |   |   preferences-context.ts
-|   |   |   survey-data-context.ts
+|   |   |   survey-data-store.ts
 |   |   |   survey-data-utils.ts
 |   |   |   ui-store.ts
 |   |   |   useIdentityState.ts
 |   |   |   usePreferencesState.ts
-|   |   |   useSurveyDataState.ts
 |   |   |   
 |   |   \---__tests__
 |   |           survey-data-utils.test.ts
@@ -174,8 +173,8 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |   |       mockData.ts
 |   |       
 |   +---read-api
-|   |       api.ts
 |   |       config.ts
+|   |       surveyResponseStream.ts
 |   |       
 |   \---response-api
 |           saveSoloMessage.ts
@@ -198,11 +197,13 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |               
 +---graph-runtime
 |   |   GraphDataContext.tsx
+|   |   graphDataContextObject.ts
 |   |   index.tsx
 |   |   r3f.ts
 |   |   README.md
 |   |   three.ts
 |   |   useGraphData.ts
+|   |   useSharedGraphData.ts
 |   |   
 |   +---debug
 |   |       context.ts
@@ -361,7 +362,7 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 +---navigation
 |   |   gp-data.ts
 |   |   graph-picker.tsx
-|   |   navigation.tsx
+|   |   index.tsx
 |   |   
 |   +---bottom
 |   |   |   logs-button.tsx
@@ -388,6 +389,8 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |           
 +---onboarding
 |   |   index.tsx
+|   |   survey-reducer.ts
+|   |   useSurveySubmission.ts
 |   |   
 |   +---information
 |   |       canvas-info.tsx
@@ -727,16 +730,18 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |   |       surveyResponseStream.ts
 |   |       
 |   +---security
+|   |       editToken.ts
 |   |       rateLimiter.ts
 |   |       requestIdentity.ts
 |   |       
 |   +---services
-|   |       surveyResponseFeed.ts
+|   |       surveyResponseStream.ts
 |   |       
 |   +---upstreams
 |   |   \---sanity
 |   |           config.ts
 |   |           readClient.ts
+|   |           surveyResponseQueries.ts
 |   |           writeClient.ts
 |   |           
 |   \---utils

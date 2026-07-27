@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Ref } from "react";
 import "../../styles/logs.css";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { useEscapeToClose } from "../../lib/hooks/useEscapeToClose";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
@@ -89,7 +89,7 @@ export function LogsPanel({
   showCloseButton = true,
   onClose,
 }: LogsPanelProps) {
-  const { allFilteredRows: data } = useSurveyData();
+  const data = useSurveyDataStore((s) => s.allFilteredRows);
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);

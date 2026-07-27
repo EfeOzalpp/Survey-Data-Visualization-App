@@ -2,7 +2,7 @@ import { Profiler, Suspense, lazy, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { profilerOnRender } from "../../../dev/renderProfilerStats";
 import CloseIcon from "../../../assets/svg/close/CloseIcon";
-import { useSurveyData } from "../../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../../app/state/survey-data-store";
 import { GraphDataProvider } from "../../../graph-runtime/GraphDataContext";
 import { useDisclosure } from "../../../lib/hooks/useDisclosure";
 import { useEscapeToClose } from "../../../lib/hooks/useEscapeToClose";
@@ -39,7 +39,7 @@ function ToolsGridIcon() {
 }
 
 export default function CompactGraphTools() {
-  const { allFilteredRows } = useSurveyData();
+  const allFilteredRows = useSurveyDataStore((s) => s.allFilteredRows);
   const { open, openDisclosure, closeDisclosure } = useDisclosure(false);
   const [activeTool, setActiveTool] = useState<CompactTool>("logs");
   const [widgetAutoplayPaused, setWidgetAutoplayPaused] = useState(true);

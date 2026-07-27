@@ -27,27 +27,10 @@ export function makeRandomId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
 
-const EDIT_TOKEN_PATTERN = /^[a-zA-Z0-9_-]{32,128}$/;
+const EDIT_TOKEN_PATTERN = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
 
 export function isWriteApiEditToken(value: string | null | undefined): value is string {
-  return typeof value === "string" && EDIT_TOKEN_PATTERN.test(value.trim());
-}
-
-export function makeWriteApiEditToken(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID().replace(/-/g, "");
-  }
-
-  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
-    const bytes = new Uint8Array(24);
-    crypto.getRandomValues(bytes);
-    return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
-  }
-
-  return [makeRandomId(), makeRandomId(), makeRandomId()]
-    .join("-")
-    .replace(/[^a-zA-Z0-9_-]/g, "")
-    .slice(0, 128);
+  return typeof value === "string" && value.trim().length <= 2000 && EDIT_TOKEN_PATTERN.test(value.trim());
 }
 
 export function getClientId(): string {

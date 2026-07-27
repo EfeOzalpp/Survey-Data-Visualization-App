@@ -4,7 +4,7 @@ import "../../styles/widgets.css";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { GraphDataProvider } from "../../graph-runtime/GraphDataContext";
 import { useEscapeToClose } from "../../lib/hooks/useEscapeToClose";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
@@ -48,7 +48,7 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
       requestQuestionnaireAdvance: s.requestQuestionnaireAdvance,
     }))
   );
-  const { allFilteredRows } = useSurveyData();
+  const allFilteredRows = useSurveyDataStore((s) => s.allFilteredRows);
   const windowWidth = useWindowWidth();
   const aspectRatio = useWindowAspectRatio();
   const useCompactGraphNav = isMobileWidth(windowWidth);

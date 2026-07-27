@@ -8,7 +8,7 @@ import { useUiStore } from "./state/ui-store";
 import { profilerOnRender, recordOwnRender } from "../dev/renderProfilerStats";
 
 import Survey from "../onboarding"; // survey is included in server-side.
-import Navigation from "../navigation/navigation"; // navigation is included in server-side. 
+import Navigation from "../navigation"; // navigation is included in server-side. 
 
 // gated via ClientOnly
 import DataVisualization from "../graph-runtime";

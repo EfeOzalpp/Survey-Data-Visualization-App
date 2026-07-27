@@ -7,7 +7,8 @@ import { usePreferences } from "../../../../app/state/preferences-context";
 import { recordOwnRender } from "../../../../dev/renderProfilerStats";
 import { useUiStore } from "../../../../app/state/ui-store";
 import { useIdentity } from "../../../../app/state/identity-context";
-import { useSurveyData } from "../../../../app/state/survey-data-context";
+import { useShallow } from "zustand/react/shallow";
+import { useSurveyDataStore } from "../../../../app/state/survey-data-store";
 import { useRelativeScores } from "../../../../lib/hooks/useRelativeScore";
 import { avgWeightOf } from "../../../../lib/utils/score";
 import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData, titleFromId } from "../../../gp-data";
@@ -86,7 +87,14 @@ function BarGraph({
   const { darkMode } = usePreferences();
   const hasCompletedSurvey = useUiStore((s) => s.hasCompletedSurvey);
   const { myEntryId } = useIdentity();
-  const { allRows, loading, section, sectionSelectionVersion } = useSurveyData();
+  const { allRows, loading, section, sectionSelectionVersion } = useSurveyDataStore(
+    useShallow((s) => ({
+      allRows: s.allRows,
+      loading: s.loading,
+      section: s.section,
+      sectionSelectionVersion: s.sectionSelectionVersion,
+    }))
+  );
 
   const { ALL_LABELS, MAIN_OPTS, STUDENT_OPTS, STAFF_OPTS, counts } = useGraphPickerData(section);
 

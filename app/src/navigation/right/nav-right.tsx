@@ -7,7 +7,7 @@ import { getSessionItem } from "../../app/session";
 import { useIdentity } from "../../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
 import { useWindowAspectRatio } from "../../lib/hooks/useWindowAspectRatio";
 import { useWindowWidth } from "../../lib/hooks/useWindowWidth";
@@ -56,7 +56,9 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
       setCityPanelOpen: s.setCityPanelOpen,
     }))
   );
-  const { section, setSection } = useSurveyData();
+  const { section, setSection } = useSurveyDataStore(
+    useShallow((s) => ({ section: s.section, setSection: s.setSection }))
+  );
   const { myEntryId, mySection, setMyEntryId, setMySection, setMyRole } = useIdentity();
   const setLiveAvg = useCanvasRuntimeStore((s) => s.setLiveAvg);
   const windowWidth = useWindowWidth();

@@ -16,7 +16,6 @@ interface SavedSoloMessage {
 }
 
 interface WriteSoloMessagePayload {
-  responseId: string;
   editToken: string;
   message: string;
   clientId: string;
@@ -78,6 +77,12 @@ export async function saveSoloMessage(message: string): Promise<SavedSoloMessage
     throw new Error('Your response is still being saved. Try again in a moment.');
   }
 
+  if (USE_MOCK_READS || shouldUseMockReads()) {
+    const updated = updateMockSoloMessage(responseId, normalized);
+    persistSoloMessageSnapshot(updated);
+    return updated;
+  }
+
   if (!editToken) {
     throw new Error('This browser can no longer edit that response.');
   }
@@ -86,14 +91,7 @@ export async function saveSoloMessage(message: string): Promise<SavedSoloMessage
     throw new Error('This browser has an old edit token for that response. Submit a new response to enable message editing.');
   }
 
-  if (USE_MOCK_READS || shouldUseMockReads()) {
-    const updated = updateMockSoloMessage(responseId, normalized);
-    persistSoloMessageSnapshot(updated);
-    return updated;
-  }
-
   const payload: WriteSoloMessagePayload = {
-    responseId,
     editToken,
     message: normalized,
     clientId: getClientId(),
