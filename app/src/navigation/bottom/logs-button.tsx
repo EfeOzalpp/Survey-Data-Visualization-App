@@ -5,6 +5,7 @@ import { useEscapeToClose } from "../../lib/hooks/useEscapeToClose";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import SearchIcon from "../../assets/svg/search/SearchIcon";
+import { recordOwnRender } from "../../dev/renderProfilerStats";
 
 const PAGE_SIZE = 50;
 
@@ -89,6 +90,7 @@ export function LogsPanel({
   showCloseButton = true,
   onClose,
 }: LogsPanelProps) {
+  recordOwnRender("LogsPanel");
   const data = useSurveyDataStore((s) => s.allFilteredRows);
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");

@@ -72,11 +72,16 @@ async function logSection(page: Page, label: string) {
         .__ownRenderStats.log()
   );
   const ownTotal = ownRows.reduce((sum, row) => sum + row.renders, 0);
+  // Only the <Profiler> subtree table carries React's actualDuration; own-render
+  // tracking is a plain counter with no timing, so main-thread ms can only be
+  // summed from the subtree rows.
+  const subtreeMs = rows.reduce((sum, row) => sum + row.totalMs, 0);
 
   if (METRIC !== "own") {
     console.log(`\n=== ${label} ===`);
     console.table([...rows].sort((a, b) => b.renders - a.renders));
     console.log(`${label} total:`, total);
+    console.log(`${label} total ms:`, Number(subtreeMs.toFixed(2)));
   }
   if (METRIC !== "subtree") {
     console.log(`${METRIC === "own" ? "\n===" : "---"} ${label}: own-render counts (component's own body only) ${METRIC === "own" ? "===" : "---"}`);
@@ -88,7 +93,7 @@ async function logSection(page: Page, label: string) {
     (window as unknown as { __renderStats: { reset: () => void } }).__renderStats.reset();
     (window as unknown as { __ownRenderStats: { reset: () => void } }).__ownRenderStats.reset();
   });
-  return { subtreeTotal: total, ownTotal };
+  return { subtreeTotal: total, subtreeMs, ownTotal };
 }
 
 async function run() {
@@ -106,7 +111,7 @@ async function run() {
   });
   await page.waitForTimeout(1000);
 
-  const sectionTotals: Record<string, { subtreeTotal: number; ownTotal: number }> = {};
+  const sectionTotals: Record<string, { subtreeTotal: number; subtreeMs: number; ownTotal: number }> = {};
 
   // --- Theme toggle: light, then back to dark after 1s, before anything else ---
   await page.getByRole("button", { name: "Switch to light mode", exact: true }).click();
@@ -221,6 +226,7 @@ async function run() {
 
   const totals = Object.values(sectionTotals);
   const grandSubtreeTotal = totals.reduce((sum, t) => sum + t.subtreeTotal, 0);
+  const grandSubtreeMs = totals.reduce((sum, t) => sum + t.subtreeMs, 0);
   const grandOwnTotal = totals.reduce((sum, t) => sum + t.ownTotal, 0);
 
   console.log("\n=== Section totals ===");
@@ -229,6 +235,7 @@ async function run() {
       Object.fromEntries(Object.entries(sectionTotals).map(([k, v]) => [k, v.subtreeTotal]))
     );
     console.log("Grand total across all sections (subtree commits):", grandSubtreeTotal);
+    console.log("Grand total across all sections (subtree ms):", Number(grandSubtreeMs.toFixed(2)));
   }
   if (METRIC !== "subtree") {
     console.table(

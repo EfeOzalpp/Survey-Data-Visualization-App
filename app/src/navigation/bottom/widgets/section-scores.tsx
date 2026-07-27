@@ -5,6 +5,7 @@ import HintBanner from "../../../app/ui/HintBanner";
 import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../../gp-data";
 import { BUTTON_QUESTIONS } from "../../../onboarding/questionnaire/button-input/button-questions";
 import WidgetSectionNav from "./widget-section-nav";
+import { recordOwnRender } from "../../../dev/renderProfilerStats";
 
 interface LocalSectionState {
   sourceSection: string;
@@ -37,6 +38,7 @@ export default function SectionScores({
   paused,
   onPausedChange,
 }: SectionScoresProps = {}) {
+  recordOwnRender("SectionScores");
   const { allRows, section, sectionSelectionVersion } = useSurveyDataStore(
     useShallow((s) => ({ allRows: s.allRows, section: s.section, sectionSelectionVersion: s.sectionSelectionVersion }))
   );

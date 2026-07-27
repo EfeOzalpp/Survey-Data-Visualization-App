@@ -11,6 +11,7 @@ import { useUiStore } from "../../app/state/ui-store";
 import HintBanner from "../../app/ui/HintBanner";
 import { useTransientFlag } from "../../lib/hooks/useTransientFlag";
 import { saveSoloMessage } from "../../client-api/response-api/saveSoloMessage";
+import { recordOwnRender } from "../../dev/renderProfilerStats";
 
 const FADE_MS = 200;
 type MessageStatus = 'idle' | 'saving' | 'saved' | 'error';
@@ -177,6 +178,7 @@ export default function GamificationPersonalized({
   statsLoading = false,
   zoomFraction,
 }: GamificationPersonalizedProps) {
+  recordOwnRender("GamificationPersonalized");
   const darkMode = !!useOptionalPreferences()?.darkMode;
   const openPersonalized = useUiStore((s) => s.openPersonalized);
   const setOpenPersonalized = useUiStore((s) => s.setOpenPersonalized);
