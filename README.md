@@ -26,26 +26,13 @@ An application that uses a custom 2.5D Canvas2D implementation to render an inte
 
 <br>
 
-## What would I improve further?
-Although this version of the scene engine performed well on desktop and iOS devices, testing on lower-end Android hardware showed that some visual effects and redraw patterns were too expensive across the full device range.
-
-Recent profiling also led to replacing live Canvas2D brightness filters with a cheaper depth-mask overlay path and tuning distance-based bitmap caching.
-
-From that hands-on experience, I started building `Canvas Engine`: an unopinionated rendering engine. It separates draw instructions from the renderer through a rich `.txt`-based declarative notation, keeps renderer lifecycle and cache invalidation tightly controlled, and prevents the main loop from overreaching into application logic. It targets WebGPU first, with WebGL fallback support for older devices.
-
-<br>
-
-### Repository for the new system
-[![Canvas Engine](https://img.shields.io/badge/Canvas%20Engine-%236d976c?style=for-the-badge)](https://github.com/EfeOzalpp/canvas-engine)
-
-<br>
-
-### Architecture
+## Architecture
 
 - Survey results are delivered through a server-managed SSE stream: newest-first snapshot chunks load history, then patch events carry live changes.
 - Graph views stay client-capped for rendering, while logs and section counts use the streamed history loaded so far.
 - Gamification copy is fetched through a cached Express endpoint that batches related Sanity CMS reads into one request.
 - Survey submissions stay on separate Express POST endpoints, keeping writes explicit while live updates flow back through SSE.
+- Edit authorization uses server-signed JWTs instead of a stored token hash, so verifying a solo-message edit is a single signature check instead of a Sanity lookup-then-compare.
 
 | | |
 | :--- | :--- |
@@ -53,7 +40,7 @@ From that hands-on experience, I started building `Canvas Engine`: an unopiniona
 | **Sprite Pipeline** | Epoch texture update scheduler, quality upgrade scheduler, quantizes value that drives shape uniqueness for higher cache performance *(consumes scene canvas and Three.js)* |
 | **Three.js / WebGL** | Culling, 3D math, distance-based rotation speed and hitbox scaling with debounce during zoom, tooltip anchoring, and camera orchestration for the community graph *(consumes sprites)* |
 | **React + SSR API** | `renderToPipeableStream` for server-side rendering and client hydration |
-| **State Management** | Five app-wide slices; `CanvasRuntimeCtx`, `UiCtx`, and survey data run on Zustand stores with per-field selectors so components re-render only on the fields they actually read, while `IdentityCtx` and `PreferencesCtx` remain on React Context. Twelve components beneath the render-heavy parents are wrapped in `React.memo` to stop unrelated parent re-renders from cascading into children whose own props are unchanged. Benchmarked with a scripted Playwright pass: cut re-renders 22.4% (709 → 550) via Zustand; eliminated 19.2% (234 → 189) of re-executions via memoization |
+| **State Management** | Five app-wide slices; `CanvasRuntimeCtx`, `UiCtx`, and survey data run on Zustand stores with per-field selectors so components re-render only on the fields they actually read, while `IdentityCtx` and `PreferencesCtx` remain on React Context. Twelve components beneath the render-heavy parents are wrapped in `React.memo` to stop unrelated parent re-renders from cascading into children whose own props are unchanged. Re-render behavior is verified with a scripted Playwright benchmark across the full survey and graph flow |
 | **Node.js** | Parses Vite build manifest, dynamically imports compiled SSR bundle |
 | **Express** | Validates write requests before Sanity mutations, batches cached CMS reads, rate-limits API routes, serves the SSR document, and streams chunked survey snapshots plus live SSE patches |
 | **Web Worker** | offloads scene placement computation, removing latency during user-input recomputation |
@@ -66,6 +53,20 @@ From that hands-on experience, I started building `Canvas Engine`: an unopiniona
 
 - [Scene Canvas](app/src/scene-canvas)
 - [Graph Runtime](app/src/graph-runtime)
+
+<br>
+
+## What would I improve further?
+Although this version of the scene engine performed well on desktop and iOS devices, testing on lower-end Android hardware showed that some visual effects and redraw patterns were too expensive across the full device range.
+
+Recent profiling also led to replacing live Canvas2D brightness filters with a cheaper depth-mask overlay path and tuning distance-based bitmap caching.
+
+From that hands-on experience, I started building `Canvas Engine`: an unopinionated rendering engine. It separates draw instructions from the renderer through a rich `.txt`-based declarative notation, keeps renderer lifecycle and cache invalidation tightly controlled, and prevents the main loop from overreaching into application logic. It targets WebGPU first, with WebGL fallback support for older devices.
+
+<br>
+
+### Repository for the new system
+[![Canvas Engine](https://img.shields.io/badge/Canvas%20Engine-%236d976c?style=for-the-badge)](https://github.com/EfeOzalpp/canvas-engine)
 
 <br>
 
