@@ -1,6 +1,7 @@
 import type { Response } from "express";
 import type { ListenEvent } from "@sanity/client";
 
+import { recordSseConnectionClosed, recordSseConnectionOpened } from "../load-testing/sseConnectionStats"; // load-testing
 import { filterRowsForSection } from "../../domain/survey/sections";
 import { normalizeSurveyRow } from "../../domain/survey/normalizeSurveyRow";
 import type { RawSurveyRow, SurveyRow } from "../../domain/survey/types";
@@ -296,6 +297,7 @@ function removeClient(id: number) {
   if (!client) return;
   clearInterval(client.heartbeat);
   clients.delete(id);
+  recordSseConnectionClosed(); // load-testing
   stopSanityListenerIfIdle();
 }
 
@@ -329,6 +331,7 @@ export function openSurveyResponseStream({
   };
 
   clients.set(id, client);
+  recordSseConnectionOpened(); // load-testing
   writeComment(client, "connected");
 
   const isFirstClient = clients.size === 1;

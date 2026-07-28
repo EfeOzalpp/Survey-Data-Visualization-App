@@ -3,6 +3,7 @@ import type { ListenEvent } from "@sanity/client";
 import type { RawSurveyRow, SurveyRow } from "../../../domain/survey/types";
 import { normalizeSurveyRow } from "../../../domain/survey/normalizeSurveyRow";
 import { sanityReadClient } from "./readClient";
+import { recordSanityRequest } from "../../load-testing/requestStats"; // load-testing
 
 const PROJECTION = `
   _id, section,
@@ -29,6 +30,7 @@ export interface SnapshotCursor {
 }
 
 export async function fetchSnapshotPage(cursor: SnapshotCursor | null): Promise<SurveyRow[]> {
+  recordSanityRequest("snapshotFetch"); // load-testing
   const rawRows: RawSurveyRow[] = await sanityReadClient.fetch<RawSurveyRow[]>(SNAPSHOT_PAGE_QUERY, {
     limit: SNAPSHOT_CHUNK_SIZE,
     cursorTime: cursor?.time ?? null,
@@ -44,6 +46,7 @@ export function listenToSurveyResponses({
   onEvent: (event: ListenEvent<RawSurveyRow>) => void;
   onError: (error: unknown) => void;
 }) {
+  recordSanityRequest("listenSubscriptionOpened"); // load-testing
   return sanityReadClient
     .listen<RawSurveyRow>(
       `*[${LISTEN_FILTER}]`,

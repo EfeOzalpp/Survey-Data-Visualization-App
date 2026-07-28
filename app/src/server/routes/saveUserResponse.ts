@@ -5,6 +5,8 @@ import { optionalEnv } from "../env";
 import { signEditToken } from "../security/editToken";
 import { consumeRateLimits, type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
+import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
+import { recordSanityRequest } from "../load-testing/requestStats"; // load-testing
 import { sanityWriteClient } from "../upstreams/sanity/writeClient";
 import { sha256 } from "../utils/hash";
 import { isRecord, readOptionalId, rejectDisallowedOrigin } from "./shared";
@@ -153,14 +155,17 @@ export async function saveUserResponseRoute(req: Request, res: Response) {
     return;
   }
 
-  const rateLimit = consumeRateLimits(buildRateRules(req, validation.payload));
-  if (!rateLimit.allowed) {
-    res.status(429).json({
-      error: "Too many submissions",
-      code: "RATE_LIMITED",
-      ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
-    });
-    return;
+  // load-testing: skip abuse protection so a k6 run from one IP isn't self-limited.
+  if (!LOAD_TEST_MODE) {
+    const rateLimit = consumeRateLimits(buildRateRules(req, validation.payload));
+    if (!rateLimit.allowed) {
+      res.status(429).json({
+        error: "Too many submissions",
+        code: "RATE_LIMITED",
+        ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
+      });
+      return;
+    }
   }
 
   const submittedAt = new Date().toISOString();
@@ -173,6 +178,7 @@ export async function saveUserResponseRoute(req: Request, res: Response) {
   };
 
   try {
+    recordSanityRequest("writeCreate"); // load-testing
     const created = await sanityWriteClient.create(doc);
     const responseBody = {
       _id: created._id,

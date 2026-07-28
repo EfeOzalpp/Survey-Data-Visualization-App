@@ -1,6 +1,8 @@
 import express from "express";
 import { join } from "node:path";
 import { streamDocument } from "../server-rendering/streamDocument";
+import { loadTestStatsRoute, resetLoadTestStatsRoute } from "./load-testing/loadTestStats"; // load-testing
+import { LOAD_TEST_MODE } from "./load-testing/loadTestMode"; // load-testing
 import { gamificationCopyRoute } from "./routes/gamificationCopy";
 import { saveSoloMessageRoute } from "./routes/saveSoloMessage";
 import { saveUserResponseRoute } from "./routes/saveUserResponse";
@@ -25,6 +27,12 @@ app.get("/api/survey-responses/stream", surveyResponseStreamRoute);
 app.get("/api/gamification-copy", (req, res) => { void gamificationCopyRoute(req, res); });
 app.post("/api/save-user-response", (req, res) => { void saveUserResponseRoute(req, res); });
 app.post("/api/save-solo-message", (req, res) => { void saveSoloMessageRoute(req, res); });
+
+// load-testing: only mounted when LOAD_TEST_MODE=true, so it's absent from real production.
+if (LOAD_TEST_MODE) {
+  app.get("/api/debug/load-test-stats", loadTestStatsRoute);
+  app.post("/api/debug/load-test-stats/reset", resetLoadTestStatsRoute);
+}
 
 if (process.env.NODE_ENV === "production") {
   // process.cwd() is the directory where the Node process was started.
