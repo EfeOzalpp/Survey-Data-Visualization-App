@@ -2,8 +2,10 @@ import type { Request, Response } from "express";
 
 import { ALLOWED_SECTIONS } from "../../domain/survey/sections";
 import { optionalEnv } from "../env";
-import { consumeRateLimits, type RateRule } from "../security/rateLimiter";
+import { type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
+import { checkRateLimits } from "../cluster/clusterRateLimit";
+import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
 import { sha256 } from "../utils/hash";
 import { rejectDisallowedOrigin } from "./shared";
 import {
@@ -35,7 +37,7 @@ function buildRateRules(req: Request): RateRule[] {
   ];
 }
 
-export function surveyResponseStreamRoute(req: Request, res: Response) {
+export async function surveyResponseStreamRoute(req: Request, res: Response) {
   if (rejectDisallowedOrigin(req, res)) return;
 
   const section = readSurveyResponseSection(req.query.section);
@@ -44,14 +46,17 @@ export function surveyResponseStreamRoute(req: Request, res: Response) {
     return;
   }
 
-  const rateLimit = consumeRateLimits(buildRateRules(req));
-  if (!rateLimit.allowed) {
-    res.status(429).json({
-      error: "Too many stream connections",
-      code: "RATE_LIMITED",
-      ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
-    });
-    return;
+  // load-testing: skip abuse protection so a k6 run from one IP isn't self-limited.
+  if (!LOAD_TEST_MODE) {
+    const rateLimit = await checkRateLimits(buildRateRules(req));
+    if (!rateLimit.allowed) {
+      res.status(429).json({
+        error: "Too many stream connections",
+        code: "RATE_LIMITED",
+        ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
+      });
+      return;
+    }
   }
 
   const cleanup = openSurveyResponseStream({

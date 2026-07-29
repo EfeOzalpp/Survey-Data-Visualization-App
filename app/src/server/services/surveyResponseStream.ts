@@ -38,6 +38,13 @@ const pendingDeletes = new Set<string>();
 
 const clients = new Map<number, StreamClient>();
 
+// Serialized snapshot chunks for a newly-joining client, keyed by
+// `${section}::${limit}::${completeWhenDone}` — the first client with a
+// given key computes it, every later client with the same key (whether 1ms
+// or 10 minutes later) reuses the cached strings. Cleared whenever
+// `rowsCache` actually changes, so it's never stale.
+const cachedSnapshotByKey = new Map<string, string[]>();
+
 function newestTimestampOf(row: SurveyRow) {
   const raw = row.submittedAt ?? row._createdAt;
   const ts = Date.parse(raw);
@@ -85,15 +92,19 @@ function rowsForClient(client: StreamClient) {
   return client.limit === "all" ? rows : rows.slice(0, client.limit);
 }
 
-function writeEvent(client: StreamClient, event: string, data: unknown) {
+function writeRaw(client: StreamClient, event: string, dataString: string) {
   try {
     client.res.write(`event: ${event}\n`);
-    client.res.write(`data: ${JSON.stringify(data)}\n\n`);
+    client.res.write(`data: ${dataString}\n\n`);
     return true;
   } catch (error) {
     console.warn("[surveyResponseStream] failed to write SSE event:", error);
     return false;
   }
+}
+
+function writeEvent(client: StreamClient, event: string, data: unknown) {
+  return writeRaw(client, event, JSON.stringify(data));
 }
 
 function writeComment(client: StreamClient, comment: string) {
@@ -112,35 +123,37 @@ function sendStreamError(client: StreamClient, error: unknown) {
   });
 }
 
-function sendSnapshotChunk(
-  client: StreamClient,
-  rows: SurveyRow[],
-  {
-    reset = false,
-    complete = false,
-  }: {
-    reset?: boolean;
-    complete?: boolean;
-  } = {}
-) {
-  return writeEvent(client, "snapshot", { rows, reset, complete });
-}
-
-function sendCachedSnapshot(client: StreamClient, completeWhenDone: boolean) {
-  const rows = rowsForClient(client);
+function buildSnapshotChunks(rows: SurveyRow[], completeWhenDone: boolean): string[] {
   if (!rows.length) {
-    return sendSnapshotChunk(client, [], { reset: true, complete: completeWhenDone });
+    return [JSON.stringify({ rows: [], reset: true, complete: completeWhenDone })];
   }
 
+  const chunks: string[] = [];
   for (let index = 0; index < rows.length; index += SNAPSHOT_CHUNK_SIZE) {
     const chunk = rows.slice(index, index + SNAPSHOT_CHUNK_SIZE);
     const complete = completeWhenDone && index + SNAPSHOT_CHUNK_SIZE >= rows.length;
-    if (!sendSnapshotChunk(client, chunk, { reset: index === 0, complete })) return false;
+    chunks.push(JSON.stringify({ rows: chunk, reset: index === 0, complete }));
+  }
+  return chunks;
+}
+
+function sendCachedSnapshot(client: StreamClient, completeWhenDone: boolean) {
+  const key = `${client.section}::${String(client.limit)}::${String(completeWhenDone)}`;
+  let chunks = cachedSnapshotByKey.get(key);
+  if (!chunks) {
+    chunks = buildSnapshotChunks(rowsForClient(client), completeWhenDone);
+    cachedSnapshotByKey.set(key, chunks);
   }
 
+  for (const chunk of chunks) {
+    if (!writeRaw(client, "snapshot", chunk)) return false;
+  }
   return true;
 }
 
+// Filtering + serializing is the same for every client sharing a section, so
+// it's computed once per distinct section instead of once per client — the
+// cost scales with (distinct sections × rows) rather than (clients × rows).
 function broadcastSnapshotChunk(
   rows: SurveyRow[],
   {
@@ -151,9 +164,16 @@ function broadcastSnapshotChunk(
     complete?: boolean;
   } = {}
 ) {
+  const serializedBySection = new Map<string, string>();
+
   for (const client of clients.values()) {
-    const clientRows = filterRowsForSection(rows, client.section);
-    if (!sendSnapshotChunk(client, clientRows, { reset, complete })) removeClient(client.id);
+    let serialized = serializedBySection.get(client.section);
+    if (serialized === undefined) {
+      const clientRows = filterRowsForSection(rows, client.section);
+      serialized = JSON.stringify({ rows: clientRows, reset, complete });
+      serializedBySection.set(client.section, serialized);
+    }
+    if (!writeRaw(client, "snapshot", serialized)) removeClient(client.id);
   }
 }
 
@@ -165,6 +185,7 @@ function broadcastStreamError(error: unknown) {
 
 async function refreshSnapshot() {
   rowsCache = [];
+  cachedSnapshotByKey.clear();
   hasSnapshot = false;
 
   let cursor: SnapshotCursor | null = null;
@@ -175,6 +196,7 @@ async function refreshSnapshot() {
     const complete = rows.length < SNAPSHOT_CHUNK_SIZE;
 
     rowsCache = mergeRows(rowsCache, rows);
+    cachedSnapshotByKey.clear();
     broadcastSnapshotChunk(rows, { reset: !sentAnyChunk, complete });
     sentAnyChunk = true;
 
@@ -234,14 +256,27 @@ function flushPendingPatch() {
 
   if (!upserts.length && !deletes.length) return;
 
+  // Same dedup-by-section approach as broadcastSnapshotChunk. `null` marks a
+  // section with nothing to send (empty upserts and no deletes), so those
+  // clients get skipped without recomputing the filter every time.
+  const serializedBySection = new Map<string, string | null>();
+
   for (const client of clients.values()) {
-    const clientUpserts = filterRowsForSection(upserts, client.section);
-    const payload = {
-      ...(clientUpserts.length ? { upserts: clientUpserts } : {}),
-      ...(deletes.length ? { deletes } : {}),
-    };
-    if (!clientUpserts.length && !deletes.length) continue;
-    if (!writeEvent(client, "patch", payload)) removeClient(client.id);
+    let serialized = serializedBySection.get(client.section);
+    if (serialized === undefined) {
+      const clientUpserts = filterRowsForSection(upserts, client.section);
+      if (!clientUpserts.length && !deletes.length) {
+        serialized = null;
+      } else {
+        serialized = JSON.stringify({
+          ...(clientUpserts.length ? { upserts: clientUpserts } : {}),
+          ...(deletes.length ? { deletes } : {}),
+        });
+      }
+      serializedBySection.set(client.section, serialized);
+    }
+    if (serialized === null) continue;
+    if (!writeRaw(client, "patch", serialized)) removeClient(client.id);
   }
 }
 
@@ -271,6 +306,7 @@ function handleSanityEvent(event: ListenEvent<RawSurveyRow>) {
 
   if (event.transition === "disappear") {
     rowsCache = rowsCache.filter((row) => row._id !== event.documentId);
+    cachedSnapshotByKey.clear();
     queuePatch({ deletes: [event.documentId] });
     return;
   }
@@ -285,6 +321,7 @@ function handleSanityEvent(event: ListenEvent<RawSurveyRow>) {
 
   const row = normalizeSurveyRow(event.result);
   rowsCache = upsertRow(rowsCache, row);
+  cachedSnapshotByKey.clear();
   queuePatch({ upserts: [row] });
 }
 
