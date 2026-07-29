@@ -46,8 +46,7 @@ const clients = new Map<number, StreamClient>();
 const cachedSnapshotByKey = new Map<string, string[]>();
 
 function newestTimestampOf(row: SurveyRow) {
-  const raw = row.submittedAt ?? row._createdAt;
-  const ts = Date.parse(raw);
+  const ts = Date.parse(row.submittedAt);
   return Number.isFinite(ts) ? ts : 0;
 }
 
@@ -204,7 +203,7 @@ async function refreshSnapshot() {
 
     const last: SurveyRow = rows[rows.length - 1];
     cursor = {
-      time: last.submittedAt ?? last._createdAt,
+      time: last.submittedAt,
       id: last._id,
     };
   }

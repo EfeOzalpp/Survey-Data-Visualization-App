@@ -19,7 +19,6 @@ interface SavedUserResponse {
   q5?: number;
   avgWeight?: number;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
   submittedAt?: string;
   editToken?: string;
 }
@@ -105,16 +104,7 @@ export function savedUserResponseToSurveyRow(
     q5,
     avgWeight: response.avgWeight,
     soloMessage: response.soloMessage,
-    soloMessageUpdatedAt: response.soloMessageUpdatedAt,
     submittedAt: response.submittedAt ?? submittedAt,
-    _createdAt: submittedAt,
-    weights: {
-      question1: q1,
-      question2: q2,
-      question3: q3,
-      question4: q4,
-      question5: q5,
-    },
   };
 }
 
@@ -141,7 +131,6 @@ export function persistUserResponseSession(created: SavedUserResponse, section: 
       q5: created.q5,
       avgWeight: created.avgWeight,
       soloMessage: created.soloMessage,
-      soloMessageUpdatedAt: created.soloMessageUpdatedAt,
       submittedAt: created.submittedAt,
     };
     setSessionItem('be.myDoc', JSON.stringify(snapshot));

@@ -10,7 +10,6 @@ const PROJECTION = `
   q1, q2, q3, q4, q5,
   avgWeight,
   soloMessage,
-  soloMessageUpdatedAt,
   submittedAt,
   _createdAt
 `;

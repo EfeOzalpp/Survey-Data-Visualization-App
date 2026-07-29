@@ -36,9 +36,8 @@ function formatSectionLabel(section?: string): string {
   return SECTION_DISPLAY[s] ?? capitalizeFirstWord(s.replace(/-/g, " "));
 }
 
-function rowSubmittedTime(row: { submittedAt?: string; _createdAt?: string }): number {
-  const raw = row.submittedAt ?? row._createdAt;
-  const timestamp = raw ? Date.parse(raw) : 0;
+function rowSubmittedTime(row: { submittedAt: string }): number {
+  const timestamp = Date.parse(row.submittedAt);
   return Number.isFinite(timestamp) ? timestamp : 0;
 }
 

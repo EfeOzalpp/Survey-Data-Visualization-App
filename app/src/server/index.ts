@@ -32,7 +32,7 @@ if (CLUSTER_MODE && cluster.isPrimary) {
   app.get("/api/health", (_req, res) => {
     res.status(200).json({ ok: true });
   });
-  app.get("/api/survey-responses/stream", surveyResponseStreamRoute);
+  app.get("/api/survey-responses/stream", (req, res) => { void surveyResponseStreamRoute(req, res); });
   app.get("/api/gamification-copy", (req, res) => { void gamificationCopyRoute(req, res); });
   app.post("/api/save-user-response", (req, res) => { void saveUserResponseRoute(req, res); });
   app.post("/api/save-solo-message", (req, res) => { void saveSoloMessageRoute(req, res); });

@@ -7,8 +7,6 @@ const makeRow = (section: string): SurveyRow => ({
   q1: 0.5, q2: 0.5, q3: 0.5, q4: 0.5, q5: 0.5,
   avgWeight: 0.5,
   submittedAt: "2025-01-01",
-  _createdAt: "2025-01-01",
-  weights: { question1: 0.5, question2: 0.5, question3: 0.5, question4: 0.5, question5: 0.5 },
 });
 
 const rows: SurveyRow[] = [

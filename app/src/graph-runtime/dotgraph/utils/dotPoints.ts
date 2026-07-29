@@ -7,9 +7,12 @@ import { sampleStops, rgbString } from "../../../lib/utils/color-and-interpolati
 export interface SurveyResponseLike {
   _id?: string;
   avgWeight?: number;
-  weights?: Record<string, number>;
+  q1?: number;
+  q2?: number;
+  q3?: number;
+  q4?: number;
+  q5?: number;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
   __dotSlotIndex?: number;
   __dotSlotCapacity?: number;
 }
@@ -48,9 +51,8 @@ const hashUnit = (seed: number): number => {
 };
 
 const computeLocalAvg = (response: SurveyResponseLike): number | undefined => {
-  const w = response.weights;
-  if (!w) return undefined;
-  const vals = Object.values(w).filter((x): x is number => Number.isFinite(x));
+  const vals = [response.q1, response.q2, response.q3, response.q4, response.q5]
+    .filter((value): value is number => Number.isFinite(value));
   if (!vals.length) return undefined;
   return vals.reduce((a, b) => a + b, 0) / vals.length;
 };

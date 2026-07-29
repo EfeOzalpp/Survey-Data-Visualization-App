@@ -20,7 +20,6 @@ interface ValidPayload {
 interface SavedMessageResponse {
   _id: string;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
 }
 
 const MAX_MESSAGE_LENGTH = 160;
@@ -145,7 +144,6 @@ export async function saveSoloMessageRoute(req: Request, res: Response) {
     const responseBody = {
       _id: updated._id,
       ...(updated.soloMessage ? { soloMessage: updated.soloMessage } : {}),
-      ...(updated.soloMessageUpdatedAt ? { soloMessageUpdatedAt: updated.soloMessageUpdatedAt } : {}),
     };
 
     res.status(200).json(responseBody);

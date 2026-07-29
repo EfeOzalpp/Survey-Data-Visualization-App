@@ -16,14 +16,6 @@ const makeRow = (id: string, submittedAt: string): SurveyRow => ({
   q5: 0.5,
   avgWeight: 0.5,
   submittedAt,
-  _createdAt: submittedAt,
-  weights: {
-    question1: 0.5,
-    question2: 0.5,
-    question3: 0.5,
-    question4: 0.5,
-    question5: 0.5,
-  },
 });
 
 describe("graphDataLimit", () => {

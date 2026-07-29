@@ -17,8 +17,7 @@ function closeNumber(a?: number, b?: number) {
 }
 
 function rowTimestamp(row: SurveyRow) {
-  const raw = row.submittedAt ?? row._createdAt;
-  const timestamp = Date.parse(raw);
+  const timestamp = Date.parse(row.submittedAt);
   return Number.isFinite(timestamp) ? timestamp : 0;
 }
 

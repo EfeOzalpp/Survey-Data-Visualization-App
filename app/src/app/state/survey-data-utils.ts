@@ -41,8 +41,7 @@ export function filterRowsForSection(allRows: SurveyRow[], section: string) {
 }
 
 function newestTimestampOf(row: SurveyRow) {
-  const raw = row.submittedAt ?? row._createdAt;
-  const ts = Date.parse(raw);
+  const ts = Date.parse(row.submittedAt);
   return Number.isFinite(ts) ? ts : 0;
 }
 

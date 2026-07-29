@@ -12,7 +12,6 @@ import { updateMockSoloMessage } from '../mock-survey-data/mockData';
 interface SavedSoloMessage {
   _id: string;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
 }
 
 interface WriteSoloMessagePayload {
@@ -57,11 +56,10 @@ function persistSoloMessageSnapshot(updated: SavedSoloMessage) {
     const next: Record<string, unknown> = { ...snapshot, _id: updated._id };
     if (updated.soloMessage) {
       next.soloMessage = updated.soloMessage;
-      next.soloMessageUpdatedAt = updated.soloMessageUpdatedAt;
     } else {
       delete next.soloMessage;
-      delete next.soloMessageUpdatedAt;
     }
+    delete next.soloMessageUpdatedAt;
     setSessionItem('be.myDoc', JSON.stringify(next));
   } catch (error) {
     console.warn('[saveSoloMessage] Failed to update local response snapshot:', error);

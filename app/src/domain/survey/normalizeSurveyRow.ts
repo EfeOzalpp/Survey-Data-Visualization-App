@@ -24,15 +24,6 @@ export function normalizeSurveyRow(row: RawSurveyRow): SurveyRow {
     q5,
     avgWeight,
     soloMessage: row.soloMessage,
-    soloMessageUpdatedAt: row.soloMessageUpdatedAt,
-    submittedAt: row.submittedAt,
-    _createdAt: row._createdAt ?? fallbackDate,
-    weights: {
-      question1: q1 ?? 0.5,
-      question2: q2 ?? 0.5,
-      question3: q3 ?? 0.5,
-      question4: q4 ?? 0.5,
-      question5: q5 ?? 0.5,
-    },
+    submittedAt: fallbackDate,
   };
 }
