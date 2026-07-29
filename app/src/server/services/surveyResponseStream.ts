@@ -44,15 +44,34 @@ function newestTimestampOf(row: SurveyRow) {
   return Number.isFinite(ts) ? ts : 0;
 }
 
-function sortNewestFirst(rows: SurveyRow[]) {
-  return [...rows].sort((a, b) => {
-    const timeDelta = newestTimestampOf(b) - newestTimestampOf(a);
-    return timeDelta !== 0 ? timeDelta : b._id.localeCompare(a._id);
-  });
+function compareNewestFirst(a: SurveyRow, b: SurveyRow) {
+  const timeDelta = newestTimestampOf(b) - newestTimestampOf(a);
+  return timeDelta !== 0 ? timeDelta : b._id.localeCompare(a._id);
 }
 
+function sortNewestFirst(rows: SurveyRow[]) {
+  return [...rows].sort(compareNewestFirst);
+}
+
+// `rows` is always already sorted newest-first, so a single changed row only
+// needs its correct position found (binary search) and spliced in, not a
+// full O(N log N) re-sort of the whole cache on every write.
 function upsertRow(rows: SurveyRow[], row: SurveyRow) {
-  return sortNewestFirst([row, ...rows.filter((item) => item._id !== row._id)]);
+  const withoutExisting = rows.filter((item) => item._id !== row._id);
+
+  let low = 0;
+  let high = withoutExisting.length;
+  while (low < high) {
+    const mid = (low + high) >>> 1;
+    if (compareNewestFirst(withoutExisting[mid], row) <= 0) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+
+  withoutExisting.splice(low, 0, row);
+  return withoutExisting;
 }
 
 function mergeRows(rows: SurveyRow[], nextRows: SurveyRow[]) {
