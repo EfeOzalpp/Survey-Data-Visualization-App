@@ -3,8 +3,9 @@ import { BUTTON_QUESTIONS } from "../../onboarding/questionnaire/button-input/bu
 import { STAFF_IDS, STUDENT_IDS } from "../../domain/survey/sections";
 import { optionalEnv } from "../env";
 import { signEditToken } from "../security/editToken";
-import { consumeRateLimits, type RateRule } from "../security/rateLimiter";
+import { type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
+import { checkRateLimits } from "../cluster/clusterRateLimit";
 import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
 import { recordSanityRequest } from "../load-testing/requestStats"; // load-testing
 import { sanityWriteClient } from "../upstreams/sanity/writeClient";
@@ -157,7 +158,7 @@ export async function saveUserResponseRoute(req: Request, res: Response) {
 
   // load-testing: skip abuse protection so a k6 run from one IP isn't self-limited.
   if (!LOAD_TEST_MODE) {
-    const rateLimit = consumeRateLimits(buildRateRules(req, validation.payload));
+    const rateLimit = await checkRateLimits(buildRateRules(req, validation.payload));
     if (!rateLimit.allowed) {
       res.status(429).json({
         error: "Too many submissions",
