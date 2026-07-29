@@ -13,7 +13,7 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |   |   notices.ts
 |   |   session.ts
 |   |   useMockBanner.ts
-|   |   
+|   |
 |   +---state
 |   |   |   canvas-runtime-store.ts
 |   |   |   identity-context.ts
@@ -722,6 +722,14 @@ C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
 |   |   env.ts
 |   |   index.ts
 |   |   
+|   +---cluster
+|   |       clusterMode.ts
+|   |       clusterRateLimit.ts
+|   |       clusterStats.ts
+|   |       messages.ts
+|   |       primary.ts
+|   |       workerLoadReporter.ts
+|   |
 |   +---load-testing
 |   |       loadTestMode.ts
 |   |       loadTestStats.ts

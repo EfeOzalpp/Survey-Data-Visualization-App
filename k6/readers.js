@@ -8,7 +8,7 @@
 import sse from 'k6/x/sse';
 import { check, sleep } from 'k6';
 import { Trend } from 'k6/metrics';
-import { BASE_URL } from './config.js';
+import { BASE_URL, SSE_LIMIT } from './config.js';
 
 const VUS = Number(__ENV.READERS_VUS || 10);
 const DURATION = __ENV.READERS_DURATION || '30s';
@@ -18,6 +18,7 @@ const DURATION = __ENV.READERS_DURATION || '30s';
 const RETRY_DELAY_SECONDS = 1;
 
 const timeToFirstSnapshot = new Trend('sse_time_to_first_snapshot', true);
+const timeToCompleteSnapshot = new Trend('sse_time_to_complete_snapshot', true);
 
 export const options = {
   scenarios: {
@@ -33,10 +34,11 @@ export const options = {
 };
 
 export default function () {
-  const url = `${BASE_URL}/api/survey-responses/stream?limit=5`;
+  const url = `${BASE_URL}/api/survey-responses/stream?limit=${encodeURIComponent(SSE_LIMIT)}`;
   const startedAt = Date.now();
   let connectionOpened = false;
   let gotSnapshot = false;
+  let completedSnapshot = false;
   let hadError = false;
 
   sse.open(url, {}, function (client) {
@@ -57,6 +59,18 @@ export default function () {
         gotSnapshot = true;
         timeToFirstSnapshot.add(Date.now() - startedAt);
         check(null, { 'received a snapshot event': () => true });
+      }
+      if (event.name === 'snapshot' && !completedSnapshot) {
+        try {
+          const snapshot = JSON.parse(event.data);
+          if (snapshot.complete === true) {
+            completedSnapshot = true;
+            timeToCompleteSnapshot.add(Date.now() - startedAt);
+            check(null, { 'received the complete snapshot': () => true });
+          }
+        } catch {
+          check(null, { 'snapshot event contained valid JSON': () => false });
+        }
       }
       // Deliberately never close manually — hold the connection open for
       // the whole scenario duration, same as a real visitor watching the

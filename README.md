@@ -53,6 +53,7 @@ An application that uses a custom 2.5D Canvas2D implementation to render an inte
 
 - [Scene Canvas](app/src/scene-canvas)
 - [Graph Runtime](app/src/graph-runtime)
+- [Load Tests and Recorded Results](k6/README.md)
 
 <br>
 
