@@ -703,8 +703,10 @@ butterfly-effect/
 |   |-- config.js
 |   |-- readers.js
 |   |-- README.md
+|   |-- run-sse-throughput.ps1
 |   |-- run-staged-readers.ps1
 |   |-- sse-extension-check.js
+|   |-- sse-throughput.js
 |   |-- staged-readers.js
 |   \-- writers.js
 |-- LICENSE

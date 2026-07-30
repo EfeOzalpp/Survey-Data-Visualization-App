@@ -17,6 +17,10 @@ the `k6/x/sse` extension.
 | Snapshot result | 10,160 complete snapshots |
 | Complete-snapshot latency | 353.69ms average; 779ms p95; 1.2s maximum |
 | Network received | 922 MB |
+| Initial-load throughput | 200 complete 488-row SSE reads/second for 30s |
+| Throughput result | 6,001/6,001 completed; zero drops, errors, or incomplete reads |
+| Throughput latency | 178.16ms average; 574ms p95; 823ms maximum |
+| Throughput network | 544 MB received; approximately 18 MB/s |
 
 Each VU represents one SSE connection, not a rendered browser session. After
 receiving its snapshot, it stays open waiting for live patch events.
@@ -37,11 +41,19 @@ hold the peak for 60 seconds, and end after 99 seconds. Reader iterations
 reported as interrupted at shutdown are expected because their SSE
 connections are deliberately held open.
 
+Verified SSE read throughput (200 complete full-history reads/second for 30
+seconds):
+
+```powershell
+.\run-sse-throughput.ps1 -ReadsPerSecond 200
+```
+
 ## Scripts
 
 | Script | Purpose |
 | --- | --- |
 | `staged-readers.js` | Accumulates SSE waves to verify concurrent connections and complete snapshots |
+| `sse-throughput.js` | Opens, completes, and closes full-history SSE reads at a fixed transactions-per-second rate |
 | `readers.js` | Runs one simultaneous SSE reader burst |
 | `writers.js` | Runs finite REST create-and-patch workflows |
 | `sse-extension-check.js` | Confirms that the custom k6 binary includes `k6/x/sse` |

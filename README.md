@@ -1,6 +1,6 @@
-## Butterfly Effect: Gamified City Simulation
+## Real-Time Rendering & Analytics
 
-An application that uses a custom 2.5D Canvas2D implementation to render an interactive city scene. The same scene functions compute draw arguments and generate offscreen sprites for a Three.js/WebGL collective visualization in 3D space.
+Butterfly Effect is powered by a custom 2.5D Canvas2D renderer. Shared scene functions generate both the interactive city canvases and reusable offscreen sprites consumed by a Three.js/WebGL visualization.
 
 [![Live App](https://img.shields.io/badge/Live%20App-%23845f87?style=for-the-badge)](https://butterflyeff3ct.online/)
 
@@ -34,7 +34,7 @@ An application that uses a custom 2.5D Canvas2D implementation to render an inte
 - Gamification copy is fetched through a cached Express endpoint that batches related Sanity CMS reads into one request.
 - Survey submissions stay on separate Express POST endpoints, keeping writes explicit while live updates flow back through SSE.
 - Edit authorization uses server-signed JWTs instead of a stored token hash, so verifying a solo-message edit is a single signature check instead of a Sanity lookup-then-compare.
-- Under a 2-vCPU/1-GiB Docker limit, k6 verified 10,160 concurrent SSE connections receiving complete 488-row snapshots in 254-connection waves every second, with zero connection errors or early disconnects. See the [test methodology and recorded results](k6/README.md).
+- Under a 2-vCPU/1-GiB Docker limit, k6 verified 10,160 concurrent SSE connections and 200 complete 488-row SSE initial loads per second with zero connection errors or dropped reads. See the [test methodology and recorded results](k6/README.md).
 
 | | |
 | :--- | :--- |
