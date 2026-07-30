@@ -1,360 +1,53 @@
 import type { Response } from "express";
-import type { ListenEvent } from "@sanity/client";
 
-import { recordSseConnectionClosed, recordSseConnectionOpened } from "../load-testing/sseConnectionStats"; // load-testing
-import { filterRowsForSection } from "../../domain/survey/sections";
-import { normalizeSurveyRow } from "../../domain/survey/normalizeSurveyRow";
-import type { RawSurveyRow, SurveyRow } from "../../domain/survey/types";
+import { SNAPSHOT_CHUNK_SIZE } from "../upstreams/sanity/surveyResponseQueries";
 import {
-  fetchSnapshotPage,
-  listenToSurveyResponses,
-  SNAPSHOT_CHUNK_SIZE,
-  type SnapshotCursor,
-} from "../upstreams/sanity/surveyResponseQueries";
+  ResponseStore,
+  type SurveyResponseLimit,
+} from "./responseStore";
+import { SnapshotCache } from "./snapshotCache";
+import { SseClientHub } from "./sseClientHub";
+import { SurveyResponseFeed } from "./surveyResponseFeed";
 
-const PATCH_COALESCE_MS = 750;
-const HEARTBEAT_MS = 25_000;
-const RECONNECT_DELAY_MS = 15_000;
+export type { SurveyResponseLimit } from "./responseStore";
 
-interface StreamClient {
-  id: number;
-  section: string;
-  limit: SurveyResponseLimit;
-  res: Response;
-  heartbeat: NodeJS.Timeout;
-}
+const responseStore = new ResponseStore();
+const snapshotCache = new SnapshotCache(responseStore, SNAPSHOT_CHUNK_SIZE);
 
-export type SurveyResponseLimit = number | "all";
+const clientHub = new SseClientHub(() => {
+  surveyResponseFeed.stopIfIdle();
+});
 
-let nextClientId = 1;
-let rowsCache: SurveyRow[] = [];
-let hasSnapshot = false;
-let snapshotPromise: Promise<void> | null = null;
-let listenerSubscription: { unsubscribe: () => void } | null = null;
-let reconnectTimer: NodeJS.Timeout | null = null;
-let patchTimer: NodeJS.Timeout | null = null;
-const pendingUpserts = new Map<string, SurveyRow>();
-const pendingDeletes = new Set<string>();
-
-const clients = new Map<number, StreamClient>();
-
-// Serialized snapshot chunks for a newly-joining client, keyed by
-// `${section}::${limit}::${completeWhenDone}` — the first client with a
-// given key computes it, every later client with the same key (whether 1ms
-// or 10 minutes later) reuses the cached strings. Cleared whenever
-// `rowsCache` actually changes, so it's never stale.
-const cachedSnapshotByKey = new Map<string, string[]>();
-
-function newestTimestampOf(row: SurveyRow) {
-  const ts = Date.parse(row.submittedAt);
-  return Number.isFinite(ts) ? ts : 0;
-}
-
-function compareNewestFirst(a: SurveyRow, b: SurveyRow) {
-  const timeDelta = newestTimestampOf(b) - newestTimestampOf(a);
-  return timeDelta !== 0 ? timeDelta : b._id.localeCompare(a._id);
-}
-
-function sortNewestFirst(rows: SurveyRow[]) {
-  return [...rows].sort(compareNewestFirst);
-}
-
-// `rows` is always already sorted newest-first, so a single changed row only
-// needs its correct position found (binary search) and spliced in, not a
-// full O(N log N) re-sort of the whole cache on every write.
-function upsertRow(rows: SurveyRow[], row: SurveyRow) {
-  const withoutExisting = rows.filter((item) => item._id !== row._id);
-
-  let low = 0;
-  let high = withoutExisting.length;
-  while (low < high) {
-    const mid = (low + high) >>> 1;
-    if (compareNewestFirst(withoutExisting[mid], row) <= 0) {
-      low = mid + 1;
-    } else {
-      high = mid;
-    }
-  }
-
-  withoutExisting.splice(low, 0, row);
-  return withoutExisting;
-}
-
-function mergeRows(rows: SurveyRow[], nextRows: SurveyRow[]) {
-  const byId = new Map(rows.map((row) => [row._id, row]));
-  for (const row of nextRows) byId.set(row._id, row);
-  return sortNewestFirst([...byId.values()]);
-}
-
-function rowsForClient(client: StreamClient) {
-  const rows = filterRowsForSection(rowsCache, client.section);
-  return client.limit === "all" ? rows : rows.slice(0, client.limit);
-}
-
-function writeRaw(client: StreamClient, event: string, dataString: string) {
-  try {
-    client.res.write(`event: ${event}\n`);
-    client.res.write(`data: ${dataString}\n\n`);
-    return true;
-  } catch (error) {
-    console.warn("[surveyResponseStream] failed to write SSE event:", error);
-    return false;
-  }
-}
-
-function writeEvent(client: StreamClient, event: string, data: unknown) {
-  return writeRaw(client, event, JSON.stringify(data));
-}
-
-function writeComment(client: StreamClient, comment: string) {
-  try {
-    client.res.write(`: ${comment}\n\n`);
-    return true;
-  } catch (error) {
-    console.warn("[surveyResponseStream] failed to write SSE heartbeat:", error);
-    return false;
-  }
-}
-
-function sendStreamError(client: StreamClient, error: unknown) {
-  return writeEvent(client, "stream-error", {
-    message: error instanceof Error ? error.message : "Survey response stream failed",
-  });
-}
-
-function buildSnapshotChunks(rows: SurveyRow[], completeWhenDone: boolean): string[] {
-  if (!rows.length) {
-    return [JSON.stringify({ rows: [], reset: true, complete: completeWhenDone })];
-  }
-
-  const chunks: string[] = [];
-  for (let index = 0; index < rows.length; index += SNAPSHOT_CHUNK_SIZE) {
-    const chunk = rows.slice(index, index + SNAPSHOT_CHUNK_SIZE);
-    const complete = completeWhenDone && index + SNAPSHOT_CHUNK_SIZE >= rows.length;
-    chunks.push(JSON.stringify({ rows: chunk, reset: index === 0, complete }));
-  }
-  return chunks;
-}
-
-function sendCachedSnapshot(client: StreamClient, completeWhenDone: boolean) {
-  const key = `${client.section}::${String(client.limit)}::${String(completeWhenDone)}`;
-  let chunks = cachedSnapshotByKey.get(key);
-  if (!chunks) {
-    chunks = buildSnapshotChunks(rowsForClient(client), completeWhenDone);
-    cachedSnapshotByKey.set(key, chunks);
-  }
-
-  for (const chunk of chunks) {
-    if (!writeRaw(client, "snapshot", chunk)) return false;
-  }
-  return true;
-}
-
-// Filtering + serializing is the same for every client sharing a section, so
-// it's computed once per distinct section instead of once per client — the
-// cost scales with (distinct sections × rows) rather than (clients × rows).
-function broadcastSnapshotChunk(
-  rows: SurveyRow[],
-  {
-    reset = false,
-    complete = false,
-  }: {
-    reset?: boolean;
-    complete?: boolean;
-  } = {}
-) {
-  const serializedBySection = new Map<string, string>();
-
-  for (const client of clients.values()) {
-    let serialized = serializedBySection.get(client.section);
-    if (serialized === undefined) {
-      const clientRows = filterRowsForSection(rows, client.section);
-      serialized = JSON.stringify({ rows: clientRows, reset, complete });
-      serializedBySection.set(client.section, serialized);
-    }
-    if (!writeRaw(client, "snapshot", serialized)) removeClient(client.id);
-  }
-}
-
-function broadcastStreamError(error: unknown) {
-  for (const client of clients.values()) {
-    if (!sendStreamError(client, error)) removeClient(client.id);
-  }
-}
-
-async function refreshSnapshot() {
-  rowsCache = [];
-  cachedSnapshotByKey.clear();
-  hasSnapshot = false;
-
-  let cursor: SnapshotCursor | null = null;
-  let sentAnyChunk = false;
-
-  while (clients.size > 0) {
-    const rows: SurveyRow[] = await fetchSnapshotPage(cursor);
-    const complete = rows.length < SNAPSHOT_CHUNK_SIZE;
-
-    rowsCache = mergeRows(rowsCache, rows);
-    cachedSnapshotByKey.clear();
-    broadcastSnapshotChunk(rows, { reset: !sentAnyChunk, complete });
-    sentAnyChunk = true;
-
-    if (complete || rows.length === 0) break;
-
-    const last: SurveyRow = rows[rows.length - 1];
-    cursor = {
-      time: last.submittedAt,
-      id: last._id,
-    };
-  }
-
-  if (!sentAnyChunk) {
-    broadcastSnapshotChunk([], { reset: true, complete: true });
-  }
-
-  hasSnapshot = true;
-  flushPendingPatch();
-}
-
-function ensureSnapshot() {
-  if (snapshotPromise) return snapshotPromise;
-  snapshotPromise = refreshSnapshot().finally(() => {
-    snapshotPromise = null;
-  });
-  return snapshotPromise;
-}
-
-function clearReconnectTimer() {
-  if (!reconnectTimer) return;
-  clearTimeout(reconnectTimer);
-  reconnectTimer = null;
-}
-
-function scheduleListenerRestart() {
-  if (reconnectTimer || clients.size === 0) return;
-  reconnectTimer = setTimeout(() => {
-    reconnectTimer = null;
-    startSanityListener();
-    void ensureSnapshot().catch((error: unknown) => {
-      console.error("[surveyResponseStream] snapshot refresh failed after reconnect:", error);
-      broadcastStreamError(error);
-    });
-  }, RECONNECT_DELAY_MS);
-}
-
-function flushPendingPatch() {
-  if (patchTimer) {
-    clearTimeout(patchTimer);
-    patchTimer = null;
-  }
-
-  const upserts = [...pendingUpserts.values()];
-  const deletes = [...pendingDeletes];
-  pendingUpserts.clear();
-  pendingDeletes.clear();
-
-  if (!upserts.length && !deletes.length) return;
-
-  // Same dedup-by-section approach as broadcastSnapshotChunk. `null` marks a
-  // section with nothing to send (empty upserts and no deletes), so those
-  // clients get skipped without recomputing the filter every time.
-  const serializedBySection = new Map<string, string | null>();
-
-  for (const client of clients.values()) {
-    let serialized = serializedBySection.get(client.section);
-    if (serialized === undefined) {
-      const clientUpserts = filterRowsForSection(upserts, client.section);
-      if (!clientUpserts.length && !deletes.length) {
-        serialized = null;
-      } else {
-        serialized = JSON.stringify({
-          ...(clientUpserts.length ? { upserts: clientUpserts } : {}),
-          ...(deletes.length ? { deletes } : {}),
-        });
-      }
-      serializedBySection.set(client.section, serialized);
-    }
-    if (serialized === null) continue;
-    if (!writeRaw(client, "patch", serialized)) removeClient(client.id);
-  }
-}
-
-function queuePatch({
-  upserts = [],
-  deletes = [],
-}: {
-  upserts?: SurveyRow[];
-  deletes?: string[];
-}) {
-  for (const id of deletes) {
-    pendingUpserts.delete(id);
-    pendingDeletes.add(id);
-  }
-
-  for (const row of upserts) {
-    pendingDeletes.delete(row._id);
-    pendingUpserts.set(row._id, row);
-  }
-
-  if (patchTimer || clients.size === 0 || snapshotPromise || !hasSnapshot) return;
-  patchTimer = setTimeout(flushPendingPatch, PATCH_COALESCE_MS);
-}
-
-function handleSanityEvent(event: ListenEvent<RawSurveyRow>) {
-  if (event.type !== "mutation") return;
-
-  if (event.transition === "disappear") {
-    rowsCache = rowsCache.filter((row) => row._id !== event.documentId);
-    cachedSnapshotByKey.clear();
-    queuePatch({ deletes: [event.documentId] });
-    return;
-  }
-
-  if (!event.result) {
-    void ensureSnapshot().catch((error: unknown) => {
-      console.error("[surveyResponseStream] snapshot refresh failed after mutation:", error);
-      broadcastStreamError(error);
-    });
-    return;
-  }
-
-  const row = normalizeSurveyRow(event.result);
-  rowsCache = upsertRow(rowsCache, row);
-  cachedSnapshotByKey.clear();
-  queuePatch({ upserts: [row] });
-}
-
-function startSanityListener() {
-  if (listenerSubscription || clients.size === 0) return;
-  clearReconnectTimer();
-
-  listenerSubscription = listenToSurveyResponses({
-    onEvent: handleSanityEvent,
-    onError: (error: unknown) => {
-      console.error("[surveyResponseStream] Sanity listener failed:", error);
-      listenerSubscription = null;
-      broadcastStreamError(error);
-      scheduleListenerRestart();
-    },
-  });
-}
-
-function stopSanityListenerIfIdle() {
-  if (clients.size > 0) return;
-  clearReconnectTimer();
-  flushPendingPatch();
-  listenerSubscription?.unsubscribe();
-  listenerSubscription = null;
-}
-
-function removeClient(id: number) {
-  const client = clients.get(id);
-  if (!client) return;
-  clearInterval(client.heartbeat);
-  clients.delete(id);
-  recordSseConnectionClosed(); // load-testing
-  stopSanityListenerIfIdle();
-}
+const surveyResponseFeed = new SurveyResponseFeed({
+  hasClients: () => clientHub.size > 0,
+  canPublishPatches: () => responseStore.hasCompleteSnapshot,
+  onSnapshotReset: () => {
+    responseStore.resetSnapshot();
+    snapshotCache.clear();
+  },
+  onSnapshotPage: (rows, options) => {
+    responseStore.mergeSnapshotPage(rows);
+    snapshotCache.clear();
+    clientHub.broadcastSnapshotPage(rows, options);
+  },
+  onSnapshotComplete: () => {
+    responseStore.markSnapshotComplete();
+  },
+  onUpsert: (row) => {
+    responseStore.upsert(row);
+    snapshotCache.clear();
+  },
+  onDelete: (id) => {
+    responseStore.delete(id);
+    snapshotCache.clear();
+  },
+  onPatch: (patch) => {
+    clientHub.broadcastPatch(patch);
+  },
+  onError: (error) => {
+    clientHub.broadcastError(error);
+  },
+});
 
 export function openSurveyResponseStream({
   section,
@@ -365,44 +58,32 @@ export function openSurveyResponseStream({
   limit: SurveyResponseLimit;
   res: Response;
 }) {
-  const id = nextClientId;
-  nextClientId += 1;
+  const isFirstClient = clientHub.size === 0;
+  const client = clientHub.open({ section, limit, res });
 
-  res.status(200);
-  res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
-  res.setHeader("Cache-Control", "no-cache, no-transform");
-  res.setHeader("Connection", "keep-alive");
-  res.setHeader("X-Accel-Buffering", "no");
-  res.flushHeaders();
-
-  const client: StreamClient = {
-    id,
-    section,
-    limit,
-    res,
-    heartbeat: setInterval(() => {
-      if (!writeComment(client, "heartbeat")) removeClient(id);
-    }, HEARTBEAT_MS),
-  };
-
-  clients.set(id, client);
-  recordSseConnectionOpened(); // load-testing
-  writeComment(client, "connected");
-
-  const isFirstClient = clients.size === 1;
-  if (!isFirstClient && (hasSnapshot || rowsCache.length > 0)) {
-    sendCachedSnapshot(client, !snapshotPromise);
+  if (
+    !isFirstClient &&
+    (responseStore.hasCompleteSnapshot || responseStore.hasRows)
+  ) {
+    clientHub.sendSnapshot(
+      client,
+      snapshotCache.get(
+        section,
+        limit,
+        !surveyResponseFeed.isRefreshingSnapshot
+      )
+    );
   }
 
-  startSanityListener();
-  if (!hasSnapshot || isFirstClient) {
-    void ensureSnapshot().catch((error: unknown) => {
+  surveyResponseFeed.startListener();
+  if (!responseStore.hasCompleteSnapshot || isFirstClient) {
+    void surveyResponseFeed.ensureSnapshot().catch((error: unknown) => {
       console.error("[surveyResponseStream] initial snapshot failed:", error);
-      sendStreamError(client, error);
+      clientHub.sendError(client, error);
     });
   }
 
   return () => {
-    removeClient(id);
+    clientHub.remove(client.id);
   };
 }
