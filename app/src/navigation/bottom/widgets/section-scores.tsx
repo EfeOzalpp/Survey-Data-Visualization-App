@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSurveyData } from "../../../app/state/survey-data-context";
+import { useShallow } from "zustand/react/shallow";
+import { useSurveyDataStore } from "../../../app/state/survey-data-store";
 import HintBanner from "../../../app/ui/HintBanner";
 import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../../gp-data";
 import { BUTTON_QUESTIONS } from "../../../onboarding/questionnaire/button-input/button-questions";
 import WidgetSectionNav from "./widget-section-nav";
+import { recordOwnRender } from "../../../render-test/renderProfilerStats";
 
 interface LocalSectionState {
   sourceSection: string;
@@ -36,7 +38,10 @@ export default function SectionScores({
   paused,
   onPausedChange,
 }: SectionScoresProps = {}) {
-  const { allRows, section, sectionSelectionVersion } = useSurveyData();
+  recordOwnRender("SectionScores");
+  const { allRows, section, sectionSelectionVersion } = useSurveyDataStore(
+    useShallow((s) => ({ allRows: s.allRows, section: s.section, sectionSelectionVersion: s.sectionSelectionVersion }))
+  );
   const { ALL_LABELS, MAIN_OPTS, STUDENT_OPTS, STAFF_OPTS, counts } = useGraphPickerData(section);
   const [internalPaused, setInternalPaused] = useState(true);
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(() =>

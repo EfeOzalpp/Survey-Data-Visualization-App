@@ -7,8 +7,9 @@ import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { usePreferences } from '../../app/state/preferences-context';
 import { useUiStore } from '../../app/state/ui-store';
 import { useIdentity } from '../../app/state/identity-context';
-import { useSurveyData } from '../../app/state/survey-data-context';
-import { useSharedGraphData } from '../GraphDataContext';
+import { useShallow } from 'zustand/react/shallow';
+import { useSurveyDataStore } from '../../app/state/survey-data-store';
+import { useSharedGraphData } from '../useSharedGraphData';
 import { bumpGeneration, resetQueue } from '../sprites/entry';
 import { DEFAULT_VIEWPORT_WIDTH, isMobileWidth } from '../../lib/responsive/breakpoints';
 
@@ -29,7 +30,9 @@ export default function DotGraph() {
   const mode = useUiStore((s) => s.mode);
   const setPersonalPanelOpen = useUiStore((s) => s.setPersonalPanelOpen);
   const { myEntryId, mySection } = useIdentity();
-  const { section, allFilteredRows: fullSurveyData, loading } = useSurveyData();
+  const { section, allFilteredRows: fullSurveyData, loading } = useSurveyDataStore(
+    useShallow((s) => ({ section: s.section, allFilteredRows: s.allFilteredRows, loading: s.loading }))
+  );
 
   const {
     safeData,

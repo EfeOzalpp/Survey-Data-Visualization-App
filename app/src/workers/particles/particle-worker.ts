@@ -8,6 +8,50 @@ import { clamp01, hzLerp, makePRNG, mix, randRange } from "../../scene-canvas/mo
 // len is always 0 for particle-2 (dot-only).
 const FPP = 7;
 
+interface RangeOption { min?: number; max?: number; }
+interface RectLike { x: number; y: number; w: number; h: number; }
+
+interface StepP1Options {
+  count?: number;
+  rect: RectLike;
+  spawn?: { x0?: number; x1?: number; y0?: number; y1?: number };
+  speed?: RangeOption;
+  angle?: RangeOption;
+  jitter?: { pos?: number; velAngle?: number };
+  size?: RangeOption;
+  length?: RangeOption;
+  lifetime?: RangeOption;
+  spawnMode?: string;
+  respawnStratified?: boolean;
+  accel?: { x?: number; y?: number };
+  gravity?: number;
+  respawn?: boolean;
+  sizeHz?: number;
+  lenHz?: number;
+  warmStartSec?: number;
+}
+
+interface StepP2Options {
+  count?: number;
+  rect: RectLike;
+  spawn?: { x0?: number; x1?: number; y0?: number; y1?: number };
+  speed?: RangeOption;
+  size?: RangeOption;
+  lifetime?: RangeOption;
+  accel?: { x?: number; y?: number };
+  gravity?: number;
+  drag?: number;
+  jitter?: { pos?: number; velAngle?: number };
+  spawnMode?: string;
+  respawnStratified?: boolean;
+  respawn?: boolean;
+  sizeHz?: number;
+  angle?: RangeOption;
+  dir?: string;
+  spreadAngle?: number;
+  warmStartSec?: number;
+}
+
 // ─────────────────────────── Particle-1 ───────────────────────────
 
 interface P1Particle {
@@ -80,10 +124,9 @@ function prewarmP1(
   advanceP1(pr, rnd() * Math.max(0, maxAge), ax, ay);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function stepP1(key: string, opts: Record<string, any>, dtSec: number): Float32Array {
+function stepP1(key: string, opts: StepP1Options, dtSec: number): Float32Array {
   const wantCount = Math.max(1, Math.floor(opts.count ?? 32));
-  const rect = opts.rect as { x: number; y: number; w: number; h: number };
+  const rect = opts.rect;
   const spawn = opts.spawn ?? {};
   const sx0 = spawn.x0 ?? 0, sx1 = spawn.x1 ?? 1;
   const sy0 = spawn.y0 ?? 0, sy1 = spawn.y1 ?? 0;
@@ -161,7 +204,7 @@ function stepP1(key: string, opts: Record<string, any>, dtSec: number): Float32A
   if (!st.warmStarted) {
     st.warmStarted = true;
     const warmStartSec = typeof opts.warmStartSec === "number" && Number.isFinite(opts.warmStartSec)
-      ? Math.max(0, opts.warmStartSec as number) : 0;
+      ? Math.max(0, opts.warmStartSec) : 0;
     const warmStepSec = 1 / 30;
     const warmSteps = Math.min(180, Math.ceil(warmStartSec / warmStepSec));
     for (let step = 0; step < warmSteps; step++) {
@@ -238,10 +281,9 @@ function dirToAngleSpan(dir: string, spread: number): { min: number; max: number
   return { min: base - spread, max: base + spread };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function stepP2(key: string, opts: Record<string, any>, dtSec: number): Float32Array {
+function stepP2(key: string, opts: StepP2Options, dtSec: number): Float32Array {
   const wantCount = Math.max(1, Math.floor(opts.count ?? 32));
-  const rect = opts.rect as { x: number; y: number; w: number; h: number };
+  const rect = opts.rect;
   const spawn = opts.spawn ?? {};
   const sx0 = spawn.x0 ?? 0, sx1 = spawn.x1 ?? 1;
   const sy0 = spawn.y0 ?? 0, sy1 = spawn.y1 ?? 0;
@@ -280,7 +322,7 @@ function stepP2(key: string, opts: Record<string, any>, dtSec: number): Float32A
     const particles = Array.from({ length: wantCount }, (_, i) => ({
       x: 0, y: 0, vx: 0, vy: 0, age: 0, life: 0, size: 1,
       uSlot: stratifiedSlot(i, wantCount, rnd),
-    } as P2Particle));
+    }));
     st = { particles, rnd };
     p2States.set(key, st);
   } else if (st.particles.length !== wantCount) {
@@ -334,7 +376,7 @@ function stepP2(key: string, opts: Record<string, any>, dtSec: number): Float32A
   if (!st.warmStarted) {
     st.warmStarted = true;
     const warmStartSec = typeof opts.warmStartSec === "number" && Number.isFinite(opts.warmStartSec)
-      ? Math.max(0, opts.warmStartSec as number) : 0;
+      ? Math.max(0, opts.warmStartSec) : 0;
     const warmStepSec = 1 / 30;
     const warmSteps = Math.min(180, Math.ceil(warmStartSec / warmStepSec));
     for (let step = 0; step < warmSteps; step++) {
@@ -374,9 +416,9 @@ onmessage = (e: MessageEvent<{ cmd: string; key: string; dtSec: number; opts: Re
   const { cmd, key, dtSec, opts } = e.data;
   let out: Float32Array;
   if (cmd === "step-p1") {
-    out = stepP1(key, opts, dtSec);
+    out = stepP1(key, opts as unknown as StepP1Options, dtSec);
   } else if (cmd === "step-p2") {
-    out = stepP2(key, opts, dtSec);
+    out = stepP2(key, opts as unknown as StepP2Options, dtSec);
   } else {
     return;
   }

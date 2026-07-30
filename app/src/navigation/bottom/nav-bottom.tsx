@@ -1,9 +1,10 @@
-import { Suspense, lazy, memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Profiler, Suspense, lazy, memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
 import "../../styles/widgets.css";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { GraphDataProvider } from "../../graph-runtime/GraphDataContext";
 import { useEscapeToClose } from "../../lib/hooks/useEscapeToClose";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
@@ -21,6 +22,7 @@ const BarGraph = lazy(() => import("./widgets/bargraph/index"));
 type WidgetView = "bar" | "questions";
 
 function NavBottom({ introActive = false }: { introActive?: boolean }) {
+  recordOwnRender("NavBottom");
   const {
     cityPanelOpen,
     setCityPanelOpen,
@@ -46,7 +48,7 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
       requestQuestionnaireAdvance: s.requestQuestionnaireAdvance,
     }))
   );
-  const { allFilteredRows } = useSurveyData();
+  const allFilteredRows = useSurveyDataStore((s) => s.allFilteredRows);
   const windowWidth = useWindowWidth();
   const aspectRatio = useWindowAspectRatio();
   const useCompactGraphNav = isMobileWidth(windowWidth);
@@ -188,12 +190,14 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
                   {activeWidgetView === "bar" && (
                     <GraphDataProvider data={allFilteredRows}>
                       <Suspense fallback={null}>
-                        <BarGraph
-                          navOutsidePanel
-                          panelClassName="widgets-view widgets-panel bar-graph"
-                          paused={widgetAutoplayPaused}
-                          onPausedChange={setWidgetAutoplayPaused}
-                        />
+                        <Profiler id="BarGraph:nav-bottom" onRender={profilerOnRender}>
+                          <BarGraph
+                            navOutsidePanel
+                            panelClassName="widgets-view widgets-panel bar-graph"
+                            paused={widgetAutoplayPaused}
+                            onPausedChange={setWidgetAutoplayPaused}
+                          />
+                        </Profiler>
                       </Suspense>
                     </GraphDataProvider>
                   )}
@@ -311,7 +315,9 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
               : { transform: `translateX(calc(-50% + ${String(modeToggleShiftPx)}px))`, transition: "transform 0.2s ease" }
           }
         >
-          <ModeToggle />
+          <Profiler id="ModeToggle" onRender={profilerOnRender}>
+            <ModeToggle />
+          </Profiler>
           {useCompactGraphNav && <CompactGraphTools />}
         </div>
       )}

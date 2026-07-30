@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Ref } from "react";
 import "../../styles/logs.css";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { useEscapeToClose } from "../../lib/hooks/useEscapeToClose";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import SearchIcon from "../../assets/svg/search/SearchIcon";
+import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 const PAGE_SIZE = 50;
 
@@ -35,9 +36,8 @@ function formatSectionLabel(section?: string): string {
   return SECTION_DISPLAY[s] ?? capitalizeFirstWord(s.replace(/-/g, " "));
 }
 
-function rowSubmittedTime(row: { submittedAt?: string; _createdAt?: string }): number {
-  const raw = row.submittedAt ?? row._createdAt;
-  const timestamp = raw ? Date.parse(raw) : 0;
+function rowSubmittedTime(row: { submittedAt: string }): number {
+  const timestamp = Date.parse(row.submittedAt);
   return Number.isFinite(timestamp) ? timestamp : 0;
 }
 
@@ -89,7 +89,8 @@ export function LogsPanel({
   showCloseButton = true,
   onClose,
 }: LogsPanelProps) {
-  const { allFilteredRows: data } = useSurveyData();
+  recordOwnRender("LogsPanel");
+  const data = useSurveyDataStore((s) => s.allFilteredRows);
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -182,11 +183,9 @@ export function LogsPanel({
   const safePage = Math.min(page, totalPages - 1);
   const pageRows = filtered.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
   const highlightPattern = query.trim();
-
-  useEffect(() => {
-    if (!activeRowId) return;
-    if (!pageRows.some((row) => row._id === activeRowId)) setActiveRowId(null);
-  }, [activeRowId, pageRows]);
+  // A row stops rendering as "active" once it scrolls off the current page,
+  // without needing an effect to null out activeRowId itself.
+  const visibleActiveRowId = pageRows.some((row) => row._id === activeRowId) ? activeRowId : null;
 
   function renderHighlighted(text: string) {
     if (!highlightPattern) return text;
@@ -294,9 +293,9 @@ export function LogsPanel({
             ) : pageRows.map((row) => (
               <tr
                 key={row._id}
-                className={`logs-row${activeRowId === row._id ? " is-active" : ""}`}
+                className={`logs-row${visibleActiveRowId === row._id ? " is-active" : ""}`}
                 tabIndex={0}
-                aria-selected={activeRowId === row._id}
+                aria-selected={visibleActiveRowId === row._id}
                 onPointerDown={() => { setActiveRowId(row._id); }}
                 onClick={() => { setActiveRowId(row._id); }}
                 onKeyDown={(event) => {

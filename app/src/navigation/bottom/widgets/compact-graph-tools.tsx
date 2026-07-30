@@ -1,7 +1,8 @@
-import { Suspense, lazy, useRef, useState } from "react";
+import { Profiler, Suspense, lazy, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { profilerOnRender, recordOwnRender } from "../../../render-test/renderProfilerStats";
 import CloseIcon from "../../../assets/svg/close/CloseIcon";
-import { useSurveyData } from "../../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../../app/state/survey-data-store";
 import { GraphDataProvider } from "../../../graph-runtime/GraphDataContext";
 import { useDisclosure } from "../../../lib/hooks/useDisclosure";
 import { useEscapeToClose } from "../../../lib/hooks/useEscapeToClose";
@@ -38,7 +39,8 @@ function ToolsGridIcon() {
 }
 
 export default function CompactGraphTools() {
-  const { allFilteredRows } = useSurveyData();
+  recordOwnRender("CompactGraphTools");
+  const allFilteredRows = useSurveyDataStore((s) => s.allFilteredRows);
   const { open, openDisclosure, closeDisclosure } = useDisclosure(false);
   const [activeTool, setActiveTool] = useState<CompactTool>("logs");
   const [widgetAutoplayPaused, setWidgetAutoplayPaused] = useState(true);
@@ -86,12 +88,14 @@ export default function CompactGraphTools() {
             {activeTool === "bar" && (
               <GraphDataProvider data={allFilteredRows}>
                 <Suspense fallback={null}>
-                  <BarGraph
-                    navOutsidePanel
-                    panelClassName="widgets-panel bar-graph compact-tools-widget-panel"
-                    paused={widgetAutoplayPaused}
-                    onPausedChange={setWidgetAutoplayPaused}
-                  />
+                  <Profiler id="BarGraph:compact-tools" onRender={profilerOnRender}>
+                    <BarGraph
+                      navOutsidePanel
+                      panelClassName="widgets-panel bar-graph compact-tools-widget-panel"
+                      paused={widgetAutoplayPaused}
+                      onPausedChange={setWidgetAutoplayPaused}
+                    />
+                  </Profiler>
                 </Suspense>
               </GraphDataProvider>
             )}

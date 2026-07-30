@@ -1,34 +1,30 @@
 import type { Request, Response } from "express";
 import { optionalEnv } from "../env";
-import { consumeRateLimits, type RateRule } from "../security/rateLimiter";
+import { verifyEditToken } from "../security/editToken";
+import { type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
-import { patchSurveyResponseRowMessage } from "../services/surveyResponseFeed";
+import { checkRateLimits } from "../cluster/clusterRateLimit";
+import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
+import { recordSanityRequest } from "../load-testing/requestStats"; // load-testing
 import { sanityWriteClient } from "../upstreams/sanity/writeClient";
-import { editTokenHash, sha256 } from "../utils/hash";
+import { sha256 } from "../utils/hash";
 import { isRecord, readOptionalId, rejectDisallowedOrigin } from "./shared";
 
 interface ValidPayload {
-  responseId: string;
   editToken: string;
   message: string;
   clientId: string | null;
   clientRequestId: string | null;
 }
 
-interface StoredResponse {
-  _id: string;
-  editTokenHash?: string;
-}
-
 interface SavedMessageResponse {
   _id: string;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
 }
 
 const MAX_MESSAGE_LENGTH = 160;
+const EDIT_TOKEN_PATTERN = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
 const TOP_LEVEL_KEYS = new Set([
-  "responseId",
   "editToken",
   "message",
   "clientId",
@@ -36,16 +32,11 @@ const TOP_LEVEL_KEYS = new Set([
   "website",
 ]);
 
-function readResponseId(value: unknown) {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return /^[a-zA-Z0-9._-]{8,128}$/.test(trimmed) ? trimmed : null;
-}
-
 function readEditToken(value: unknown) {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
-  return /^[a-zA-Z0-9_-]{32,128}$/.test(trimmed) ? trimmed : null;
+  if (trimmed.length > 2000) return null;
+  return EDIT_TOKEN_PATTERN.test(trimmed) ? trimmed : null;
 }
 
 function readMessage(value: unknown) {
@@ -65,9 +56,6 @@ function validatePayload(value: unknown): { ok: true; payload: ValidPayload } | 
     return { ok: false, error: "Invalid payload" };
   }
 
-  const responseId = readResponseId(value.responseId);
-  if (!responseId) return { ok: false, error: "Invalid response id" };
-
   const editToken = readEditToken(value.editToken);
   if (!editToken) return { ok: false, error: "Invalid edit token" };
 
@@ -77,7 +65,6 @@ function validatePayload(value: unknown): { ok: true; payload: ValidPayload } | 
   return {
     ok: true,
     payload: {
-      responseId,
       editToken,
       message,
       clientId: readOptionalId(value.clientId),
@@ -86,10 +73,10 @@ function validatePayload(value: unknown): { ok: true; payload: ValidPayload } | 
   };
 }
 
-function buildRateRules(req: Request, payload: ValidPayload): RateRule[] {
+function buildRateRules(req: Request, payload: ValidPayload, responseId: string): RateRule[] {
   const salt = optionalEnv("RATE_LIMIT_SALT", "butterfly-effect-save-solo-message");
   const ipHash = sha256(`${salt}:ip:${getClientAddress(req)}`);
-  const responseHash = sha256(`${salt}:response:${payload.responseId}`);
+  const responseHash = sha256(`${salt}:response:${responseId}`);
   const rules: RateRule[] = [
     { key: `save-solo-message:ip:${ipHash}:10m`, max: 20, windowSeconds: 10 * 60 },
     { key: `save-solo-message:ip:${ipHash}:day`, max: 80, windowSeconds: 24 * 60 * 60 },
@@ -118,34 +105,28 @@ export async function saveSoloMessageRoute(req: Request, res: Response) {
     return;
   }
 
-  const rateLimit = consumeRateLimits(buildRateRules(req, validation.payload));
-  if (!rateLimit.allowed) {
-    res.status(429).json({
-      error: "Too many message updates",
-      code: "RATE_LIMITED",
-      ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
-    });
+  const verified = verifyEditToken(validation.payload.editToken);
+  if (!verified) {
+    res.status(403).json({ error: "Not allowed to edit this response", code: "EDIT_TOKEN_MISMATCH" });
     return;
   }
 
+  // load-testing: skip abuse protection so a k6 run from one IP isn't self-limited.
+  if (!LOAD_TEST_MODE) {
+    const rateLimit = await checkRateLimits(buildRateRules(req, validation.payload, verified.responseId));
+    if (!rateLimit.allowed) {
+      res.status(429).json({
+        error: "Too many message updates",
+        code: "RATE_LIMITED",
+        ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
+      });
+      return;
+    }
+  }
+
   try {
-    const existing = await sanityWriteClient.fetch<StoredResponse | null>(
-      `*[!(_id in path("drafts.**")) && _type == "userResponseV4" && _id == $id][0]{ _id, editTokenHash }`,
-      { id: validation.payload.responseId },
-    );
-
-    if (!existing) {
-      res.status(404).json({ error: "Response not found", code: "RESPONSE_NOT_FOUND" });
-      return;
-    }
-
-    const expectedHash = editTokenHash(validation.payload.editToken);
-    if (!existing.editTokenHash || existing.editTokenHash !== expectedHash) {
-      res.status(403).json({ error: "Not allowed to edit this response", code: "EDIT_TOKEN_MISMATCH" });
-      return;
-    }
-
-    const patch = sanityWriteClient.patch(existing._id);
+    recordSanityRequest("writePatch"); // load-testing
+    const patch = sanityWriteClient.patch(verified.responseId);
     if (validation.payload.message.length > 0) {
       patch.set({
         soloMessage: validation.payload.message,
@@ -163,15 +144,9 @@ export async function saveSoloMessageRoute(req: Request, res: Response) {
     const responseBody = {
       _id: updated._id,
       ...(updated.soloMessage ? { soloMessage: updated.soloMessage } : {}),
-      ...(updated.soloMessageUpdatedAt ? { soloMessageUpdatedAt: updated.soloMessageUpdatedAt } : {}),
     };
 
     res.status(200).json(responseBody);
-    patchSurveyResponseRowMessage({
-      responseId: updated._id,
-      soloMessage: updated.soloMessage,
-      soloMessageUpdatedAt: updated.soloMessageUpdatedAt,
-    });
   } catch (error) {
     console.error("[save-solo-message] failed:", error);
     res.status(500).json({ error: "Unable to save message", code: "SERVER_ERROR" });

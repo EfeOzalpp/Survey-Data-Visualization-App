@@ -1,12 +1,10 @@
 import { USE_MOCK_READS, enableMockReadFallback, shouldUseMockReads } from '../read-api/config';
 import { createMockUserResponse } from '../mock-survey-data/mockData';
 import type { SurveyRow, SurveyWeights } from '../../domain/survey/types';
-import { getSessionItem, setSessionItem } from '../../app/session';
+import { setSessionItem } from '../../app/session';
 import {
   getClientId,
   makeRandomId,
-  isWriteApiEditToken,
-  makeWriteApiEditToken,
   makeWriteApiError,
   WriteApiError,
 } from './writeApi';
@@ -21,8 +19,8 @@ interface SavedUserResponse {
   q5?: number;
   avgWeight?: number;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
   submittedAt?: string;
+  editToken?: string;
 }
 
 interface WriteSavePayload {
@@ -30,7 +28,6 @@ interface WriteSavePayload {
   weights: SurveyWeights;
   clientId: string;
   clientRequestId: string;
-  editToken?: string;
   website: string;
 }
 
@@ -62,21 +59,6 @@ function isSavedUserResponse(value: unknown): value is SavedUserResponse {
   if (!value || typeof value !== 'object') return false;
   const record = value as Record<string, unknown>;
   return typeof record._id === 'string';
-}
-
-export function ensureUserResponseEditToken(): string {
-  const existing = getSessionItem('be.myEditToken');
-  if (isWriteApiEditToken(existing)) return existing;
-
-  const next = makeWriteApiEditToken();
-  setSessionItem('be.myEditToken', next);
-  return next;
-}
-
-export function beginUserResponseEditSession(): string {
-  const next = makeWriteApiEditToken();
-  setSessionItem('be.myEditToken', next);
-  return next;
 }
 
 function shouldFallbackToMockWrite(error: unknown) {
@@ -122,16 +104,7 @@ export function savedUserResponseToSurveyRow(
     q5,
     avgWeight: response.avgWeight,
     soloMessage: response.soloMessage,
-    soloMessageUpdatedAt: response.soloMessageUpdatedAt,
     submittedAt: response.submittedAt ?? submittedAt,
-    _createdAt: submittedAt,
-    weights: {
-      question1: q1,
-      question2: q2,
-      question3: q3,
-      question4: q4,
-      question5: q5,
-    },
   };
 }
 
@@ -142,6 +115,7 @@ export function persistUserResponseSession(created: SavedUserResponse, section: 
     setSessionItem('be.myEntryId', created._id);
     setSessionItem('be.mySection', section);
     setSessionItem('be.justSubmitted', '1');
+    if (created.editToken) setSessionItem('be.myEditToken', created.editToken);
   } catch (err) {
     console.warn('[saveUserResponse] Failed to persist identity to browser storage:', err);
   }
@@ -157,7 +131,6 @@ export function persistUserResponseSession(created: SavedUserResponse, section: 
       q5: created.q5,
       avgWeight: created.avgWeight,
       soloMessage: created.soloMessage,
-      soloMessageUpdatedAt: created.soloMessageUpdatedAt,
       submittedAt: created.submittedAt,
     };
     setSessionItem('be.myDoc', JSON.stringify(snapshot));
@@ -200,7 +173,6 @@ async function saveUserResponseViaApi(section: string, weights: SurveyWeights): 
   const payload: WriteSavePayload = {
     ...basePayload,
     clientRequestId: makeRandomId(),
-    editToken: ensureUserResponseEditToken(),
   };
 
   return await postSaveUserResponse(payload);

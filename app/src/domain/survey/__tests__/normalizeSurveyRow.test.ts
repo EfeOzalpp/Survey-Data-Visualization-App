@@ -27,26 +27,14 @@ describe("normalizeSurveyRow", () => {
     expect(result.q3).toBeUndefined();
   });
 
-  test("undefined q values default to 0.5 in weights", () => {
-    const result = normalizeSurveyRow(baseRow);
-    expect(result.weights.question3).toBe(0.5);
-  });
-
-  test("defined q values appear correctly in weights", () => {
-    const result = normalizeSurveyRow(baseRow);
-    expect(result.weights.question1).toBe(0.667);
-    expect(result.weights.question4).toBe(1);
-    expect(result.weights.question5).toBe(0);
-  });
-
   test("missing section defaults to empty string", () => {
     const result = normalizeSurveyRow({ ...baseRow, section: undefined });
     expect(result.section).toBe("");
   });
 
-  test("_createdAt falls back to submittedAt when missing", () => {
-    const result = normalizeSurveyRow({ ...baseRow, _createdAt: undefined });
-    expect(result._createdAt).toBe(baseRow.submittedAt);
+  test("submittedAt falls back to _createdAt when missing", () => {
+    const result = normalizeSurveyRow({ ...baseRow, submittedAt: undefined });
+    expect(result.submittedAt).toBe(baseRow._createdAt);
   });
 
   test("preserves _id", () => {

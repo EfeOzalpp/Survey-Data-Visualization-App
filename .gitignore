@@ -34,3 +34,6 @@ yarn-error.log*
 app/dev-server.log
 app/dev-server.err.log
 app/cold-start-videos/
+
+# xk6-built k6 binary (custom SSE-capable build, not the stock CLI install)
+k6/k6.exe

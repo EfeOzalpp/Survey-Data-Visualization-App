@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { Profiler, useEffect, useMemo, useState } from "react";
 
+import { profilerOnRenderGraph } from "../../render-test/renderProfilerStatsGraph";
 import { useIdentity } from "../../app/state/identity-context";
 import { getSessionItem } from "../../app/session";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useShallow } from "zustand/react/shallow";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { useRealMobileViewport } from "../../lib/hooks/useRealMobileViewport";
 import type { SurveyRow } from "../../domain/survey/types";
 import { GraphDataProvider } from "../GraphDataContext";
@@ -55,7 +57,9 @@ function useStableVisibleRows(
 }
 
 export default function DotGraphDataBoundary() {
-  const { allFilteredRows, section } = useSurveyData();
+  const { allFilteredRows, section } = useSurveyDataStore(
+    useShallow((s) => ({ allFilteredRows: s.allFilteredRows, section: s.section }))
+  );
   const { myEntryId, mySection } = useIdentity();
   const isRealMobile = useRealMobileViewport();
   const dataLimit = graphDataLimit(isRealMobile);
@@ -82,7 +86,9 @@ export default function DotGraphDataBoundary() {
 
   return (
     <GraphDataProvider data={cappedData}>
-      <DotGraphCanvasHost />
+      <Profiler id="DotGraphCanvasHost" onRender={profilerOnRenderGraph}>
+        <DotGraphCanvasHost />
+      </Profiler>
     </GraphDataProvider>
   );
 }

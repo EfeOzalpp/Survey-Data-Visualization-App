@@ -1,6 +1,8 @@
-## Butterfly Effect: Gamified City Simulation
+## BE: Real-Time Rendering & Analytics
 
-An application that uses a custom 2.5D Canvas2D implementation to render an interactive city scene. The same scene functions compute draw arguments and generate offscreen sprites for a Three.js/WebGL collective visualization in 3D space.
+`Butterfly Effect` is an interactive survey and analytics application that transforms responses into personalized scenes and a collective 3D visualization.
+
+Its custom 2.5D-capable Canvas2D renderer uses shared draw functions to generate both the city canvases and reusable offscreen sprites consumed by the Three.js/WebGL layer on the visualization page.
 
 [![Live App](https://img.shields.io/badge/Live%20App-%23845f87?style=for-the-badge)](https://butterflyeff3ct.online/)
 
@@ -11,10 +13,9 @@ An application that uses a custom 2.5D Canvas2D implementation to render an inte
 
 <br>
 
-- Users simulate changes in the scene by clicking or tapping multi-select input signals.
-- Once completed, individual results are added to the UI layer with `solo/team` toggle, tooltips and section filters.
-- Every previous user is part of the collective visualization with their (optional) messages.
-- Features a logs table, bar graphs with a personal anchor, and per question comparisons.
+## Flow
+
+Users simulate changes in the scene through multi-select inputs before submitting their results. Once completed, individual results, among everyone else, appear in the new section with `solo/team` switch. Users can write a personalized message that would live with their shape or explore the cohort-filtering, logs table, bar graph and per question comparisons.
 
 <br>
 
@@ -23,6 +24,85 @@ An application that uses a custom 2.5D Canvas2D implementation to render an inte
   <img src="gifs+images/mobile-graph.gif" alt="Graph: Mobile view of the personalized gamification note, other users sprites, and logs panel." width="20.6%" />
   <img src="gifs+images/desktop-graph.gif" alt="Graph: Desktop view of the visualization, dropdown feature, logs and lightmode switch." width="49.2%" />
 </p>
+
+<br>
+
+## Testing
+
+Jest suites cover state and data utilities, layout rules, ranking logic, caching, and rendering-related utilities across the application.
+
+### Load Testing
+
+Under a 2-vCPU/1-GiB Docker limit, k6 verified 10,160 concurrent SSE connections and 225 complete 488-row initial loads per second. [Methodology and recorded results](k6/README.md)
+
+### Sprite Performance
+
+Retained JavaScript objects and observed GPU memory were compared with quantization and material caching enabled and disabled. [Recorded results](sprite-performance/sprite-performance-gain.md)
+
+### Re-render Testing
+
+A scripted Playwright and React Profiler benchmark measured 21% fewer subtree renders after the Zustand migration (`709 → 560`) and 16.7% fewer component executions after memoization (`234 → 195`). [Benchmark source](app/src/render-test/)
+
+<br>
+
+## Backend
+
+#### Node.js
+
+**Clustering:** Uses `node:cluster` to run the server in separate worker processes that the operating system can schedule across available CPU cores.
+
+**Authorization efficiency:** Signs a JWT with `jsonwebtoken` when a survey response is created, allowing server-side verification and avoiding a database round trip.
+
+**Production asset resolution:** Loads the compiled SSR entry and reads Vite's generated `.vite/manifest.json`, which is cached in production to resolve hashed JavaScript and imported CSS assets.
+
+#### Express
+
+**Delivery:** Serves compiled assets and streams the React SSR document with `renderToPipeableStream` from `react-dom/server` for non-API application routes.
+
+**API routes:** Separates read, write, and SSE route and server health functions.
+
+**Request boundary:** Uses `express.json` for size-limited request parsing, then applies origin checks and payload validation before upstream reads or writes.
+
+#### Rate Limiting
+
+- A custom in-memory limiter uses `node:crypto` to create salted SHA-256 keys for client addresses and, where relevant, client, request, or response identifiers.
+
+- Because the server supports multi-process clustering, workers send fixed-window rate-limit checks to the primary process. This keeps counters consistent across workers and prevents clients from evading limits by reaching a different worker.
+
+#### SSE Delivery
+
+- Sends all survey-results with 250 rows chunks, newest to oldest, then keeps each connection open for live patch events if any and heartbeats (to keep connection open).
+
+- Deduplicates concurrent chunk (snapshot) fetches through a single in-flight request and maintains a shared normalized row cache.
+
+- Serialization cache: Caches ready-to-send snapshot chunks by section and row limit, avoiding repeated filtering and JSON serialization until the data changes.
+
+<br>
+
+## Rendering System
+
+**Scene Canvas:** this folder contains the source code for
+2.5D renderer which is the upstream graphics system.
+
+**Graph Runtime:** this folder contains the Sprite pipeline and 3D visualization that sits between Scene Canvas and Three.js/WebGL system.
+
+[Scene Canvas architecture](app/src/scene-canvas/README.md) · [Graph Runtime architecture](app/src/graph-runtime/README.md)
+
+<br>
+
+## State Management
+
+Zustand stores manage canvas runtime, survey data, and UI state through per-field selectors.
+
+Identity and user preferences remain in React Context. Twelve components beneath rendering-heavy parents use `React.memo` to prevent unrelated state changes from propagating through the component tree.
+
+<br>
+
+## Data Layer
+
+**Current:** Sanity stores survey responses, message updates, and editable gamification copy.
+
+**Planned:** Transactional survey responses and messages will move to PostgreSQL, while Sanity remains the CMS for editorial content. The existing REST and SSE interfaces will remain unchanged.
 
 <br>
 
@@ -37,35 +117,6 @@ From that hands-on experience, I started building `Canvas Engine`: an unopiniona
 
 ### Repository for the new system
 [![Canvas Engine](https://img.shields.io/badge/Canvas%20Engine-%236d976c?style=for-the-badge)](https://github.com/EfeOzalpp/canvas-engine)
-
-<br>
-
-### Architecture
-
-- Survey results are delivered through a server-managed SSE stream: newest-first snapshot chunks load history, then patch events carry live changes.
-- Graph views stay client-capped for rendering, while logs and section counts use the streamed history loaded so far.
-- Gamification copy is fetched through a cached Express endpoint that batches related Sanity CMS reads into one request.
-- Survey submissions stay on separate Express POST endpoints, keeping writes explicit while live updates flow back through SSE.
-
-| | |
-| :--- | :--- |
-| **Scene Canvas** | Grid layout, scene rules, shape modifiers parameterize `Canvas2D` draw arguments (transforms, colors, particles) from live input signals, and multi-canvas orchestration through a single requestAnimationFrame instance | 
-| **Sprite Pipeline** | Epoch texture update scheduler, quality upgrade scheduler, quantizes value that drives shape uniqueness for higher cache performance *(consumes scene canvas and Three.js)* |
-| **Three.js / WebGL** | Culling, 3D math, distance-based rotation speed and hitbox scaling with debounce during zoom, tooltip anchoring, and camera orchestration for the community graph *(consumes sprites)* |
-| **React + SSR API** | `renderToPipeableStream` for server-side rendering and client hydration |
-| **State Management** | Five app-wide slices; `CanvasRuntimeCtx` and `UiCtx` run on Zustand stores with per-field selectors so components re-render only on the fields they actually read, while `IdentityCtx`, `SurveyDataCtx`, and `PreferencesCtx` remain on React Context. Twelve components beneath the render-heavy parents are wrapped in `React.memo` to stop unrelated parent re-renders from cascading into children whose own props are unchanged. Measured with a scripted Playwright + React Profiler pass (instrumentation since removed): cut re-renders 21% (709 → 560) via Zustand; eliminated 16.7% (234 → 195) of re-executions via memoization |
-| **Node.js** | Parses Vite build manifest, dynamically imports compiled SSR bundle |
-| **Express** | Validates write requests before Sanity mutations, batches cached CMS reads, rate-limits API routes, serves the SSR document, and streams chunked survey snapshots plus live SSE patches |
-| **Web Worker** | offloads scene placement computation, removing latency during user-input recomputation |
-| **Sanity CMS** | Anonymous document writes for survey responses; paged dataset reads and change events for community graph, logs, and gamification copy |
-| **AWS EC2** | Production deployment with automated deploys |
-
-<br>
-
-### Navigation
-
-- [Scene Canvas](app/src/scene-canvas)
-- [Graph Runtime](app/src/graph-runtime)
 
 <br>
 

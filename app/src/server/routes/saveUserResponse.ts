@@ -1,13 +1,15 @@
 import type { Request, Response } from "express";
-import { normalizeSurveyRow } from "../../domain/survey/normalizeSurveyRow";
 import { BUTTON_QUESTIONS } from "../../onboarding/questionnaire/button-input/button-questions";
 import { STAFF_IDS, STUDENT_IDS } from "../../domain/survey/sections";
 import { optionalEnv } from "../env";
-import { consumeRateLimits, type RateRule } from "../security/rateLimiter";
+import { signEditToken } from "../security/editToken";
+import { type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
-import { upsertSurveyResponseRow } from "../services/surveyResponseFeed";
+import { checkRateLimits } from "../cluster/clusterRateLimit";
+import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
+import { recordSanityRequest } from "../load-testing/requestStats"; // load-testing
 import { sanityWriteClient } from "../upstreams/sanity/writeClient";
-import { editTokenHash, sha256 } from "../utils/hash";
+import { sha256 } from "../utils/hash";
 import { isRecord, readOptionalId, rejectDisallowedOrigin } from "./shared";
 
 type QuestionKey = "q1" | "q2" | "q3" | "q4" | "q5";
@@ -18,7 +20,6 @@ interface ValidPayload {
   weights: Weights;
   clientId: string | null;
   clientRequestId: string | null;
-  editToken: string | null;
 }
 
 const QUESTION_KEYS = ["q1", "q2", "q3", "q4", "q5"] as const;
@@ -27,7 +28,6 @@ const TOP_LEVEL_KEYS = new Set([
   "weights",
   "clientId",
   "clientRequestId",
-  "editToken",
   "website",
   "startedAt",
 ]);
@@ -72,12 +72,6 @@ const VALID_ANSWERS = Object.fromEntries(
   QUESTION_KEYS.map((key) => [key, buildAllowedAnswerSet(QUESTION_WEIGHTS[key])])
 ) as Record<QuestionKey, Set<string>>;
 
-function readEditToken(value: unknown) {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return /^[a-zA-Z0-9_-]{32,128}$/.test(trimmed) ? trimmed : null;
-}
-
 function validatePayload(value: unknown): { ok: true; payload: ValidPayload } | { ok: false; error: string } {
   if (!isRecord(value)) return { ok: false, error: "Invalid payload" };
 
@@ -92,9 +86,6 @@ function validatePayload(value: unknown): { ok: true; payload: ValidPayload } | 
   if (!ALLOWED_SECTIONS.has(section)) return { ok: false, error: "Invalid section" };
 
   if (!isRecord(value.weights)) return { ok: false, error: "Invalid weights" };
-  const hasEditToken = value.editToken !== undefined && value.editToken !== null;
-  const editToken = hasEditToken ? readEditToken(value.editToken) : null;
-  if (hasEditToken && !editToken) return { ok: false, error: "Invalid edit token" };
 
   const unknownWeightKeys = Object.keys(value.weights).filter((key) =>
     !QUESTION_KEYS.includes(key as QuestionKey)
@@ -123,7 +114,6 @@ function validatePayload(value: unknown): { ok: true; payload: ValidPayload } | 
       weights,
       clientId: readOptionalId(value.clientId),
       clientRequestId: readOptionalId(value.clientRequestId),
-      editToken,
     },
   };
 }
@@ -166,30 +156,30 @@ export async function saveUserResponseRoute(req: Request, res: Response) {
     return;
   }
 
-  const rateLimit = consumeRateLimits(buildRateRules(req, validation.payload));
-  if (!rateLimit.allowed) {
-    res.status(429).json({
-      error: "Too many submissions",
-      code: "RATE_LIMITED",
-      ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
-    });
-    return;
+  // load-testing: skip abuse protection so a k6 run from one IP isn't self-limited.
+  if (!LOAD_TEST_MODE) {
+    const rateLimit = await checkRateLimits(buildRateRules(req, validation.payload));
+    if (!rateLimit.allowed) {
+      res.status(429).json({
+        error: "Too many submissions",
+        code: "RATE_LIMITED",
+        ...(rateLimit.resetAt ? { resetAt: rateLimit.resetAt } : {}),
+      });
+      return;
+    }
   }
 
   const submittedAt = new Date().toISOString();
-  const tokenHash = validation.payload.editToken
-    ? editTokenHash(validation.payload.editToken)
-    : null;
   const doc = {
     _type: "userResponseV4",
     section: validation.payload.section,
     ...validation.payload.weights,
     avgWeight: avgWeight(validation.payload.weights),
-    ...(tokenHash ? { editTokenHash: tokenHash } : {}),
     submittedAt,
   };
 
   try {
+    recordSanityRequest("writeCreate"); // load-testing
     const created = await sanityWriteClient.create(doc);
     const responseBody = {
       _id: created._id,
@@ -197,12 +187,9 @@ export async function saveUserResponseRoute(req: Request, res: Response) {
       ...validation.payload.weights,
       avgWeight: doc.avgWeight,
       submittedAt,
+      editToken: signEditToken(created._id),
     };
     res.status(200).json(responseBody);
-    upsertSurveyResponseRow(normalizeSurveyRow({
-      ...responseBody,
-      _createdAt: submittedAt,
-    }));
   } catch (error) {
     console.error("[save-user-response] Sanity write failed:", error);
     res.status(503).json({

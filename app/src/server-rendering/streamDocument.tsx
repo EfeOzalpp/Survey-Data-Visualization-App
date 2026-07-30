@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- Node-only SSR entry, never loaded by Vite's client dev server, Fast Refresh doesn't apply to this file */
 import React from "react";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
@@ -26,6 +27,10 @@ const THEME_BOOTSTRAP_SCRIPT = `
 
 let cachedServerEntry: Promise<ServerEntryModule> | null = null;
 
+// Hides the dynamic import from the bundler so it doesn't try to statically
+// resolve dist-ssr/entry-server.mjs at build time — entryUrl is built from
+// process.cwd() below, never user input, so this isn't an eval-injection risk.
+// eslint-disable-next-line @typescript-eslint/no-implied-eval
 const importServerEntry = new Function(
   "entryUrl",
   "return import(entryUrl)"

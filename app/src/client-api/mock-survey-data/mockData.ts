@@ -262,6 +262,5 @@ export function updateMockSoloMessage(responseId: string, message: string) {
   return {
     _id: updated._id,
     soloMessage: updated.soloMessage,
-    soloMessageUpdatedAt: updated.soloMessageUpdatedAt,
   };
 }

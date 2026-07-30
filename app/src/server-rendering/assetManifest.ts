@@ -7,7 +7,7 @@ interface ManifestEntry {
     imports?: string[];
 }
 
-type ViteManifest = Record<string, ManifestEntry>;
+type ViteManifest = Record<string, ManifestEntry | undefined>;
 
 interface ClientEntryAssets {
     script: string;

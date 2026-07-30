@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Profiler } from "react";
 import NavLeft from "./left/nav-left";
 import NavRight from "./right/nav-right";
 import NavBottom from "./bottom/nav-bottom";
@@ -6,11 +6,13 @@ import { usePreferences } from "../app/state/preferences-context";
 import { useIdentity } from "../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";
+import { profilerOnRender, recordOwnRender } from "../render-test/renderProfilerStats";
 import "../styles/navigation.css";
 
 const PLACEMENT_TRANSITION_MS = 220;
 
 const Navigation = () => {
+  recordOwnRender("Navigation");
   const { darkMode } = usePreferences();
   const {
     vizVisible,
@@ -153,9 +155,13 @@ const Navigation = () => {
         className={`navigation${isLandingState ? " is-landing-centered" : ""}`}
       >
         <NavLeft introActive={introActive} />
-        <NavRight isDark={darkMode} introActive={introActive} />
+        <Profiler id="NavRight" onRender={profilerOnRender}>
+          <NavRight isDark={darkMode} introActive={introActive} />
+        </Profiler>
       </nav>
-      <NavBottom introActive={introActive} />
+      <Profiler id="NavBottom" onRender={profilerOnRender}>
+        <NavBottom introActive={introActive} />
+      </Profiler>
     </>
   );
 };

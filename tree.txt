@@ -1,766 +1,744 @@
-﻿Folder PATH listing for volume Windows-SSD
-Volume serial number is 00000167 8829:2B60
-C:\USERS\EFE OZALP\DESKTOP\BUTTERFLY-EFFECT\APP\SRC
-|   index.tsx
-|   vite-env.d.ts
-|   
-+---app
-|   |   app-effects.tsx
-|   |   app-provider.tsx
-|   |   client-only.tsx
-|   |   error-boundary.tsx
-|   |   main.tsx
-|   |   notices.ts
-|   |   session.ts
-|   |   useMockBanner.ts
-|   |   
-|   +---state
-|   |   |   canvas-runtime-store.ts
-|   |   |   identity-context.ts
-|   |   |   preferences-context.ts
-|   |   |   survey-data-context.ts
-|   |   |   survey-data-utils.ts
-|   |   |   ui-store.ts
-|   |   |   useIdentityState.ts
-|   |   |   usePreferencesState.ts
-|   |   |   useSurveyDataState.ts
-|   |   |   
-|   |   \---__tests__
-|   |           survey-data-utils.test.ts
-|   |           
-|   \---ui
-|           HintBanner.tsx
-|           
-+---assets
-|   +---fonts
-|   |   +---heebo
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1E1yysd0mg7UiCXC5VkK8.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1E1yysdUmg7UiCXC5V.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1ECSysd0mg7UiCXC5VkK8.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1ECSysdUmg7UiCXC5V.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiS2sd0mg7UiCXC5VkK8.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiS2sdUmg7UiCXC5V.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiSysd0mg7UiCXC5VkK8.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiSysdUmg7UiCXC5V.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1Euyysd0mg7UiCXC5VkK8.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1EuyysdUmg7UiCXC5V.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1EVyusd0mg7UiCXC5VkK8.woff
-|   |   |       NGSpv5_NC0k9P_v6ZUCbLRAHxK1EVyusdUmg7UiCXC5V.woff
-|   |   |       
-|   |   +---libre-baskerville
-|   |   |       kmKhZrc3Hgbbcjq75U4uslyuy4kn0qNcWx8QDP2V.woff2
-|   |   |       kmKhZrc3Hgbbcjq75U4uslyuy4kn0qNcWxEQDA.woff2
-|   |   |       kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNXaxMICA.woff2
-|   |   |       kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNZaxM.woff2
-|   |   |       
-|   |   +---poppins
-|   |   |       pxiAyp8kv8JHgFVrJJLmE0tCMPShSkFE.woff
-|   |   |       pxiAyp8kv8JHgFVrJJLmE0tDMPShSkFEkm8.woff
-|   |   |       pxiAyp8kv8JHgFVrJJLmE0tMMPShSkFEkm8.woff
-|   |   |       pxiByp8kv8JHgFVrLDz8Z11lE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLDz8Z1JlE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLDz8Z1xlE92JQEk.woff
-|   |   |       pxiByp8kv8JHgFVrLEj6Z11lE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLEj6Z1JlE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLEj6Z1xlE92JQEk.woff
-|   |   |       pxiByp8kv8JHgFVrLFj_Z11lE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLFj_Z1JlE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLFj_Z1xlE92JQEk.woff
-|   |   |       pxiByp8kv8JHgFVrLGT9Z11lE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLGT9Z1JlE92JQEl8qw.woff
-|   |   |       pxiByp8kv8JHgFVrLGT9Z1xlE92JQEk.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLm21lVF9eIYktMqg.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLm21lVFteIYktMqlap.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLm21lVGdeIYktMqlap.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmg1hVF9eIYktMqg.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmg1hVFteIYktMqlap.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmg1hVGdeIYktMqlap.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmr19VF9eIYktMqg.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmr19VFteIYktMqlap.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmr19VGdeIYktMqlap.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmv1pVF9eIYktMqg.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmv1pVFteIYktMqlap.woff
-|   |   |       pxiDyp8kv8JHgFVrJJLmv1pVGdeIYktMqlap.woff
-|   |   |       pxiEyp8kv8JHgFVrJJbedHFHGPezSQ.woff
-|   |   |       pxiEyp8kv8JHgFVrJJfedHFHGPc.woff
-|   |   |       pxiEyp8kv8JHgFVrJJnedHFHGPezSQ.woff
-|   |   |       pxiGyp8kv8JHgFVrJJLucHtGOvWDSA.woff
-|   |   |       pxiGyp8kv8JHgFVrJJLucXtGOvWDSHFF.woff
-|   |   |       pxiGyp8kv8JHgFVrJJLufntGOvWDSHFF.woff
-|   |   |       pxiGyp8kv8JHgFVrLPTucHtGOvWDSA.woff
-|   |   |       pxiGyp8kv8JHgFVrLPTucXtGOvWDSHFF.woff
-|   |   |       pxiGyp8kv8JHgFVrLPTufntGOvWDSHFF.woff
-|   |   |       
-|   |   +---roboto
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkaHkaWzU.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkAnkaWzU.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkBnka.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkBXkaWzU.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkC3kaWzU.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCHkaWzU.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCnkaWzU.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCXkaWzU.woff2
-|   |   |       KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkenkaWzU.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBGEe.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBGEe.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBGEe.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBGEe.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBGEe.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBGEe.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBGEe.woff2
-|   |   |       KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBGEe.woff2
-|   |   |       
-|   |   \---roboto-serif
-|   |           R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-w0kpEzi.woff2
-|   |           R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-w8kpEzi.woff2
-|   |           R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wIkpA (1).woff2
-|   |           R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wIkpA.woff2
-|   |           R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wwkpEzi (1).woff2
-|   |           R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wwkpEzi.woff2
-|   |           R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wYkpEzi.woff2
-|   |           R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLDywA8oA.woff2
-|   |           R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLHywA.woff2
-|   |           R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLIywA8oA (1).woff2
-|   |           R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLIywA8oA.woff2
-|   |           R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLJywA8oA.woff2
-|   |           R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLKywA8oA.woff2
-|   |           
-|   +---legacy-lottie
-|   |       hand.json
-|   |       radio-button.json
-|   |       tree1.json
-|   |       tree2.json
-|   |       tree3.json
-|   |       
-|   \---svg
-|       +---check
-|       |       check.svg
-|       |       CheckIcon.tsx
-|       |       
-|       +---close
-|       |       close.svg
-|       |       CloseIcon.tsx
-|       |       
-|       +---expand
-|       |       collapse_all.svg
-|       |       ExpandIcon.tsx
-|       |       expand_all.svg
-|       |       
-|       +---play
-|       |       pause.svg
-|       |       PlayPauseIcon.tsx
-|       |       
-|       +---search
-|       |       search.svg
-|       |       SearchIcon.tsx
-|       |       
-|       +---shared
-|       |       rawSvg.ts
-|       |       
-|       \---theme
-|               dark_mode.svg
-|               light_mode.svg
-|               ThemeIcon.tsx
-|               
-+---canvas-instances
-|       CityEntry.tsx
-|       OnboardingEntry.tsx
-|       QuestionnaireEntry.tsx
-|       SpotlightEntry.tsx
-|       
-+---client-api
-|   +---mock-survey-data
-|   |       mockData.ts
-|   |       
-|   +---read-api
-|   |       api.ts
-|   |       config.ts
-|   |       
-|   \---response-api
-|           saveSoloMessage.ts
-|           saveUserResponse.ts
-|           writeApi.ts
-|           
-+---domain
-|   \---survey
-|       |   normalizeSurveyRow.ts
-|       |   sections.ts
-|       |   types.ts
-|       |   
-|       \---__tests__
-|               normalizeSurveyRow.test.ts
-|               
-+---graph-runtime
-|   |   GraphDataContext.tsx
-|   |   index.tsx
-|   |   r3f.ts
-|   |   README.md
-|   |   three.ts
-|   |   useGraphData.ts
-|   |   
-|   +---debug
-|   |       context.ts
-|   |       global.d.ts
-|   |       spriteCacheMetrics.ts
-|   |       spriteFlags.ts
-|   |       zoomMetrics.ts
-|   |       
-|   +---dotgraph
-|   |   |   canvas-host.tsx
-|   |   |   data-boundary.tsx
-|   |   |   personal-entry.ts
-|   |   |   scene.tsx
-|   |   |   types.ts
-|   |   |   visible-rows.ts
-|   |   |   
-|   |   +---camera
-|   |   |   |   index.ts
-|   |   |   |   useOrbitController.ts
-|   |   |   |   
-|   |   |   +---compute
-|   |   |   |       zoomTarget.ts
-|   |   |   |       
-|   |   |   +---controls
-|   |   |   |       useActivity.ts
-|   |   |   |       usePixelOffsets.ts
-|   |   |   |       useRotation.ts
-|   |   |   |       useZoom.ts
-|   |   |   |       
-|   |   |   \---shared
-|   |   |           sharedGesture.ts
-|   |   |           
-|   |   +---components
-|   |   |       GeneralizedLayer.tsx
-|   |   |       PersonalizedLayer.tsx
-|   |   |       ShapesLayer.tsx
-|   |   |       
-|   |   +---interaction
-|   |   |       hitboxDistancePolicy.ts
-|   |   |       useHoverBubble.ts
-|   |   |       useHoverDismissal.ts
-|   |   |       useObserverDelay.ts
-|   |   |       useObserverSpotlight.ts
-|   |   |       
-|   |   +---scene
-|   |   |       useDotGraphSceneState.ts
-|   |   |       useDotPoints.ts
-|   |   |       usePersonalizationGate.ts
-|   |   |       usePersonalizationState.ts
-|   |   |       
-|   |   +---scope
-|   |   |       scoping.ts
-|   |   |       useViewerScope.ts
-|   |   |       
-|   |   +---tooltip
-|   |   |       hitboxCss.ts
-|   |   |       hoverEvent.ts
-|   |   |       placement.ts
-|   |   |       screenSize.ts
-|   |   |       
-|   |   +---utils
-|   |   |       dotPoints.ts
-|   |   |       math.ts
-|   |   |       positions.ts
-|   |   |       
-|   |   \---__tests__
-|   |           visible-rows.test.ts
-|   |           
-|   +---gamification
-|   |   |   gamification-general.tsx
-|   |   |   gamification-personal.tsx
-|   |   |   rankLogic.ts
-|   |   |   
-|   |   \---__tests__
-|   |           rankLogic.test.ts
-|   |           
-|   \---sprites
-|       |   entry.ts
-|       |   theme.ts
-|       |   types.ts
-|       |   
-|       +---api
-|       |       dispose.ts
-|       |       identity.ts
-|       |       lifecycle.ts
-|       |       prewarm.ts
-|       |       quality.ts
-|       |       shapeProfiles.ts
-|       |       theme.ts
-|       |       visual.ts
-|       |       
-|       +---internal
-|       |       epochScheduler.ts
-|       |       qualityUpgradeScheduler.ts
-|       |       spriteGeometry.ts
-|       |       spriteMaterials.ts
-|       |       spritePolicy.ts
-|       |       spriteQuality.ts
-|       |       spriteRuntime.ts
-|       |       spriteShape.tsx
-|       |       
-|       +---selection
-|       |   |   drawers.ts
-|       |   |   probabilitySpec.ts
-|       |   |   shapeForAvg.ts
-|       |   |   types.ts
-|       |   |   
-|       |   \---__tests__
-|       |           shapeForAvg.test.ts
-|       |           
-|       \---textures
-|           |   canvasFacade.ts
-|           |   makeTextureFromDrawer.ts
-|           |   measureRenderedBounds.ts
-|           |   queue.ts
-|           |   spriteLight.ts
-|           |   
-|           \---cache
-|                   registry.ts
-|                   textureTracker.ts
-|                   
-+---lib
-|   |   posthog.ts
-|   |   sentry-replay.ts
-|   |   sentry.ts
-|   |   
-|   +---hooks
-|   |       useAbsoluteScore.ts
-|   |       useDisclosure.ts
-|   |       useEscapeToClose.ts
-|   |       useFocusTrap.ts
-|   |       useGamificationPools.ts
-|   |       useGamificationTextPreload.ts
-|   |       usePreventPageZoom.ts
-|   |       useRealMobileViewport.ts
-|   |       useRelativeScore.ts
-|   |       useTransientFlag.ts
-|   |       useWindowAspectRatio.ts
-|   |       useWindowWidth.ts
-|   |       
-|   +---responsive
-|   |       breakpoints.ts
-|   |       graph-tools-offset.ts
-|   |       
-|   \---utils
-|       |   color-and-interpolation.ts
-|       |   live-average.ts
-|       |   quantize-average.ts
-|       |   score.ts
-|       |   session-cache.ts
-|       |   
-|       \---__tests__
-|               live-average.test.ts
-|               quantize-average.test.ts
-|               
-+---navigation
-|   |   gp-data.ts
-|   |   graph-picker.tsx
-|   |   navigation.tsx
-|   |   
-|   +---bottom
-|   |   |   logs-button.tsx
-|   |   |   mode-toggle.tsx
-|   |   |   nav-bottom.tsx
-|   |   |   
-|   |   \---widgets
-|   |       |   compact-graph-tools.tsx
-|   |       |   section-scores.tsx
-|   |       |   widget-section-nav.tsx
-|   |       |   
-|   |       \---bargraph
-|   |               EmptyArt.tsx
-|   |               index.tsx
-|   |               
-|   +---left
-|   |       logo.tsx
-|   |       nav-left.tsx
-|   |       
-|   \---right
-|           color-toggle.tsx
-|           nav-right.tsx
-|           system-color.tsx
-|           
-+---onboarding
-|   |   index.tsx
-|   |   
-|   +---information
-|   |       canvas-info.tsx
-|   |       
-|   +---questionnaire
-|   |   |   index.ts
-|   |   |   
-|   |   \---button-input
-|   |           button-layouts.ts
-|   |           button-questions.ts
-|   |           questionnaire-flow.tsx
-|   |           useQuestionnaireGridLayout.ts
-|   |           
-|   +---role-picker
-|   |       index.tsx
-|   |       role-step.tsx
-|   |       
-|   \---section-picker
-|           index.tsx
-|           sections.ts
-|           
-+---scene-canvas
-|   |   EngineHost.tsx
-|   |   offscreen-shape-surface.ts
-|   |   README.md
-|   |   scene-state.ts
-|   |   
-|   +---grid-layout
-|   |   |   buildGrid.ts
-|   |   |   coords.ts
-|   |   |   forbidden.ts
-|   |   |   gridMetrics.ts
-|   |   |   horizonRowHeights.ts
-|   |   |   index.ts
-|   |   |   occupancy.ts
-|   |   |   resolveCols.ts
-|   |   |   uiPlacement.ts
-|   |   |   viewportCoords.ts
-|   |   |   
-|   |   \---__tests__
-|   |           buildGrid.test.ts
-|   |           horizonRowHeights.test.ts
-|   |           resolveCols.test.ts
-|   |           
-|   +---hooks
-|   |   |   sceneFieldSignature.ts
-|   |   |   useCanvasEngine.ts
-|   |   |   useCanvasLogicalSize.ts
-|   |   |   useCanvasPointerHit.ts
-|   |   |   useSceneField.ts
-|   |   |   useViewportKey.ts
-|   |   |   
-|   |   \---signals
-|   |           index.ts
-|   |           types.ts
-|   |           
-|   +---modifiers
-|   |   |   index.ts
-|   |   |   render-pass.ts
-|   |   |   
-|   |   +---color-modifiers
-|   |   |       blend.ts
-|   |   |       canvas.ts
-|   |   |       colorspace.ts
-|   |   |       effects.ts
-|   |   |       fog.ts
-|   |   |       gradient.ts
-|   |   |       index.ts
-|   |   |       stops.ts
-|   |   |       style.ts
-|   |   |       utils.ts
-|   |   |       
-|   |   +---global-event-driven
-|   |   |       appear.ts
-|   |   |       apply.ts
-|   |   |       hover.ts
-|   |   |       select.ts
-|   |   |       
-|   |   +---lighting
-|   |   |       index.ts
-|   |   |       
-|   |   +---particles
-|   |   |   |   index.ts
-|   |   |   |   particle-1.ts
-|   |   |   |   particle-2.ts
-|   |   |   |   store.ts
-|   |   |   |   types.ts
-|   |   |   |   utils.ts
-|   |   |   |   
-|   |   |   \---perspective
-|   |   |           index.ts
-|   |   |           particlePerspective.ts
-|   |   |           rowHeightBuckets.ts
-|   |   |           
-|   |   +---projection
-|   |   |       index.ts
-|   |   |       
-|   |   \---shape-modifiers
-|   |           displacement.ts
-|   |           fit.ts
-|   |           index.ts
-|   |           lobes.ts
-|   |           path.ts
-|   |           random.ts
-|   |           ranges.ts
-|   |           transformMath.ts
-|   |           types.ts
-|   |           
-|   +---multi-canvas-setup
-|   |       hostDefs.ts
-|   |       
-|   +---runtime
-|   |   |   index.ts
-|   |   |   
-|   |   +---debug
-|   |   |       depthMaskStats.ts
-|   |   |       diagnostics.ts
-|   |   |       farShapeCacheStats.ts
-|   |   |       flags.ts
-|   |   |       gridOverlay.ts
-|   |   |       index.ts
-|   |   |       placementAuthoring.ts
-|   |   |       
-|   |   +---engine
-|   |   |       field.ts
-|   |   |       itemLifecycle.ts
-|   |   |       loop.ts
-|   |   |       runtimeSceneVariants.ts
-|   |   |       sceneSurfaceLifecycle.ts
-|   |   |       scheduler.ts
-|   |   |       state.ts
-|   |   |       types.ts
-|   |   |       
-|   |   +---geometry
-|   |   |       bounds.ts
-|   |   |       gridCache.ts
-|   |   |       padding.ts
-|   |   |       
-|   |   +---p
-|   |   |       canvasMeta.ts
-|   |   |       makeP.ts
-|   |   |       
-|   |   +---platform
-|   |   |       mount.ts
-|   |   |       resize.ts
-|   |   |       viewport.ts
-|   |   |       
-|   |   +---render
-|   |   |   |   surface.ts
-|   |   |   |   
-|   |   |   +---cache
-|   |   |   |       offscreenCache.ts
-|   |   |   |       
-|   |   |   +---cache-policy
-|   |   |   |       index.ts
-|   |   |   |       types.ts
-|   |   |   |       
-|   |   |   \---passes
-|   |   |       +---ambient-particles
-|   |   |       |       ambientParticles.ts
-|   |   |       |       index.ts
-|   |   |       |       
-|   |   |       +---atmosphere
-|   |   |       |       cache.ts
-|   |   |       |       fog.ts
-|   |   |       |       index.ts
-|   |   |       |       stars.ts
-|   |   |       |       
-|   |   |       +---background
-|   |   |       |       anchors.ts
-|   |   |       |       background.ts
-|   |   |       |       cache.ts
-|   |   |       |       index.ts
-|   |   |       |       surface.ts
-|   |   |       |       
-|   |   |       +---depth
-|   |   |       |       index.ts
-|   |   |       |       shapeDepthOverlay.ts
-|   |   |       |       shapeDepthStyle.ts
-|   |   |       |       
-|   |   |       +---foliage
-|   |   |       |       cache.ts
-|   |   |       |       foliage.ts
-|   |   |       |       index.ts
-|   |   |       |       
-|   |   |       +---light
-|   |   |       |       cache.ts
-|   |   |       |       environmentLight.ts
-|   |   |       |       index.ts
-|   |   |       |       rowLight.ts
-|   |   |       |       
-|   |   |       +---shape
-|   |   |       |   |   frameOptions.ts
-|   |   |       |   |   index.ts
-|   |   |       |   |   itemOrder.ts
-|   |   |       |   |   items.ts
-|   |   |       |   |   palette.ts
-|   |   |       |   |   shapeRenderCache.ts
-|   |   |       |   |   
-|   |   |       |   \---cache
-|   |   |       |           bitmapKeys.ts
-|   |   |       |           farShapeBitmap.ts
-|   |   |       |           policy.ts
-|   |   |       |           
-|   |   |       \---shared
-|   |   |               color.ts
-|   |   |               horizon.ts
-|   |   |               
-|   |   +---shape-adapter
-|   |   |       draw.ts
-|   |   |       options.ts
-|   |   |       registry.ts
-|   |   |       types.ts
-|   |   |       
-|   |   \---util
-|   |           easing.ts
-|   |           transform.ts
-|   |           
-|   +---scene-logic
-|   |       candidates.ts
-|   |       composeField.ts
-|   |       constraints.ts
-|   |       index.ts
-|   |       math.ts
-|   |       place.ts
-|   |       resolveAuthoredLightSource.ts
-|   |       resolveRuntimePlacements.ts
-|   |       scoring.ts
-|   |       shapeLightSource.ts
-|   |       types.ts
-|   |       
-|   +---scene-rules
-|   |   |   profile.ts
-|   |   |   registry.ts
-|   |   |   resolver.ts
-|   |   |   runtimePreset.ts
-|   |   |   shapeCatalog.ts
-|   |   |   shapeFootprints.ts
-|   |   |   
-|   |   +---ambient-particles
-|   |   |       index.ts
-|   |   |       types.ts
-|   |   |       
-|   |   +---backgrounds
-|   |   |       city.ts
-|   |   |       index.ts
-|   |   |       questionnaire.ts
-|   |   |       spotlight.ts
-|   |   |       start.ts
-|   |   |       types.ts
-|   |   |       
-|   |   +---canvas-padding
-|   |   |       city.ts
-|   |   |       helpers.ts
-|   |   |       index.ts
-|   |   |       questionnaire.ts
-|   |   |       resolve.ts
-|   |   |       spotlight.ts
-|   |   |       start.ts
-|   |   |       types.ts
-|   |   |       
-|   |   +---fog
-|   |   |       index.ts
-|   |   |       types.ts
-|   |   |       
-|   |   +---foliage
-|   |   |       index.ts
-|   |   |       types.ts
-|   |   |       
-|   |   +---placement-rules
-|   |   |       city.ts
-|   |   |       helpers.ts
-|   |   |       index.ts
-|   |   |       questionnaire.ts
-|   |   |       spotlight.ts
-|   |   |       start.ts
-|   |   |       types.ts
-|   |   |       
-|   |   \---spotlight
-|   |       |   types.ts
-|   |       |   
-|   |       \---slides
-|   |               01-villa.ts
-|   |               02-bus.ts
-|   |               03-sea.ts
-|   |               04-clouds.ts
-|   |               05-snow.ts
-|   |               06-house.ts
-|   |               07-power.ts
-|   |               08-sun.ts
-|   |               09-car.ts
-|   |               10-car-factory.ts
-|   |               11-trees.ts
-|   |               index.ts
-|   |               
-|   +---shapes
-|   |       bus.ts
-|   |       car.ts
-|   |       carFactory.ts
-|   |       clouds.ts
-|   |       house.ts
-|   |       index.ts
-|   |       options.ts
-|   |       power.ts
-|   |       sea.ts
-|   |       snow.ts
-|   |       sun.ts
-|   |       trees.ts
-|   |       types.ts
-|   |       villa.ts
-|   |       
-|   +---shared
-|   |   |   canvas.ts
-|   |   |   geometry.ts
-|   |   |   hash32.ts
-|   |   |   math.ts
-|   |   |   responsiveness.ts
-|   |   |   
-|   |   \---__tests__
-|   |           hash32.test.ts
-|   |           
-|   \---validation
-|           defineRuleSet.ts
-|           index.ts
-|           invariant.ts
-|           validateSceneProfile.ts
-|           
-+---server
-|   |   env.ts
-|   |   index.ts
-|   |   
-|   +---routes
-|   |       gamificationCopy.ts
-|   |       saveSoloMessage.ts
-|   |       saveUserResponse.ts
-|   |       shared.ts
-|   |       surveyResponseStream.ts
-|   |       
-|   +---security
-|   |       rateLimiter.ts
-|   |       requestIdentity.ts
-|   |       
-|   +---services
-|   |       surveyResponseFeed.ts
-|   |       
-|   +---upstreams
-|   |   \---sanity
-|   |           config.ts
-|   |           readClient.ts
-|   |           writeClient.ts
-|   |           
-|   \---utils
-|           hash.ts
-|           
-+---server-rendering
-|       assetManifest.ts
-|       entry-server.tsx
-|       streamDocument.tsx
-|       
-+---styles
-|       fonts.css
-|       gamification.css
-|       global-styles.css
-|       graph-picker.css
-|       graph.css
-|       logs.css
-|       navigation.css
-|       onboarding-info.css
-|       section-questionnaire.css
-|       ui-system.css
-|       widgets.css
-|       
-\---workers
-    +---particles
-    |       particle-worker.ts
-    |       worker-host.ts
-    |       
-    \---scene
-            compose-worker-host.ts
-            compose-worker.ts
-            
+butterfly-effect/
+|-- .github/
+|   \-- workflows/
+|       \-- ci.yml
+|-- .gitignore
+|-- app/
+|   |-- .dockerignore
+|   |-- Dockerfile
+|   |-- eslint.config.mjs
+|   |-- index.html
+|   |-- package.json
+|   |-- package-lock.json
+|   |-- public/
+|   |   |-- be-icon.svg
+|   |   |-- manifest.json
+|   |   \-- robots.txt
+|   |-- scripts/
+|   |   \-- cold-start.mjs
+|   |-- src/
+|   |   |-- app/
+|   |   |   |-- app-effects.tsx
+|   |   |   |-- app-provider.tsx
+|   |   |   |-- client-only.tsx
+|   |   |   |-- error-boundary.tsx
+|   |   |   |-- main.tsx
+|   |   |   |-- notices.ts
+|   |   |   |-- session.ts
+|   |   |   |-- state/
+|   |   |   |   |-- __tests__/
+|   |   |   |   |   \-- survey-data-utils.test.ts
+|   |   |   |   |-- canvas-runtime-store.ts
+|   |   |   |   |-- identity-context.ts
+|   |   |   |   |-- preferences-context.ts
+|   |   |   |   |-- survey-data-store.ts
+|   |   |   |   |-- survey-data-utils.ts
+|   |   |   |   |-- ui-store.ts
+|   |   |   |   |-- useIdentityState.ts
+|   |   |   |   \-- usePreferencesState.ts
+|   |   |   |-- ui/
+|   |   |   |   \-- HintBanner.tsx
+|   |   |   \-- useMockBanner.ts
+|   |   |-- assets/
+|   |   |   |-- fonts/
+|   |   |   |   |-- heebo/
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1E1yysd0mg7UiCXC5VkK8.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1E1yysdUmg7UiCXC5V.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1ECSysd0mg7UiCXC5VkK8.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1ECSysdUmg7UiCXC5V.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiS2sd0mg7UiCXC5VkK8.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiS2sdUmg7UiCXC5V.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiSysd0mg7UiCXC5VkK8.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1EiSysdUmg7UiCXC5V.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1Euyysd0mg7UiCXC5VkK8.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1EuyysdUmg7UiCXC5V.woff
+|   |   |   |   |   |-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1EVyusd0mg7UiCXC5VkK8.woff
+|   |   |   |   |   \-- NGSpv5_NC0k9P_v6ZUCbLRAHxK1EVyusdUmg7UiCXC5V.woff
+|   |   |   |   |-- libre-baskerville/
+|   |   |   |   |   |-- kmKhZrc3Hgbbcjq75U4uslyuy4kn0qNcWx8QDP2V.woff2
+|   |   |   |   |   |-- kmKhZrc3Hgbbcjq75U4uslyuy4kn0qNcWxEQDA.woff2
+|   |   |   |   |   |-- kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNXaxMICA.woff2
+|   |   |   |   |   \-- kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNZaxM.woff2
+|   |   |   |   |-- poppins/
+|   |   |   |   |   |-- pxiAyp8kv8JHgFVrJJLmE0tCMPShSkFE.woff
+|   |   |   |   |   |-- pxiAyp8kv8JHgFVrJJLmE0tDMPShSkFEkm8.woff
+|   |   |   |   |   |-- pxiAyp8kv8JHgFVrJJLmE0tMMPShSkFEkm8.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLDz8Z11lE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLDz8Z1JlE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLDz8Z1xlE92JQEk.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLEj6Z11lE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLEj6Z1JlE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLEj6Z1xlE92JQEk.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLFj_Z11lE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLFj_Z1JlE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLFj_Z1xlE92JQEk.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLGT9Z11lE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLGT9Z1JlE92JQEl8qw.woff
+|   |   |   |   |   |-- pxiByp8kv8JHgFVrLGT9Z1xlE92JQEk.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLm21lVF9eIYktMqg.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLm21lVFteIYktMqlap.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLm21lVGdeIYktMqlap.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmg1hVF9eIYktMqg.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmg1hVFteIYktMqlap.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmg1hVGdeIYktMqlap.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmr19VF9eIYktMqg.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmr19VFteIYktMqlap.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmr19VGdeIYktMqlap.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmv1pVF9eIYktMqg.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmv1pVFteIYktMqlap.woff
+|   |   |   |   |   |-- pxiDyp8kv8JHgFVrJJLmv1pVGdeIYktMqlap.woff
+|   |   |   |   |   |-- pxiEyp8kv8JHgFVrJJbedHFHGPezSQ.woff
+|   |   |   |   |   |-- pxiEyp8kv8JHgFVrJJfedHFHGPc.woff
+|   |   |   |   |   |-- pxiEyp8kv8JHgFVrJJnedHFHGPezSQ.woff
+|   |   |   |   |   |-- pxiGyp8kv8JHgFVrJJLucHtGOvWDSA.woff
+|   |   |   |   |   |-- pxiGyp8kv8JHgFVrJJLucXtGOvWDSHFF.woff
+|   |   |   |   |   |-- pxiGyp8kv8JHgFVrJJLufntGOvWDSHFF.woff
+|   |   |   |   |   |-- pxiGyp8kv8JHgFVrLPTucHtGOvWDSA.woff
+|   |   |   |   |   |-- pxiGyp8kv8JHgFVrLPTucXtGOvWDSHFF.woff
+|   |   |   |   |   \-- pxiGyp8kv8JHgFVrLPTufntGOvWDSHFF.woff
+|   |   |   |   |-- roboto/
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkaHkaWzU.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkAnkaWzU.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkBnka.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkBXkaWzU.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkC3kaWzU.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCHkaWzU.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCnkaWzU.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCXkaWzU.woff2
+|   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkenkaWzU.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBGEe.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBGEe.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBGEe.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBGEe.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBGEe.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBGEe.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBGEe.woff2
+|   |   |   |   |   \-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBGEe.woff2
+|   |   |   |   \-- roboto-serif/
+|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-w0kpEzi.woff2
+|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-w8kpEzi.woff2
+|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wIkpA (1).woff2
+|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wIkpA.woff2
+|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wwkpEzi (1).woff2
+|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wwkpEzi.woff2
+|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wYkpEzi.woff2
+|   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLDywA8oA.woff2
+|   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLHywA.woff2
+|   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLIywA8oA (1).woff2
+|   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLIywA8oA.woff2
+|   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLJywA8oA.woff2
+|   |   |   |       \-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLKywA8oA.woff2
+|   |   |   |-- legacy-lottie/
+|   |   |   |   |-- hand.json
+|   |   |   |   |-- radio-button.json
+|   |   |   |   |-- tree1.json
+|   |   |   |   |-- tree2.json
+|   |   |   |   \-- tree3.json
+|   |   |   \-- svg/
+|   |   |       |-- check/
+|   |   |       |   |-- check.svg
+|   |   |       |   \-- CheckIcon.tsx
+|   |   |       |-- close/
+|   |   |       |   |-- close.svg
+|   |   |       |   \-- CloseIcon.tsx
+|   |   |       |-- expand/
+|   |   |       |   |-- collapse_all.svg
+|   |   |       |   |-- expand_all.svg
+|   |   |       |   \-- ExpandIcon.tsx
+|   |   |       |-- play/
+|   |   |       |   |-- pause.svg
+|   |   |       |   \-- PlayPauseIcon.tsx
+|   |   |       |-- search/
+|   |   |       |   |-- search.svg
+|   |   |       |   \-- SearchIcon.tsx
+|   |   |       |-- shared/
+|   |   |       |   \-- rawSvg.ts
+|   |   |       \-- theme/
+|   |   |           |-- dark_mode.svg
+|   |   |           |-- light_mode.svg
+|   |   |           \-- ThemeIcon.tsx
+|   |   |-- canvas-instances/
+|   |   |   |-- CityEntry.tsx
+|   |   |   |-- OnboardingEntry.tsx
+|   |   |   |-- QuestionnaireEntry.tsx
+|   |   |   \-- SpotlightEntry.tsx
+|   |   |-- client-api/
+|   |   |   |-- mock-survey-data/
+|   |   |   |   \-- mockData.ts
+|   |   |   |-- read-api/
+|   |   |   |   |-- config.ts
+|   |   |   |   \-- surveyResponseStream.ts
+|   |   |   \-- response-api/
+|   |   |       |-- saveSoloMessage.ts
+|   |   |       |-- saveUserResponse.ts
+|   |   |       \-- writeApi.ts
+|   |   |-- domain/
+|   |   |   \-- survey/
+|   |   |       |-- __tests__/
+|   |   |       |   \-- normalizeSurveyRow.test.ts
+|   |   |       |-- normalizeSurveyRow.ts
+|   |   |       |-- sections.ts
+|   |   |       \-- types.ts
+|   |   |-- graph-runtime/
+|   |   |   |-- debug/
+|   |   |   |   |-- context.ts
+|   |   |   |   |-- global.d.ts
+|   |   |   |   |-- spriteCacheMetrics.ts
+|   |   |   |   |-- spriteFlags.ts
+|   |   |   |   \-- zoomMetrics.ts
+|   |   |   |-- dotgraph/
+|   |   |   |   |-- __tests__/
+|   |   |   |   |   \-- visible-rows.test.ts
+|   |   |   |   |-- camera/
+|   |   |   |   |   |-- compute/
+|   |   |   |   |   |   \-- zoomTarget.ts
+|   |   |   |   |   |-- controls/
+|   |   |   |   |   |   |-- useActivity.ts
+|   |   |   |   |   |   |-- usePixelOffsets.ts
+|   |   |   |   |   |   |-- useRotation.ts
+|   |   |   |   |   |   \-- useZoom.ts
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   |-- shared/
+|   |   |   |   |   |   \-- sharedGesture.ts
+|   |   |   |   |   \-- useOrbitController.ts
+|   |   |   |   |-- canvas-host.tsx
+|   |   |   |   |-- components/
+|   |   |   |   |   |-- GeneralizedLayer.tsx
+|   |   |   |   |   |-- PersonalizedLayer.tsx
+|   |   |   |   |   \-- ShapesLayer.tsx
+|   |   |   |   |-- data-boundary.tsx
+|   |   |   |   |-- interaction/
+|   |   |   |   |   |-- hitboxDistancePolicy.ts
+|   |   |   |   |   |-- useHoverBubble.ts
+|   |   |   |   |   |-- useHoverDismissal.ts
+|   |   |   |   |   |-- useObserverDelay.ts
+|   |   |   |   |   \-- useObserverSpotlight.ts
+|   |   |   |   |-- personal-entry.ts
+|   |   |   |   |-- scene/
+|   |   |   |   |   |-- useDotGraphSceneState.ts
+|   |   |   |   |   |-- useDotPoints.ts
+|   |   |   |   |   |-- usePersonalizationGate.ts
+|   |   |   |   |   \-- usePersonalizationState.ts
+|   |   |   |   |-- scene.tsx
+|   |   |   |   |-- scope/
+|   |   |   |   |   |-- scoping.ts
+|   |   |   |   |   \-- useViewerScope.ts
+|   |   |   |   |-- tooltip/
+|   |   |   |   |   |-- hitboxCss.ts
+|   |   |   |   |   |-- hoverEvent.ts
+|   |   |   |   |   |-- placement.ts
+|   |   |   |   |   \-- screenSize.ts
+|   |   |   |   |-- types.ts
+|   |   |   |   |-- utils/
+|   |   |   |   |   |-- dotPoints.ts
+|   |   |   |   |   |-- math.ts
+|   |   |   |   |   \-- positions.ts
+|   |   |   |   \-- visible-rows.ts
+|   |   |   |-- gamification/
+|   |   |   |   |-- __tests__/
+|   |   |   |   |   \-- rankLogic.test.ts
+|   |   |   |   |-- gamification-general.tsx
+|   |   |   |   |-- gamification-personal.tsx
+|   |   |   |   \-- rankLogic.ts
+|   |   |   |-- GraphDataContext.tsx
+|   |   |   |-- graphDataContextObject.ts
+|   |   |   |-- index.tsx
+|   |   |   |-- r3f.ts
+|   |   |   |-- README.md
+|   |   |   |-- sprites/
+|   |   |   |   |-- api/
+|   |   |   |   |   |-- dispose.ts
+|   |   |   |   |   |-- identity.ts
+|   |   |   |   |   |-- lifecycle.ts
+|   |   |   |   |   |-- prewarm.ts
+|   |   |   |   |   |-- quality.ts
+|   |   |   |   |   |-- shapeProfiles.ts
+|   |   |   |   |   |-- theme.ts
+|   |   |   |   |   \-- visual.ts
+|   |   |   |   |-- entry.ts
+|   |   |   |   |-- internal/
+|   |   |   |   |   |-- epochScheduler.ts
+|   |   |   |   |   |-- qualityUpgradeScheduler.ts
+|   |   |   |   |   |-- spriteGeometry.ts
+|   |   |   |   |   |-- spriteMaterials.ts
+|   |   |   |   |   |-- spritePolicy.ts
+|   |   |   |   |   |-- spriteQuality.ts
+|   |   |   |   |   |-- spriteRuntime.ts
+|   |   |   |   |   \-- spriteShape.tsx
+|   |   |   |   |-- selection/
+|   |   |   |   |   |-- __tests__/
+|   |   |   |   |   |   \-- shapeForAvg.test.ts
+|   |   |   |   |   |-- drawers.ts
+|   |   |   |   |   |-- probabilitySpec.ts
+|   |   |   |   |   |-- shapeForAvg.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- textures/
+|   |   |   |   |   |-- cache/
+|   |   |   |   |   |   |-- registry.ts
+|   |   |   |   |   |   \-- textureTracker.ts
+|   |   |   |   |   |-- canvasFacade.ts
+|   |   |   |   |   |-- makeTextureFromDrawer.ts
+|   |   |   |   |   |-- measureRenderedBounds.ts
+|   |   |   |   |   |-- queue.ts
+|   |   |   |   |   \-- spriteLight.ts
+|   |   |   |   |-- theme.ts
+|   |   |   |   \-- types.ts
+|   |   |   |-- three.ts
+|   |   |   |-- useGraphData.ts
+|   |   |   \-- useSharedGraphData.ts
+|   |   |-- index.tsx
+|   |   |-- lib/
+|   |   |   |-- hooks/
+|   |   |   |   |-- useAbsoluteScore.ts
+|   |   |   |   |-- useDisclosure.ts
+|   |   |   |   |-- useEscapeToClose.ts
+|   |   |   |   |-- useFocusTrap.ts
+|   |   |   |   |-- useGamificationPools.ts
+|   |   |   |   |-- useGamificationTextPreload.ts
+|   |   |   |   |-- usePreventPageZoom.ts
+|   |   |   |   |-- useRealMobileViewport.ts
+|   |   |   |   |-- useRelativeScore.ts
+|   |   |   |   |-- useTransientFlag.ts
+|   |   |   |   |-- useWindowAspectRatio.ts
+|   |   |   |   \-- useWindowWidth.ts
+|   |   |   |-- posthog.ts
+|   |   |   |-- responsive/
+|   |   |   |   |-- breakpoints.ts
+|   |   |   |   \-- graph-tools-offset.ts
+|   |   |   |-- sentry.ts
+|   |   |   |-- sentry-replay.ts
+|   |   |   \-- utils/
+|   |   |       |-- __tests__/
+|   |   |       |   |-- live-average.test.ts
+|   |   |       |   \-- quantize-average.test.ts
+|   |   |       |-- color-and-interpolation.ts
+|   |   |       |-- live-average.ts
+|   |   |       |-- quantize-average.ts
+|   |   |       |-- score.ts
+|   |   |       \-- session-cache.ts
+|   |   |-- navigation/
+|   |   |   |-- bottom/
+|   |   |   |   |-- logs-button.tsx
+|   |   |   |   |-- mode-toggle.tsx
+|   |   |   |   |-- nav-bottom.tsx
+|   |   |   |   \-- widgets/
+|   |   |   |       |-- bargraph/
+|   |   |   |       |   |-- EmptyArt.tsx
+|   |   |   |       |   \-- index.tsx
+|   |   |   |       |-- compact-graph-tools.tsx
+|   |   |   |       |-- section-scores.tsx
+|   |   |   |       \-- widget-section-nav.tsx
+|   |   |   |-- gp-data.ts
+|   |   |   |-- graph-picker.tsx
+|   |   |   |-- index.tsx
+|   |   |   |-- left/
+|   |   |   |   |-- logo.tsx
+|   |   |   |   \-- nav-left.tsx
+|   |   |   \-- right/
+|   |   |       |-- color-toggle.tsx
+|   |   |       |-- nav-right.tsx
+|   |   |       \-- system-color.tsx
+|   |   |-- onboarding/
+|   |   |   |-- index.tsx
+|   |   |   |-- information/
+|   |   |   |   \-- canvas-info.tsx
+|   |   |   |-- questionnaire/
+|   |   |   |   |-- button-input/
+|   |   |   |   |   |-- button-layouts.ts
+|   |   |   |   |   |-- button-questions.ts
+|   |   |   |   |   |-- questionnaire-flow.tsx
+|   |   |   |   |   \-- useQuestionnaireGridLayout.ts
+|   |   |   |   \-- index.ts
+|   |   |   |-- role-picker/
+|   |   |   |   |-- index.tsx
+|   |   |   |   \-- role-step.tsx
+|   |   |   |-- section-picker/
+|   |   |   |   |-- index.tsx
+|   |   |   |   \-- sections.ts
+|   |   |   |-- survey-reducer.ts
+|   |   |   \-- useSurveySubmission.ts
+|   |   |-- render-test/
+|   |   |   |-- renderProfilerStats.ts
+|   |   |   |-- renderProfilerStatsGraph.ts
+|   |   |   \-- rerenderBenchmark.ts
+|   |   |-- scene-canvas/
+|   |   |   |-- EngineHost.tsx
+|   |   |   |-- grid-layout/
+|   |   |   |   |-- __tests__/
+|   |   |   |   |   |-- buildGrid.test.ts
+|   |   |   |   |   |-- horizonRowHeights.test.ts
+|   |   |   |   |   \-- resolveCols.test.ts
+|   |   |   |   |-- buildGrid.ts
+|   |   |   |   |-- coords.ts
+|   |   |   |   |-- forbidden.ts
+|   |   |   |   |-- gridMetrics.ts
+|   |   |   |   |-- horizonRowHeights.ts
+|   |   |   |   |-- index.ts
+|   |   |   |   |-- occupancy.ts
+|   |   |   |   |-- resolveCols.ts
+|   |   |   |   |-- uiPlacement.ts
+|   |   |   |   \-- viewportCoords.ts
+|   |   |   |-- hooks/
+|   |   |   |   |-- sceneFieldSignature.ts
+|   |   |   |   |-- signals/
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- useCanvasEngine.ts
+|   |   |   |   |-- useCanvasLogicalSize.ts
+|   |   |   |   |-- useCanvasPointerHit.ts
+|   |   |   |   |-- useSceneField.ts
+|   |   |   |   \-- useViewportKey.ts
+|   |   |   |-- modifiers/
+|   |   |   |   |-- color-modifiers/
+|   |   |   |   |   |-- blend.ts
+|   |   |   |   |   |-- canvas.ts
+|   |   |   |   |   |-- colorspace.ts
+|   |   |   |   |   |-- effects.ts
+|   |   |   |   |   |-- fog.ts
+|   |   |   |   |   |-- gradient.ts
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   |-- stops.ts
+|   |   |   |   |   |-- style.ts
+|   |   |   |   |   \-- utils.ts
+|   |   |   |   |-- global-event-driven/
+|   |   |   |   |   |-- appear.ts
+|   |   |   |   |   |-- apply.ts
+|   |   |   |   |   |-- hover.ts
+|   |   |   |   |   \-- select.ts
+|   |   |   |   |-- index.ts
+|   |   |   |   |-- lighting/
+|   |   |   |   |   \-- index.ts
+|   |   |   |   |-- particles/
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   |-- particle-1.ts
+|   |   |   |   |   |-- particle-2.ts
+|   |   |   |   |   |-- perspective/
+|   |   |   |   |   |   |-- index.ts
+|   |   |   |   |   |   |-- particlePerspective.ts
+|   |   |   |   |   |   \-- rowHeightBuckets.ts
+|   |   |   |   |   |-- store.ts
+|   |   |   |   |   |-- types.ts
+|   |   |   |   |   \-- utils.ts
+|   |   |   |   |-- projection/
+|   |   |   |   |   \-- index.ts
+|   |   |   |   |-- render-pass.ts
+|   |   |   |   \-- shape-modifiers/
+|   |   |   |       |-- displacement.ts
+|   |   |   |       |-- fit.ts
+|   |   |   |       |-- index.ts
+|   |   |   |       |-- lobes.ts
+|   |   |   |       |-- path.ts
+|   |   |   |       |-- random.ts
+|   |   |   |       |-- ranges.ts
+|   |   |   |       |-- transformMath.ts
+|   |   |   |       \-- types.ts
+|   |   |   |-- multi-canvas-setup/
+|   |   |   |   \-- hostDefs.ts
+|   |   |   |-- offscreen-shape-surface.ts
+|   |   |   |-- README.md
+|   |   |   |-- runtime/
+|   |   |   |   |-- debug/
+|   |   |   |   |   |-- depthMaskStats.ts
+|   |   |   |   |   |-- diagnostics.ts
+|   |   |   |   |   |-- farShapeCacheStats.ts
+|   |   |   |   |   |-- flags.ts
+|   |   |   |   |   |-- gridOverlay.ts
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   \-- placementAuthoring.ts
+|   |   |   |   |-- engine/
+|   |   |   |   |   |-- field.ts
+|   |   |   |   |   |-- itemLifecycle.ts
+|   |   |   |   |   |-- loop.ts
+|   |   |   |   |   |-- runtimeSceneVariants.ts
+|   |   |   |   |   |-- sceneSurfaceLifecycle.ts
+|   |   |   |   |   |-- scheduler.ts
+|   |   |   |   |   |-- state.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- geometry/
+|   |   |   |   |   |-- bounds.ts
+|   |   |   |   |   |-- gridCache.ts
+|   |   |   |   |   \-- padding.ts
+|   |   |   |   |-- index.ts
+|   |   |   |   |-- p/
+|   |   |   |   |   |-- canvasMeta.ts
+|   |   |   |   |   \-- makeP.ts
+|   |   |   |   |-- platform/
+|   |   |   |   |   |-- mount.ts
+|   |   |   |   |   |-- resize.ts
+|   |   |   |   |   \-- viewport.ts
+|   |   |   |   |-- render/
+|   |   |   |   |   |-- cache/
+|   |   |   |   |   |   \-- offscreenCache.ts
+|   |   |   |   |   |-- cache-policy/
+|   |   |   |   |   |   |-- index.ts
+|   |   |   |   |   |   \-- types.ts
+|   |   |   |   |   |-- passes/
+|   |   |   |   |   |   |-- ambient-particles/
+|   |   |   |   |   |   |   |-- ambientParticles.ts
+|   |   |   |   |   |   |   \-- index.ts
+|   |   |   |   |   |   |-- atmosphere/
+|   |   |   |   |   |   |   |-- cache.ts
+|   |   |   |   |   |   |   |-- fog.ts
+|   |   |   |   |   |   |   |-- index.ts
+|   |   |   |   |   |   |   \-- stars.ts
+|   |   |   |   |   |   |-- background/
+|   |   |   |   |   |   |   |-- anchors.ts
+|   |   |   |   |   |   |   |-- background.ts
+|   |   |   |   |   |   |   |-- cache.ts
+|   |   |   |   |   |   |   |-- index.ts
+|   |   |   |   |   |   |   \-- surface.ts
+|   |   |   |   |   |   |-- depth/
+|   |   |   |   |   |   |   |-- index.ts
+|   |   |   |   |   |   |   |-- shapeDepthOverlay.ts
+|   |   |   |   |   |   |   \-- shapeDepthStyle.ts
+|   |   |   |   |   |   |-- foliage/
+|   |   |   |   |   |   |   |-- cache.ts
+|   |   |   |   |   |   |   |-- foliage.ts
+|   |   |   |   |   |   |   \-- index.ts
+|   |   |   |   |   |   |-- light/
+|   |   |   |   |   |   |   |-- cache.ts
+|   |   |   |   |   |   |   |-- environmentLight.ts
+|   |   |   |   |   |   |   |-- index.ts
+|   |   |   |   |   |   |   \-- rowLight.ts
+|   |   |   |   |   |   |-- shape/
+|   |   |   |   |   |   |   |-- cache/
+|   |   |   |   |   |   |   |   |-- bitmapKeys.ts
+|   |   |   |   |   |   |   |   |-- farShapeBitmap.ts
+|   |   |   |   |   |   |   |   \-- policy.ts
+|   |   |   |   |   |   |   |-- frameOptions.ts
+|   |   |   |   |   |   |   |-- index.ts
+|   |   |   |   |   |   |   |-- itemOrder.ts
+|   |   |   |   |   |   |   |-- items.ts
+|   |   |   |   |   |   |   |-- palette.ts
+|   |   |   |   |   |   |   \-- shapeRenderCache.ts
+|   |   |   |   |   |   \-- shared/
+|   |   |   |   |   |       |-- color.ts
+|   |   |   |   |   |       \-- horizon.ts
+|   |   |   |   |   \-- surface.ts
+|   |   |   |   |-- shape-adapter/
+|   |   |   |   |   |-- draw.ts
+|   |   |   |   |   |-- options.ts
+|   |   |   |   |   |-- registry.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   \-- util/
+|   |   |   |       |-- easing.ts
+|   |   |   |       \-- transform.ts
+|   |   |   |-- scene-logic/
+|   |   |   |   |-- candidates.ts
+|   |   |   |   |-- composeField.ts
+|   |   |   |   |-- constraints.ts
+|   |   |   |   |-- index.ts
+|   |   |   |   |-- math.ts
+|   |   |   |   |-- place.ts
+|   |   |   |   |-- resolveAuthoredLightSource.ts
+|   |   |   |   |-- resolveRuntimePlacements.ts
+|   |   |   |   |-- scoring.ts
+|   |   |   |   |-- shapeLightSource.ts
+|   |   |   |   \-- types.ts
+|   |   |   |-- scene-rules/
+|   |   |   |   |-- ambient-particles/
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- backgrounds/
+|   |   |   |   |   |-- city.ts
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   |-- questionnaire.ts
+|   |   |   |   |   |-- spotlight.ts
+|   |   |   |   |   |-- start.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- canvas-padding/
+|   |   |   |   |   |-- city.ts
+|   |   |   |   |   |-- helpers.ts
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   |-- questionnaire.ts
+|   |   |   |   |   |-- resolve.ts
+|   |   |   |   |   |-- spotlight.ts
+|   |   |   |   |   |-- start.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- fog/
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- foliage/
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- placement-rules/
+|   |   |   |   |   |-- city.ts
+|   |   |   |   |   |-- helpers.ts
+|   |   |   |   |   |-- index.ts
+|   |   |   |   |   |-- questionnaire.ts
+|   |   |   |   |   |-- spotlight.ts
+|   |   |   |   |   |-- start.ts
+|   |   |   |   |   \-- types.ts
+|   |   |   |   |-- profile.ts
+|   |   |   |   |-- registry.ts
+|   |   |   |   |-- resolver.ts
+|   |   |   |   |-- runtimePreset.ts
+|   |   |   |   |-- shapeCatalog.ts
+|   |   |   |   |-- shapeFootprints.ts
+|   |   |   |   \-- spotlight/
+|   |   |   |       |-- slides/
+|   |   |   |       |   |-- 01-villa.ts
+|   |   |   |       |   |-- 02-bus.ts
+|   |   |   |       |   |-- 03-sea.ts
+|   |   |   |       |   |-- 04-clouds.ts
+|   |   |   |       |   |-- 05-snow.ts
+|   |   |   |       |   |-- 06-house.ts
+|   |   |   |       |   |-- 07-power.ts
+|   |   |   |       |   |-- 08-sun.ts
+|   |   |   |       |   |-- 09-car.ts
+|   |   |   |       |   |-- 10-car-factory.ts
+|   |   |   |       |   |-- 11-trees.ts
+|   |   |   |       |   \-- index.ts
+|   |   |   |       \-- types.ts
+|   |   |   |-- scene-state.ts
+|   |   |   |-- shapes/
+|   |   |   |   |-- bus.ts
+|   |   |   |   |-- car.ts
+|   |   |   |   |-- carFactory.ts
+|   |   |   |   |-- clouds.ts
+|   |   |   |   |-- house.ts
+|   |   |   |   |-- index.ts
+|   |   |   |   |-- options.ts
+|   |   |   |   |-- power.ts
+|   |   |   |   |-- sea.ts
+|   |   |   |   |-- snow.ts
+|   |   |   |   |-- sun.ts
+|   |   |   |   |-- trees.ts
+|   |   |   |   |-- types.ts
+|   |   |   |   \-- villa.ts
+|   |   |   |-- shared/
+|   |   |   |   |-- __tests__/
+|   |   |   |   |   \-- hash32.test.ts
+|   |   |   |   |-- canvas.ts
+|   |   |   |   |-- geometry.ts
+|   |   |   |   |-- hash32.ts
+|   |   |   |   |-- math.ts
+|   |   |   |   \-- responsiveness.ts
+|   |   |   \-- validation/
+|   |   |       |-- defineRuleSet.ts
+|   |   |       |-- index.ts
+|   |   |       |-- invariant.ts
+|   |   |       \-- validateSceneProfile.ts
+|   |   |-- server/
+|   |   |   |-- cluster/
+|   |   |   |   |-- clusterMode.ts
+|   |   |   |   |-- clusterRateLimit.ts
+|   |   |   |   |-- clusterStats.ts
+|   |   |   |   |-- messages.ts
+|   |   |   |   |-- primary.ts
+|   |   |   |   \-- workerLoadReporter.ts
+|   |   |   |-- env.ts
+|   |   |   |-- index.ts
+|   |   |   |-- load-testing/
+|   |   |   |   |-- loadTestMode.ts
+|   |   |   |   |-- loadTestStats.ts
+|   |   |   |   |-- requestStats.ts
+|   |   |   |   \-- sseConnectionStats.ts
+|   |   |   |-- routes/
+|   |   |   |   |-- gamificationCopy.ts
+|   |   |   |   |-- saveSoloMessage.ts
+|   |   |   |   |-- saveUserResponse.ts
+|   |   |   |   |-- shared.ts
+|   |   |   |   \-- surveyResponseStream.ts
+|   |   |   |-- security/
+|   |   |   |   |-- editToken.ts
+|   |   |   |   |-- rateLimiter.ts
+|   |   |   |   \-- requestIdentity.ts
+|   |   |   |-- services/
+|   |   |   |   |-- __tests__/
+|   |   |   |   |   |-- responseStore.test.ts
+|   |   |   |   |   \-- snapshotCache.test.ts
+|   |   |   |   |-- responseStore.ts
+|   |   |   |   |-- snapshotCache.ts
+|   |   |   |   |-- sseClientHub.ts
+|   |   |   |   |-- surveyResponseFeed.ts
+|   |   |   |   \-- surveyResponseStream.ts
+|   |   |   |-- upstreams/
+|   |   |   |   \-- sanity/
+|   |   |   |       |-- config.ts
+|   |   |   |       |-- readClient.ts
+|   |   |   |       |-- surveyResponseQueries.ts
+|   |   |   |       \-- writeClient.ts
+|   |   |   \-- utils/
+|   |   |       \-- hash.ts
+|   |   |-- server-rendering/
+|   |   |   |-- assetManifest.ts
+|   |   |   |-- entry-server.tsx
+|   |   |   \-- streamDocument.tsx
+|   |   |-- styles/
+|   |   |   |-- fonts.css
+|   |   |   |-- gamification.css
+|   |   |   |-- global-styles.css
+|   |   |   |-- graph.css
+|   |   |   |-- graph-picker.css
+|   |   |   |-- logs.css
+|   |   |   |-- navigation.css
+|   |   |   |-- onboarding-info.css
+|   |   |   |-- section-questionnaire.css
+|   |   |   |-- ui-system.css
+|   |   |   \-- widgets.css
+|   |   |-- vite-env.d.ts
+|   |   \-- workers/
+|   |       |-- particles/
+|   |       |   |-- particle-worker.ts
+|   |       |   \-- worker-host.ts
+|   |       \-- scene/
+|   |           |-- compose-worker.ts
+|   |           \-- compose-worker-host.ts
+|   |-- tsconfig.json
+|   |-- tsconfig.server.json
+|   |-- vite.analyze.ts
+|   \-- vite.config.ts
+|-- gifs+images/
+|   |-- desktop-graph.gif
+|   |-- desktop-onboarding.gif
+|   |-- lightmode+surveytaken.png
+|   |-- mobile-city.png
+|   |-- mobile-collective-viz.png
+|   |-- mobile-cta.png
+|   |-- mobile-graph.gif
+|   |-- mobile-logs.png
+|   |-- mobile-logs-bargraph.png
+|   |-- mobile-logs-per-question.png
+|   |-- mobile-onboarding.png
+|   |-- mobile-personalized-result.png
+|   |-- mobile-questionnaire.png
+|   |-- README.md
+|   \-- tablet-questionnaire.gif
+|-- k6/
+|   |-- config.js
+|   |-- README.md
+|   |-- run-sse-ceiling.ps1
+|   |-- run-sse-throughput.ps1
+|   |-- run-writers-ceiling.ps1
+|   |-- run-writers-throughput.ps1
+|   |-- sse-ceiling.js
+|   |-- sse-throughput.js
+|   |-- writers-ceiling.js
+|   \-- writers-throughput.js
+|-- LICENSE
+|-- README.md
+|-- sanity/
+|   |-- .eslintrc
+|   |-- .gitignore
+|   |-- package.json
+|   |-- package-lock.json
+|   |-- sanity.cli.ts
+|   |-- sanity.config.ts
+|   |-- schemaTypes/
+|   |   |-- gamificationGeneralCopy.ts
+|   |   |-- gamificationPersonalizedCopy.ts
+|   |   |-- index.ts
+|   |   |-- userResponse.ts
+|   |   |-- userResponseTest.ts
+|   |   |-- userResponseV2.ts
+|   |   |-- userResponseV3.ts
+|   |   \-- userResponseV4.ts
+|   |-- static/
+|   |   \-- .gitkeep
+|   \-- tsconfig.jsonc
+|-- sprite-performance/
+|   |-- sprite-gpu-memory-note.md
+|   \-- sprite-performance-gain.md
+\-- tree.txt

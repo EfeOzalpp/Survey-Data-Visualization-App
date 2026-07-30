@@ -1,7 +1,8 @@
 // src/graph-runtime/dotgraph/canvas-host.tsx
 // App-facing host for mounting the DotGraph scene and cleaning up WebGL resources.
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Profiler, useEffect, useMemo, useRef, useState } from 'react';
+import { profilerOnRenderGraph } from '../../render-test/renderProfilerStatsGraph';
 import { Canvas } from '../r3f';
 import { AdaptiveDpr } from '@react-three/drei/core/AdaptiveDpr';
 import { AdaptiveEvents } from '@react-three/drei/core/AdaptiveEvents';
@@ -15,7 +16,8 @@ import {
 import DotGraph from "./scene";
 
 import { useUiStore } from "../../app/state/ui-store";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useShallow } from "zustand/react/shallow";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { useRealMobileViewport } from "../../lib/hooks/useRealMobileViewport";
 import { DEFAULT_VIEWPORT_WIDTH, isMobileWidth } from "../../lib/responsive/breakpoints";
 import { desktopGraphToolsOffsetPx } from "../../lib/responsive/graph-tools-offset";
@@ -219,7 +221,9 @@ function WebGLCanvas({ lowFidelity, dpr }: WebGLCanvasProps) {
       />
 
       {/* Graph */}
-      <DotGraph />
+      <Profiler id="DotGraph" onRender={profilerOnRenderGraph}>
+        <DotGraph />
+      </Profiler>
 
       {/* Perf helpers */}
       <AdaptiveDpr />
@@ -234,7 +238,9 @@ const DotGraphCanvasHost = () => {
   const vizVisible = useUiStore((s) => s.vizVisible);
   const logsOpen = useUiStore((s) => s.logsOpen);
   const widgetsOpen = useUiStore((s) => s.widgetsOpen);
-  const { allFilteredRows: surveyData, loading, section } = useSurveyData();
+  const { allFilteredRows: surveyData, loading, section } = useSurveyDataStore(
+    useShallow((s) => ({ allFilteredRows: s.allFilteredRows, loading: s.loading, section: s.section }))
+  );
   const isRealMobile = useRealMobileViewport();
   const windowWidth = typeof window !== 'undefined' ? window.innerWidth : DEFAULT_VIEWPORT_WIDTH;
   const aspectRatio = typeof window !== 'undefined' ? window.innerWidth / window.innerHeight : 1.78;

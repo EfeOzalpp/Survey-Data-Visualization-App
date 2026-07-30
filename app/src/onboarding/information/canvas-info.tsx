@@ -34,6 +34,13 @@ export default function CanvasInfo() {
   const [inView, setInView] = useState(false);
   const [loadDelayComplete, setLoadDelayComplete] = useState(false);
   const [spotlightReady, setSpotlightReady] = useState(false);
+  // One-way latch: once loaded and seen at least once, stays mounted even if
+  // scrolled out of view later. Set during render (React's sanctioned pattern
+  // for state that depends on other state) rather than in an effect, since
+  // this doesn't synchronize with anything external.
+  if (!spotlightReady && loadDelayComplete && inView) {
+    setSpotlightReady(true);
+  }
 
   useEffect(() => {
     const el = asideRef.current;
@@ -61,10 +68,6 @@ export default function CanvasInfo() {
       window.clearTimeout(id);
     };
   }, []);
-
-  useEffect(() => {
-    if (loadDelayComplete && inView) setSpotlightReady(true);
-  }, [inView, loadDelayComplete]);
 
   useEffect(() => {
     if (spotlight.paused || !inView) return;

@@ -1,10 +1,7 @@
 import * as React from "react";
 
 import useGraphData from "./useGraphData";
-
-type GraphDataState = ReturnType<typeof useGraphData>;
-
-const GraphDataContext = React.createContext<GraphDataState | null>(null);
+import { GraphDataContext } from "./graphDataContextObject";
 
 export function GraphDataProvider({
   data,
@@ -15,12 +12,4 @@ export function GraphDataProvider({
 }) {
   const value = useGraphData(data);
   return <GraphDataContext.Provider value={value}>{children}</GraphDataContext.Provider>;
-}
-
-export function useSharedGraphData() {
-  const ctx = React.useContext(GraphDataContext);
-  if (!ctx) {
-    throw new Error("useSharedGraphData must be used within GraphDataProvider");
-  }
-  return ctx;
 }

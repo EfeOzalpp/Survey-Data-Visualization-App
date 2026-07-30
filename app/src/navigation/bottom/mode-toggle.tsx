@@ -5,11 +5,12 @@ import React, { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
 import type { Mode } from "../../app/state/ui-store";
-import { useSurveyData } from "../../app/state/survey-data-context";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { useIdentity } from "../../app/state/identity-context";
 import { avgWeightOf } from "../../lib/utils/score";
 import { useAbsoluteScore } from "../../lib/hooks/useAbsoluteScore";
 import CheckIcon from "../../assets/svg/check/CheckIcon";
+import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 function ToggleCheckIcon() {
   return (
@@ -20,6 +21,7 @@ function ToggleCheckIcon() {
 }
 
 function ModeToggle() {
+  recordOwnRender("ModeToggle");
   const { mode, setMode, observerMode, setOpenPersonalized, setSpotlightRequest, personalPanelOpen } = useUiStore(
     useShallow((s) => ({
       mode: s.mode,
@@ -30,7 +32,7 @@ function ModeToggle() {
       personalPanelOpen: s.personalPanelOpen,
     }))
   );
-  const { allFilteredRows: data } = useSurveyData();
+  const data = useSurveyDataStore((s) => s.allFilteredRows);
   const { myEntryId } = useIdentity();
 
   const poolValues = useMemo(

@@ -3,7 +3,7 @@
 
 import { useMemo, useCallback } from "react";
 import { ROLE_SECTIONS } from "../onboarding/section-picker/sections";
-import { useSurveyData } from "../app/state/survey-data-context";
+import { useSurveyDataStore } from "../app/state/survey-data-store";
 import { useIdentity } from "../app/state/identity-context";
 
 interface GraphOption {
@@ -36,7 +36,7 @@ export function titleFromId(id: string) {
 }
 
 export function useGraphPickerData(value: string) {
-  const { counts } = useSurveyData();
+  const counts = useSurveyDataStore((s) => s.counts);
   const { mySection } = useIdentity();
 
   const BASE_STUDENT = useMemo(() => {

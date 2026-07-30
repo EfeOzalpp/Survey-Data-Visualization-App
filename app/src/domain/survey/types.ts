@@ -19,16 +19,7 @@ export interface SurveyRow {
   q5?: number;
   avgWeight?: number;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
-  submittedAt?: string;
-  _createdAt: string;
-  weights: {
-    question1: number;
-    question2: number;
-    question3: number;
-    question4: number;
-    question5: number;
-  };
+  submittedAt: string;
 }
 
 export interface RawSurveyRow extends SurveyWeights {

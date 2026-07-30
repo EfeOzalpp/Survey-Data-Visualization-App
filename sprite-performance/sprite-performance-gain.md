@@ -3,6 +3,8 @@
 Chrome DevTools heap snapshot numbers for the first 3 seconds of initial 3D
 scene load. These are JS/object-retention measurements, not GPU/VRAM numbers.
 
+For GPU/VRAM: [GPU memory measurement](sprite-gpu-memory-note.md)
+
 Why this still matters: the optimization here was about reducing sprite
 material/texture churn, retained objects, and cache pressure on the JS side.
 GPU memory should be measured separately with browser/WebGL tools or Task Manager.

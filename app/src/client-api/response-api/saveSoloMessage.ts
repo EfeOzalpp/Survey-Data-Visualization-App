@@ -12,11 +12,9 @@ import { updateMockSoloMessage } from '../mock-survey-data/mockData';
 interface SavedSoloMessage {
   _id: string;
   soloMessage?: string;
-  soloMessageUpdatedAt?: string;
 }
 
 interface WriteSoloMessagePayload {
-  responseId: string;
   editToken: string;
   message: string;
   clientId: string;
@@ -58,11 +56,10 @@ function persistSoloMessageSnapshot(updated: SavedSoloMessage) {
     const next: Record<string, unknown> = { ...snapshot, _id: updated._id };
     if (updated.soloMessage) {
       next.soloMessage = updated.soloMessage;
-      next.soloMessageUpdatedAt = updated.soloMessageUpdatedAt;
     } else {
       delete next.soloMessage;
-      delete next.soloMessageUpdatedAt;
     }
+    delete next.soloMessageUpdatedAt;
     setSessionItem('be.myDoc', JSON.stringify(next));
   } catch (error) {
     console.warn('[saveSoloMessage] Failed to update local response snapshot:', error);
@@ -78,6 +75,12 @@ export async function saveSoloMessage(message: string): Promise<SavedSoloMessage
     throw new Error('Your response is still being saved. Try again in a moment.');
   }
 
+  if (USE_MOCK_READS || shouldUseMockReads()) {
+    const updated = updateMockSoloMessage(responseId, normalized);
+    persistSoloMessageSnapshot(updated);
+    return updated;
+  }
+
   if (!editToken) {
     throw new Error('This browser can no longer edit that response.');
   }
@@ -86,14 +89,7 @@ export async function saveSoloMessage(message: string): Promise<SavedSoloMessage
     throw new Error('This browser has an old edit token for that response. Submit a new response to enable message editing.');
   }
 
-  if (USE_MOCK_READS || shouldUseMockReads()) {
-    const updated = updateMockSoloMessage(responseId, normalized);
-    persistSoloMessageSnapshot(updated);
-    return updated;
-  }
-
   const payload: WriteSoloMessagePayload = {
-    responseId,
     editToken,
     message: normalized,
     clientId: getClientId(),

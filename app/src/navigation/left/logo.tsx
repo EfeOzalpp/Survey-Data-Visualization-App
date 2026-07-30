@@ -1,7 +1,9 @@
 import { memo } from "react";
 import { useUiStore } from "../../app/state/ui-store";
+import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 const Logo = () => {
+  recordOwnRender("Logo");
   const resetToStart = useUiStore((s) => s.resetToStart);
 
   return (
