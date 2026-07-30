@@ -29,10 +29,12 @@ An application that uses a custom 2.5D Canvas2D implementation to render an inte
 ## Architecture
 
 - Survey results are delivered through a server-managed SSE stream: newest-first snapshot chunks load history, then patch events carry live changes.
+- A single-flight cache deduplicates snapshot fetch and serialization work before fanning each dataset version out to concurrent SSE readers.
 - Graph views stay client-capped for rendering, while logs and section counts use the streamed history loaded so far.
 - Gamification copy is fetched through a cached Express endpoint that batches related Sanity CMS reads into one request.
 - Survey submissions stay on separate Express POST endpoints, keeping writes explicit while live updates flow back through SSE.
 - Edit authorization uses server-signed JWTs instead of a stored token hash, so verifying a solo-message edit is a single signature check instead of a Sanity lookup-then-compare.
+- Under a 2-vCPU/1-GiB Docker limit, k6 verified 10,160 concurrent SSE connections receiving complete 488-row snapshots in 254-connection waves every second, with zero connection errors or early disconnects. See the [test methodology and recorded results](k6/README.md).
 
 | | |
 | :--- | :--- |

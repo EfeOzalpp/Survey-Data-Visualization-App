@@ -1,136 +1,61 @@
 # Load Tests
 
-These tests target the Dockerized application through
-`http://127.0.0.1:3000`. Results measure the complete local path from k6 on
-Windows, through Docker Desktop port forwarding, to the Node processes inside
-the container.
+These k6 tests target the Dockerized application at
+`http://127.0.0.1:3000`. The reader tests use a custom k6 binary containing
+the `k6/x/sse` extension.
 
-## Recorded SSE results
+## Verified SSE benchmark
 
-| Test | Arrival shape | Snapshot | Rows | Network received | Hold | Result |
-| --- | --- | --- | ---: | ---: | ---: | --- |
-| Full-history accumulating ceiling | 250 VUs every 10s, up to 5,000 | Warm, `limit=all` | 488 | 454 MB over the complete test | 60s at peak | Passed: exactly 5,000 connections opened, 5,000 complete snapshots received, zero connection errors, zero early disconnects, and server peak concurrency of 5,000 |
-| Accumulating connection ceiling | 100 VUs every 10s, up to 5,000 | Warm, `limit=5` | 5 | Not retained | 60s at peak | Passed: 5,000 test connections held concurrently; server peak was 5,001 including one pre-existing browser connection |
-| Single burst | 200 VUs at once | Warm, `limit=5` | 5 | 426 kB total, approximately 2.1 kB/connection | 50s effective | Passed: 200/200 opened and received a snapshot; first-snapshot p95 125ms |
-| Full-history burst | 50 VUs at once | Warm, `limit=all` | 488 | 8.7 MB total, approximately 174 kB/connection | 50s effective | Passed: 50/50 opened and received snapshot data; first-snapshot p95 108.55ms |
-| Full-history validation | 1 VU | Warm, `limit=all` | 488 | 175 kB total | 2s | Passed: complete multi-chunk snapshot received in 15ms |
+| Metric | Result |
+| --- | --- |
+| Environment | k6 on Windows -> Docker Desktop -> Node cluster |
+| Container limit | 2 vCPUs, 1 GiB memory |
+| Dataset | 488 rows, `limit=all` |
+| Arrival pattern | 254-reader burst every second for 40 waves |
+| Peak concurrency | 10,160 SSE readers |
+| Connection result | 10,160 opened; zero errors or early disconnects |
+| Snapshot result | 10,160 complete snapshots |
+| Complete-snapshot latency | 353.69ms average; 779ms p95; 1.2s maximum |
+| Network received | 922 MB |
 
-The final full-history ceiling run completed with:
+Each VU represents one SSE connection, not a rendered browser session. After
+receiving its snapshot, it stays open waiting for live patch events.
 
-- 5,000 exact connection opens and 5,000 exact complete snapshots.
-- Zero SSE connection errors and zero genuine early disconnects.
-- Complete-snapshot latency of 266.24ms average, 707ms p95, and 918ms maximum.
-- First-snapshot latency of 238.26ms average and 576ms p95.
-- 454 MB received across all 20 waves and their differently sized hold
-  windows.
+This local benchmark includes the Windows generator and Docker Desktop; it is
+not an EC2 or production-capacity result.
 
-The test stopped at 5,000, so this result establishes a verified concurrency
-floor rather than the server's failure point. It applies to the local
-Dockerized deployment and is not presented as an Internet-scale production
-capacity figure.
+## Run the benchmark
 
-## SSE payload optimization
-
-With the dataset held at 488 rows, a 250-VU full-history burst transferred
-approximately 45 MB before the SSE projection was reduced and approximately
-23 MB afterward: an observed reduction of about 49%.
-
-The stored Sanity documents were not reduced. The server-side projection
-stopped transmitting duplicated or internal fields while retaining the
-canonical values in the database.
-
-Payload values use k6's `data_received`, which includes the snapshot, HTTP/SSE
-framing, connection comments, and heartbeats. Row counts and payload sizes
-describe the dataset at test time and will grow as responses are added.
-
-## Reader commands
-
-Single full-history burst:
-
-```powershell
-.\k6.exe run `
-  -e BASE_URL=http://127.0.0.1:3000 `
-  -e SSE_LIMIT=all `
-  -e READERS_VUS=250 `
-  -e READERS_DURATION=20s `
-  readers.js
-```
-
-Inspect the resolved ceiling-test schedule without running it:
-
-```powershell
-.\k6.exe inspect `
-  -e BASE_URL=http://127.0.0.1:3000 `
-  -e SSE_LIMIT=all `
-  -e WAVE_VUS=250 `
-  -e WAVE_COUNT=20 `
-  -e WAVE_INTERVAL=10 `
-  -e PEAK_HOLD=60 `
-  staged-readers.js
-```
-
-Run the accumulating full-history ceiling test:
+From the `k6` directory:
 
 ```powershell
 .\run-staged-readers.ps1
 ```
 
-The resolved schedule adds 250 readers every 10 seconds, reaches 5,000 after
-3m10s, holds the peak for 60 seconds, and ends after 4m10s. The interrupted
-SSE iterations at scheduled shutdown are expected because the connections
-are deliberately held open.
+The defaults add 254 readers every second, reach 10,160 after 39 seconds,
+hold the peak for 60 seconds, and end after 99 seconds. Reader iterations
+reported as interrupted at shutdown are expected because their SSE
+connections are deliberately held open.
 
-Run only one k6 process at a time. The single-burst reader currently inherits
-k6's 30-second `gracefulStop`, so a configured 20-second duration holds its
-SSE iterations for 50 seconds in total.
+## Scripts
 
-## Writer test semantics
+| Script | Purpose |
+| --- | --- |
+| `staged-readers.js` | Accumulates SSE waves to verify concurrent connections and complete snapshots |
+| `readers.js` | Runs one simultaneous SSE reader burst |
+| `writers.js` | Runs finite REST create-and-patch workflows |
+| `sse-extension-check.js` | Confirms that the custom k6 binary includes `k6/x/sse` |
 
-`writers.js` is a finite REST integration test, not a sustained-connection
-test. Each successful iteration performs two sequential Sanity mutations:
+## SSE payload
 
-1. `POST /api/save-user-response` creates one response document and returns a
-   signed edit token.
-2. After a 500ms pause, `POST /api/save-solo-message` uses that token to patch
-   the same document.
+With the dataset held at 488 rows, reducing the streamed row projection cut a
+250-reader burst from approximately 45 MB to 23 MB, a 49% reduction. Stored
+Sanity documents were unchanged; only duplicated and internal fields were
+removed from the SSE payload.
 
-For example, this command schedules 300 writer workflows:
+## Writer test
 
-```powershell
-.\k6.exe run `
-  -e BASE_URL=http://127.0.0.1:3000 `
-  -e WRITERS_VUS=300 `
-  -e WRITERS_ITERATIONS=300 `
-  writers.js
-```
-
-That means 300 document creates plus 300 patches: 600 real Sanity mutations
-and 300 retained test documents. It measures the combined Windows -> Docker
--> Express -> Sanity round trip rather than an isolated Express write ceiling.
-
-When `LOAD_TEST_MODE=true`, application rate limits are bypassed and the
-server defaults to the disposable `load-test` Sanity dataset unless
-`SANITY_DATASET` is explicitly overridden. Production rate limits remain
-enabled outside load-test mode.
-
-A 5,000-workflow run would issue 10,000 mutations and create 5,000 documents.
-It should not be treated as the natural counterpart of 5,000 open SSE
-connections. This is within the project's observed monthly request and
-document allowances, but monthly quota is separate from instantaneous
-capacity. Sanity documents a limit of 25 mutation requests per second per
-source IP and 100 concurrent mutations per dataset. Excess requests receive
-HTTP 429 responses:
-[API CDN rate limiting and concurrency](https://www.sanity.io/docs/content-lake/api-cdn)
-and
-[technical limits](https://www.sanity.io/docs/content-lake/technical-limits).
-
-Because both mutations originate from the same Dockerized backend, 10,000
-individual mutations would require at least 400 seconds at 25 mutations per
-second if they were deliberately paced. Sending all 5,000 workflows at once
-would therefore be a useful test of throttling and failure behavior, but not
-evidence that Express itself has reached a write ceiling.
-
-The defensible writer result is the largest burst actually executed with its
-request count, failure rate, response latency, and Sanity mutation counts
-recorded. Do not infer a 5,000-write result from the verified 5,000-reader
-test.
+Each `writers.js` iteration creates one survey response and then patches its
+solo message. These are real Sanity mutations, so writer results include
+Sanity's limits and latency rather than measuring Express alone. Load-test
+mode defaults to the disposable `load-test` dataset.

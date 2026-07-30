@@ -1,7 +1,7 @@
 param(
-    [int]$WaveVus = 250,
-    [int]$WaveCount = 20,
-    [int]$WaveInterval = 10,
+    [int]$WaveVus = 254,
+    [int]$WaveCount = 40,
+    [int]$WaveInterval = 1,
     [int]$PeakHold = 60,
     [string]$SseLimit = "all",
     [string]$BaseUrl = "http://127.0.0.1:3000"
