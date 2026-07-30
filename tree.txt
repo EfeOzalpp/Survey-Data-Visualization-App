@@ -722,6 +722,9 @@ butterfly-effect/
 |-- sanity/
 |   |-- .eslintrc
 |   |-- .gitignore
+|   |-- data-backups/
+|   |   |-- butterfly-habits-pre-postgresql-2026-07-30.sha256
+|   |   \-- butterfly-habits-pre-postgresql-2026-07-30.tar.gz
 |   |-- package.json
 |   |-- package-lock.json
 |   |-- sanity.cli.ts
