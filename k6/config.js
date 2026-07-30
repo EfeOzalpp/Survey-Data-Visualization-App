@@ -1,5 +1,5 @@
 // Shared constants for all k6 scripts. Override BASE_URL with:
-//   k6 run -e BASE_URL=http://localhost:3000 k6/readers.js
+//   k6 run -e BASE_URL=http://localhost:3000 k6/sse-ceiling.js
 export const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
 
 // Reader tests default to the same complete-history snapshot requested by the

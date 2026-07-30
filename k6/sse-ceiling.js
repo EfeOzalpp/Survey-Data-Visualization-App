@@ -13,10 +13,10 @@
 //   t=490-550s hold 5,000, then close all connections
 //
 // Run with the custom xk6-sse binary, from the k6/ folder:
-//   .\k6.exe run staged-readers.js
+//   .\run-sse-ceiling.ps1 -WaveVus 100 -WaveCount 50 -WaveInterval 10 -PeakHold 60
 //
 // Smaller smoke run:
-//   .\k6.exe run -e WAVE_VUS=10 -e WAVE_COUNT=3 -e WAVE_INTERVAL=2 -e PEAK_HOLD=5 staged-readers.js
+//   .\run-sse-ceiling.ps1 -WaveVus 10 -WaveCount 3 -WaveInterval 2 -PeakHold 5
 import http from 'k6/http';
 import sse from 'k6/x/sse';
 import { check, sleep } from 'k6';

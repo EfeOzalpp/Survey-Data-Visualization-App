@@ -9,7 +9,7 @@ param(
 
 $ExpectedPeak = $WaveVus * $WaveCount
 
-Write-Host "Starting staged SSE test"
+Write-Host "Starting SSE concurrency-ceiling test"
 Write-Host "Wave size:     $WaveVus"
 Write-Host "Wave count:    $WaveCount"
 Write-Host "Expected peak: $ExpectedPeak"
@@ -25,6 +25,6 @@ Write-Host "Target:        $BaseUrl"
     -e "PEAK_HOLD=$PeakHold" `
     -e "SSE_LIMIT=$SseLimit" `
     -e "BASE_URL=$BaseUrl" `
-    "$PSScriptRoot\staged-readers.js"
+    "$PSScriptRoot\sse-ceiling.js"
 
 exit $LASTEXITCODE

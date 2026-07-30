@@ -1,7 +1,7 @@
-# SSE Load Testing
+# Load Testing
 
-Load testing of the Butterfly Effect SSE endpoint with k6 against the
-Dockerized application at `http://127.0.0.1:3000`.
+Load testing of the Butterfly Effect SSE and survey-write endpoints with k6
+against the Dockerized application at `http://127.0.0.1:3000`.
 
 The reader tests use a custom k6 binary containing the `k6/x/sse` extension.
 Each VU represents an SSE connection, not a rendered browser session.
@@ -72,7 +72,7 @@ run-to-run variation, and complete reads in all five runs. The median ranges
 overlap at their lowest values, so the result is better described as
 consistently lower latency rather than a fixed multiplier on every read.
 
-The adaptive second worker did not activate during these throughput runs.
+The adaptive second worker didn't activate during these throughput runs.
 The observed comparison is therefore between a direct Node process and Node
 cluster mode with one request-handling worker, not a measurement of two
 workers processing requests across both cores. A separate activated-worker
@@ -98,6 +98,56 @@ These concurrency results were obtained with one request-handling Node
 process. Open connections remain alive for live patch events and heartbeats
 until k6 ends their scenarios.
 
+## Sanity-backed write throughput
+
+The fixed-arrival writer test exercised the complete Express validation,
+Sanity mutation, synchronous visibility, and JWT response path.
+
+| Metric | Result |
+| --- | --- |
+| Target rate | 25 survey creates/second |
+| Duration | 30 seconds |
+| Writes | 750 scheduled; 750 completed |
+| Failures and dropped iterations | 0 |
+| Completion latency | 1.03 s average; 1.22 s p95; 1.5 s maximum |
+| Active VUs | 31 maximum; 50 preallocated |
+
+k6 scheduled all 750 writes during the configured 30-second arrival window.
+Its summary reports approximately 24.18 completions/second because the total
+31-second runtime includes the final drain period. This clean run matches
+Sanity's documented
+[25 mutation requests/second per source-IP limit](https://www.sanity.io/docs/content-lake/technical-limits).
+
+## Write burst probes
+
+`writers-ceiling.js` measures whether one configured simultaneous burst is
+absorbed; it doesn't discover the ceiling automatically.
+
+| VUs | Completed | Failures | Result |
+| ---: | ---: | ---: | --- |
+| 25 | 25 | 0 | Clean |
+| 30 | 30 | 0 | Clean |
+| 750 | 232 | 518 | Failed |
+
+The 750-VU overload produced connection refusals before 518 requests reached
+Express. The container remained running, wasn't OOM-killed, and didn't
+restart. The 232 admitted writes completed at approximately 25.01/second;
+successful HTTP responses averaged 5.18 seconds and reached 9.21 seconds.
+This run exposed a connection-admission boundary, not a measured Sanity burst
+ceiling. The largest repeatable zero-failure burst has not yet been located.
+
+## SSE behavior during writes
+
+Initial SSE datasets are paged and serialized in chunks of up to 250 rows.
+Live patches are not divided into 250-row chunks: mutation events are
+deduplicated by response ID and coalesced for 750 ms before one patch is
+broadcast. Visible patch batches therefore reflect both Sanity's query-visible
+mutation timing and the backend's coalescing window.
+
+The recorded SSE throughput and concurrency results above were isolated read
+tests. A simultaneous writer-plus-SSE run is still required before claiming
+those read rates remain unchanged under sustained mutations.
+
 ## Run
 
 From the `k6` directory:
@@ -107,20 +157,33 @@ From the `k6` directory:
 ```
 
 ```powershell
-.\run-staged-readers.ps1 `
+.\run-sse-ceiling.ps1 `
   -WaveVus 254 `
   -WaveCount 40 `
   -WaveInterval 1 `
   -PeakHold 60
 ```
 
+The write tests create real documents. Run the container with
+`LOAD_TEST_MODE=true` and explicitly set `SANITY_DATASET=load-test`; a dataset
+value supplied by `.env` overrides the load-test fallback.
+
+```powershell
+.\run-writers-ceiling.ps1 -Vus 25
+```
+
+```powershell
+.\run-writers-throughput.ps1 `
+  -WritesPerSecond 25 `
+  -DurationSeconds 30
+```
+
 | Script | Purpose |
 | --- | --- |
 | `sse-throughput.js` | Opens, completes, and closes full-history SSE reads at a fixed rate |
-| `staged-readers.js` | Accumulates sustained SSE connections in waves |
-| `readers.js` | Runs one simultaneous SSE reader burst |
-| `writers.js` | Runs finite REST create-and-patch workflows |
-| `sse-extension-check.js` | Confirms that the custom binary includes `k6/x/sse` |
+| `sse-ceiling.js` | Accumulates sustained SSE connections in waves |
+| `writers-ceiling.js` | Releases a simultaneous burst of survey-create requests |
+| `writers-throughput.js` | Persists survey creates at a fixed arrival rate |
 
 ## Payload and writes
 
@@ -129,5 +192,6 @@ With the dataset held at 488 rows, reducing the streamed row projection cut a
 Sanity documents were unchanged.
 
 Writer tests create real Sanity mutations, so their results include Sanity's
-limits and latency rather than measuring Express alone. Load-test mode uses
-the disposable `load-test` dataset by default.
+limits and latency rather than measuring Express alone. Both writer tests
+isolate survey creates. Use the disposable `load-test` dataset and remove its
+generated documents after benchmarking.
