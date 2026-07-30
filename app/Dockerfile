@@ -33,6 +33,7 @@ CMD ["node", "dist-server/server/index.js"]
 #>>   -p 3000:3000 `
 #>>   --env-file "C:\Users\Efe Ozalp\Desktop\butterfly-effect\app\.env" `
 #>>   -e NODE_ENV=production `
+#>>   -e CLUSTER_MODE=true `
 #>>   -e LOAD_TEST_MODE=true `
 #>>   -e HOST=0.0.0.0 `
 #>>   butterfly-effect

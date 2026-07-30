@@ -1,6 +1,6 @@
 param(
-    [int]$WaveVus = 254,
-    [int]$WaveCount = 40,
+    [int]$WaveVus = 250,
+    [int]$WaveCount = 50,
     [int]$WaveInterval = 1,
     [int]$PeakHold = 60,
     [string]$SseLimit = "all",

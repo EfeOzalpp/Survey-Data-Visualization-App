@@ -173,10 +173,6 @@ butterfly-effect/
 |   |   |       |-- saveSoloMessage.ts
 |   |   |       |-- saveUserResponse.ts
 |   |   |       \-- writeApi.ts
-|   |   |-- dev/
-|   |   |   |-- renderProfilerStats.ts
-|   |   |   |-- renderProfilerStatsGraph.ts
-|   |   |   \-- rerenderBenchmark.ts
 |   |   |-- domain/
 |   |   |   \-- survey/
 |   |   |       |-- __tests__/
@@ -362,6 +358,10 @@ butterfly-effect/
 |   |   |   |   \-- sections.ts
 |   |   |   |-- survey-reducer.ts
 |   |   |   \-- useSurveySubmission.ts
+|   |   |-- render-test/
+|   |   |   |-- renderProfilerStats.ts
+|   |   |   |-- renderProfilerStatsGraph.ts
+|   |   |   \-- rerenderBenchmark.ts
 |   |   |-- scene-canvas/
 |   |   |   |-- EngineHost.tsx
 |   |   |   |-- grid-layout/
@@ -646,6 +646,13 @@ butterfly-effect/
 |   |   |   |   |-- rateLimiter.ts
 |   |   |   |   \-- requestIdentity.ts
 |   |   |   |-- services/
+|   |   |   |   |-- __tests__/
+|   |   |   |   |   |-- responseStore.test.ts
+|   |   |   |   |   \-- snapshotCache.test.ts
+|   |   |   |   |-- responseStore.ts
+|   |   |   |   |-- snapshotCache.ts
+|   |   |   |   |-- sseClientHub.ts
+|   |   |   |   |-- surveyResponseFeed.ts
 |   |   |   |   \-- surveyResponseStream.ts
 |   |   |   |-- upstreams/
 |   |   |   |   \-- sanity/
@@ -730,7 +737,7 @@ butterfly-effect/
 |   |-- static/
 |   |   \-- .gitkeep
 |   \-- tsconfig.jsonc
-|-- sprite-performance-doc/
+|-- sprite-performance/
 |   |-- sprite-gpu-memory-note.md
 |   \-- sprite-performance-gain.md
 \-- tree.txt
