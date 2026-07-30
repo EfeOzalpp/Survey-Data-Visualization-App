@@ -1,7 +1,7 @@
-// src/dev/rerenderBenchmark.ts
+// src/render-test/rerenderBenchmark.ts
 // Benchmarking script for the Context re-render comparison.
 // Requires the dev server already running (npm run dev) at BENCH_URL below.
-// Run with: npx tsx src/dev/rerenderBenchmark.ts
+// Run with: npx tsx src/render-test/rerenderBenchmark.ts
 // Or via npm run bench:zustand (subtree-commit table only) / npm run bench:memo (own-render table only)
 
 import { chromium, type Page } from "playwright";

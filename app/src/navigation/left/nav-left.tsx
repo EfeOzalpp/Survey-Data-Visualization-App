@@ -1,6 +1,6 @@
 import { Profiler } from "react";
 import Logo from "./logo";
-import { profilerOnRender } from "../../dev/renderProfilerStats";
+import { profilerOnRender } from "../../render-test/renderProfilerStats";
 
 export default function NavLeft({ introActive = false }: { introActive?: boolean }) {
   return (

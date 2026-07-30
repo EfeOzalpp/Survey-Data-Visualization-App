@@ -1,5 +1,5 @@
 import { Profiler, Suspense, lazy, memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { profilerOnRender, recordOwnRender } from "../../dev/renderProfilerStats";
+import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
 import "../../styles/widgets.css";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import { useShallow } from "zustand/react/shallow";

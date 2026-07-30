@@ -5,7 +5,7 @@ import HintBanner from "../../../app/ui/HintBanner";
 import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../../gp-data";
 import { BUTTON_QUESTIONS } from "../../../onboarding/questionnaire/button-input/button-questions";
 import WidgetSectionNav from "./widget-section-nav";
-import { recordOwnRender } from "../../../dev/renderProfilerStats";
+import { recordOwnRender } from "../../../render-test/renderProfilerStats";
 
 interface LocalSectionState {
   sourceSection: string;

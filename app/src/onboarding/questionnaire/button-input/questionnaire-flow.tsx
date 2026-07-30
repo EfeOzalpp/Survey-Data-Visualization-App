@@ -7,7 +7,7 @@ import { BUTTON_QUESTIONS } from "./button-questions";
 import { getQuestionButtonPlacement } from "./button-layouts";
 import { useQuestionnaireGridLayout } from "./useQuestionnaireGridLayout";
 import type { Place } from "../../../scene-canvas/grid-layout/occupancy";
-import { recordOwnRender } from "../../../dev/renderProfilerStats";
+import { recordOwnRender } from "../../../render-test/renderProfilerStats";
 
 function reserveSingleTile(footprint: Place): Place {
   const bottomRow = footprint.r0 + footprint.h - 1;

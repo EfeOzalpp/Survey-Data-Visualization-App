@@ -10,7 +10,7 @@ import { useIdentity } from "../../app/state/identity-context";
 import { avgWeightOf } from "../../lib/utils/score";
 import { useAbsoluteScore } from "../../lib/hooks/useAbsoluteScore";
 import CheckIcon from "../../assets/svg/check/CheckIcon";
-import { recordOwnRender } from "../../dev/renderProfilerStats";
+import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 function ToggleCheckIcon() {
   return (

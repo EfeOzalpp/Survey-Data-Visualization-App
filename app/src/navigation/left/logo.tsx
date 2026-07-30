@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { useUiStore } from "../../app/state/ui-store";
-import { recordOwnRender } from "../../dev/renderProfilerStats";
+import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 const Logo = () => {
   recordOwnRender("Logo");

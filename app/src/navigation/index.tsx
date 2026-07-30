@@ -6,7 +6,7 @@ import { usePreferences } from "../app/state/preferences-context";
 import { useIdentity } from "../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";
-import { profilerOnRender, recordOwnRender } from "../dev/renderProfilerStats";
+import { profilerOnRender, recordOwnRender } from "../render-test/renderProfilerStats";
 import "../styles/navigation.css";
 
 const PLACEMENT_TRANSITION_MS = 220;

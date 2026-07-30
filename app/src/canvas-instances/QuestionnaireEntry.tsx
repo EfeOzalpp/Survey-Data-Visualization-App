@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { useCanvasRuntimeStore } from "../app/state/canvas-runtime-store";
 import { EngineHost } from "../scene-canvas/EngineHost";
-import { recordOwnRender } from "../dev/renderProfilerStats";
+import { recordOwnRender } from "../render-test/renderProfilerStats";
 
 function QuestionnaireEntry({ visible = true }: { visible?: boolean }) {
   recordOwnRender("QuestionnaireEntry");

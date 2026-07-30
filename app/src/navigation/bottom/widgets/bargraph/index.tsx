@@ -4,7 +4,7 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { usePreferences } from "../../../../app/state/preferences-context";
-import { recordOwnRender } from "../../../../dev/renderProfilerStats";
+import { recordOwnRender } from "../../../../render-test/renderProfilerStats";
 import { useUiStore } from "../../../../app/state/ui-store";
 import { useIdentity } from "../../../../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";

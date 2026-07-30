@@ -1,4 +1,4 @@
-// src/dev/renderProfilerStats.ts
+// src/render-test/renderProfilerStats.ts
 // Benchmarking helper for the Context -> Zustand re-render comparison.
 
 let counts: Record<string, number> = {};

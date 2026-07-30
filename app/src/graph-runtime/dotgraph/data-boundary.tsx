@@ -1,6 +1,6 @@
 import { Profiler, useEffect, useMemo, useState } from "react";
 
-import { profilerOnRenderGraph } from "../../dev/renderProfilerStatsGraph";
+import { profilerOnRenderGraph } from "../../render-test/renderProfilerStatsGraph";
 import { useIdentity } from "../../app/state/identity-context";
 import { getSessionItem } from "../../app/session";
 import { useShallow } from "zustand/react/shallow";

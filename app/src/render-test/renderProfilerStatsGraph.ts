@@ -1,4 +1,4 @@
-// src/dev/renderProfilerStatsGraph.ts
+// src/render-test/renderProfilerStatsGraph.ts
 // Scoped to the Three.js/react-three-fiber components only, so Playwright
 // (window.__renderStats) and manual graph testing (window.__renderStatsGraph)
 // stay separate.

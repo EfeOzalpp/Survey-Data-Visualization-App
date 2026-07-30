@@ -1,6 +1,6 @@
 // src/onboarding/index.tsx
 import React, { Profiler, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { profilerOnRender, recordOwnRender } from '../dev/renderProfilerStats';
+import { profilerOnRender, recordOwnRender } from '../render-test/renderProfilerStats';
 
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";

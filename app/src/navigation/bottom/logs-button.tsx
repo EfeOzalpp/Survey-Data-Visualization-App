@@ -5,7 +5,7 @@ import { useEscapeToClose } from "../../lib/hooks/useEscapeToClose";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import SearchIcon from "../../assets/svg/search/SearchIcon";
-import { recordOwnRender } from "../../dev/renderProfilerStats";
+import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 const PAGE_SIZE = 50;
 

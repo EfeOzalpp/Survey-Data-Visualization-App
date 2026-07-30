@@ -5,7 +5,7 @@ import React, { Profiler, Suspense } from "react";
 import { AppProvider } from "./app-provider";
 import ClientOnly from "./client-only"; // wrapper to exclude certain files from server-side rendering.
 import { useUiStore } from "./state/ui-store";
-import { profilerOnRender, recordOwnRender } from "../dev/renderProfilerStats";
+import { profilerOnRender, recordOwnRender } from "../render-test/renderProfilerStats";
 
 import Survey from "../onboarding"; // survey is included in server-side.
 import Navigation from "../navigation"; // navigation is included in server-side. 
