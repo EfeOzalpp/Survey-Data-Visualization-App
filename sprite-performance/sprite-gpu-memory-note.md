@@ -1,6 +1,6 @@
 # Sprite GPU Memory
 
-System/browser GPU reporting at the 300-sprite cap showed:
+System/browser GPU reporting measured with Chrome task manager at the 300-sprite cap showed:
 
 | Configuration | GPU memory |
 | --- | ---: |

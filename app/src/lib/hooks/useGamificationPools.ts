@@ -1,10 +1,6 @@
 // src/lib/hooks/useGamificationPools.ts
 import { useMemo, useSyncExternalStore } from 'react';
-import {
-  enableMockReadFallback,
-  shouldUseMockReads,
-  subscribeMockReadMode,
-} from '../../client-api/read-api/config';
+import { shouldUseMockReads } from '../../client-api/read-api/config';
 import { storageKeyFor, safeSession, bucketForPercent } from '../utils/session-cache';
 
 interface CopyDoc {
@@ -271,11 +267,6 @@ const setAllFallbackReady = () => {
   pools.personalized.setFallbackReady();
 };
 
-subscribeMockReadMode(() => {
-  if (!sourceStarted) return;
-  if (shouldUseMockReads()) setAllFallbackReady();
-});
-
 function startCopySource() {
   if (sourceStarted) return;
   sourceStarted = true;
@@ -296,7 +287,7 @@ function startCopySource() {
       pools.personalized.pump(groups.personalized);
     } catch (error: unknown) {
       if (shouldFallbackToMock(error)) {
-        enableMockReadFallback(error);
+        console.warn('[gamification-copy] Using bundled copy fallback', error);
         setAllFallbackReady();
         return;
       }

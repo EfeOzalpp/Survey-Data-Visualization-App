@@ -1,4 +1,4 @@
-// schemas/userResponseV3.ts
+// Historical schema retained for the PostgreSQL migration archive.
 import type { Rule } from 'sanity';
 
 export default {

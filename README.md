@@ -100,9 +100,13 @@ Identity and user preferences remain in React Context. Twelve components beneath
 
 ## Data Layer
 
-**Current:** Sanity stores survey responses, message updates, and editable gamification copy.
+**PostgreSQL:** Stores transactional survey responses and message edits. Row
+changes are published through a PostgreSQL trigger and `LISTEN` connection,
+then delivered through the existing SSE patch contract.
 
-**Planned:** Transactional survey responses and messages will move to PostgreSQL, while Sanity remains the CMS for editorial content. The existing REST and SSE interfaces will remain unchanged.
+**Sanity:** Remains the CMS for editable gamification copy. A transactional,
+repeatable importer moves exported `userResponseV4` history into PostgreSQL
+without changing the browser-facing REST or SSE interfaces.
 
 <br>
 

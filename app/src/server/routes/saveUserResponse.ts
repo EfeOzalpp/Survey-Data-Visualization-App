@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { randomUUID } from "node:crypto";
 import { BUTTON_QUESTIONS } from "../../onboarding/questionnaire/button-input/button-questions";
 import { STAFF_IDS, STUDENT_IDS } from "../../domain/survey/sections";
 import { optionalEnv } from "../env";
@@ -7,8 +8,7 @@ import { type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
 import { checkRateLimits } from "../cluster/clusterRateLimit";
 import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
-import { recordSanityRequest } from "../load-testing/requestStats"; // load-testing
-import { sanityWriteClient } from "../upstreams/sanity/writeClient";
+import { createSurveyResponse } from "../upstreams/postgres/surveyResponseRepository";
 import { sha256 } from "../utils/hash";
 import { isRecord, readOptionalId, rejectDisallowedOrigin } from "./shared";
 
@@ -147,6 +147,17 @@ function avgWeight(weights: Weights) {
   return round3(sum / QUESTION_KEYS.length);
 }
 
+function idempotencyKey(payload: ValidPayload) {
+  if (!payload.clientId || !payload.clientRequestId) return null;
+  const salt = optionalEnv(
+    "IDEMPOTENCY_SALT",
+    optionalEnv("RATE_LIMIT_SALT", "butterfly-effect-survey-idempotency")
+  );
+  return sha256(
+    `${salt}:survey-response:${payload.clientId}:${payload.clientRequestId}`
+  );
+}
+
 export async function saveUserResponseRoute(req: Request, res: Response) {
   if (rejectDisallowedOrigin(req, res)) return;
 
@@ -170,31 +181,27 @@ export async function saveUserResponseRoute(req: Request, res: Response) {
   }
 
   const submittedAt = new Date().toISOString();
-  const doc = {
-    _type: "userResponseV4",
-    section: validation.payload.section,
-    ...validation.payload.weights,
-    avgWeight: avgWeight(validation.payload.weights),
-    submittedAt,
-  };
+  const average = avgWeight(validation.payload.weights);
 
   try {
-    recordSanityRequest("writeCreate"); // load-testing
-    const created = await sanityWriteClient.create(doc);
-    const responseBody = {
-      _id: created._id,
-      section: doc.section,
-      ...validation.payload.weights,
-      avgWeight: doc.avgWeight,
+    const saved = await createSurveyResponse({
+      id: randomUUID(),
+      section: validation.payload.section,
+      weights: validation.payload.weights,
+      avgWeight: average,
       submittedAt,
-      editToken: signEditToken(created._id),
-    };
-    res.status(200).json(responseBody);
+      idempotencyKeySha256: idempotencyKey(validation.payload),
+    });
+
+    res.status(200).json({
+      ...saved.row,
+      editToken: signEditToken(saved.row._id),
+    });
   } catch (error) {
-    console.error("[save-user-response] Sanity write failed:", error);
+    console.error("[save-user-response] PostgreSQL write failed:", error);
     res.status(503).json({
       error: "Unable to save response",
-      code: "SANITY_WRITE_UNAVAILABLE",
+      code: "DATABASE_WRITE_UNAVAILABLE",
     });
   }
 }

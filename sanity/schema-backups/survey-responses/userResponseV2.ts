@@ -1,3 +1,4 @@
+// Historical schema retained for the PostgreSQL migration archive.
 import type { Rule } from 'sanity';
 
 export default {

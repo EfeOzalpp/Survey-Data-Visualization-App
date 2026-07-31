@@ -5,6 +5,14 @@ butterfly-effect/
 |-- .gitignore
 |-- app/
 |   |-- .dockerignore
+|   |-- .env.example
+|   |-- compose.yaml
+|   |-- db/
+|   |   |-- migrations/
+|   |   |   |-- 001_create_survey_responses.sql
+|   |   |   |-- 002_add_survey_response_notifications.sql
+|   |   |   \-- 003_track_survey_response_source.sql
+|   |   \-- README.md
 |   |-- Dockerfile
 |   |-- eslint.config.mjs
 |   |-- index.html
@@ -38,7 +46,6 @@ butterfly-effect/
 |   |   |   |   \-- usePreferencesState.ts
 |   |   |   |-- ui/
 |   |   |   |   \-- HintBanner.tsx
-|   |   |   \-- useMockBanner.ts
 |   |   |-- assets/
 |   |   |   |-- fonts/
 |   |   |   |   |-- heebo/
@@ -118,14 +125,11 @@ butterfly-effect/
 |   |   |   |   \-- roboto-serif/
 |   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-w0kpEzi.woff2
 |   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-w8kpEzi.woff2
-|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wIkpA (1).woff2
 |   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wIkpA.woff2
-|   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wwkpEzi (1).woff2
 |   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wwkpEzi.woff2
 |   |   |   |       |-- R705jywflP6FLr3gZx7K8UyEVQnyR1E7VN-f51xYuGCQepO9CRLLcmv0wCOC-wYkpEzi.woff2
 |   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLDywA8oA.woff2
 |   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLHywA.woff2
-|   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLIywA8oA (1).woff2
 |   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLIywA8oA.woff2
 |   |   |   |       |-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLJywA8oA.woff2
 |   |   |   |       \-- R707jywflP6FLr3gZx7K8UyuXDs9zVwDmXCb8lxYgmuimXPEWoRldX4VgtLKywA8oA.woff2
@@ -168,7 +172,8 @@ butterfly-effect/
 |   |   |   |   \-- mockData.ts
 |   |   |   |-- read-api/
 |   |   |   |   |-- config.ts
-|   |   |   |   \-- surveyResponseStream.ts
+|   |   |   |   |-- surveyResponseStream.ts
+|   |   |   |   \-- surveyStreamStatus.ts
 |   |   |   \-- response-api/
 |   |   |       |-- saveSoloMessage.ts
 |   |   |       |-- saveUserResponse.ts
@@ -633,7 +638,6 @@ butterfly-effect/
 |   |   |   |-- load-testing/
 |   |   |   |   |-- loadTestMode.ts
 |   |   |   |   |-- loadTestStats.ts
-|   |   |   |   |-- requestStats.ts
 |   |   |   |   \-- sseConnectionStats.ts
 |   |   |   |-- routes/
 |   |   |   |   |-- gamificationCopy.ts
@@ -655,11 +659,19 @@ butterfly-effect/
 |   |   |   |   |-- surveyResponseFeed.ts
 |   |   |   |   \-- surveyResponseStream.ts
 |   |   |   |-- upstreams/
+|   |   |   |   |-- postgres/
+|   |   |   |   |   |-- __tests__/
+|   |   |   |   |   |   \-- surveyResponseRepository.integration.ts
+|   |   |   |   |   |-- config.ts
+|   |   |   |   |   |-- importSanitySurveyResponses.ts
+|   |   |   |   |   |-- migrate.ts
+|   |   |   |   |   |-- pool.ts
+|   |   |   |   |   |-- surveyResponseListener.ts
+|   |   |   |   |   |-- surveyResponseRepository.ts
+|   |   |   |   |   \-- surveyResponseTypes.ts
 |   |   |   |   \-- sanity/
 |   |   |   |       |-- config.ts
-|   |   |   |       |-- readClient.ts
-|   |   |   |       |-- surveyResponseQueries.ts
-|   |   |   |       \-- writeClient.ts
+|   |   |   |       \-- readClient.ts
 |   |   |   \-- utils/
 |   |   |       \-- hash.ts
 |   |   |-- server-rendering/
@@ -722,19 +734,25 @@ butterfly-effect/
 |-- sanity/
 |   |-- .eslintrc
 |   |-- .gitignore
+|   |-- data-backups/
+|   |   |-- butterfly-habits-pre-postgresql-2026-07-30.sha256
+|   |   \-- butterfly-habits-pre-postgresql-2026-07-30.tar.gz
 |   |-- package.json
 |   |-- package-lock.json
 |   |-- sanity.cli.ts
 |   |-- sanity.config.ts
+|   |-- schema-backups/
+|   |   \-- survey-responses/
+|   |       |-- README.md
+|   |       |-- userResponse.ts
+|   |       |-- userResponseTest.ts
+|   |       |-- userResponseV2.ts
+|   |       |-- userResponseV3.ts
+|   |       \-- userResponseV4.ts
 |   |-- schemaTypes/
 |   |   |-- gamificationGeneralCopy.ts
 |   |   |-- gamificationPersonalizedCopy.ts
-|   |   |-- index.ts
-|   |   |-- userResponse.ts
-|   |   |-- userResponseTest.ts
-|   |   |-- userResponseV2.ts
-|   |   |-- userResponseV3.ts
-|   |   \-- userResponseV4.ts
+|   |   \-- index.ts
 |   |-- static/
 |   |   \-- .gitkeep
 |   \-- tsconfig.jsonc

@@ -1,3 +1,4 @@
+// Historical schema retained for the PostgreSQL migration archive.
 export default {
   name: 'userResponse',
   type: 'document',

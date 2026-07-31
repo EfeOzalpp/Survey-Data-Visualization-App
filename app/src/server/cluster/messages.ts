@@ -1,8 +1,6 @@
 import type { RateResult, RateRule } from "../security/rateLimiter";
-import type { readSanityRequestStats } from "../load-testing/requestStats";
 import type { readSseConnectionStats } from "../load-testing/sseConnectionStats";
 
-export type SanityStats = ReturnType<typeof readSanityRequestStats>;
 export type SseStats = ReturnType<typeof readSseConnectionStats>;
 
 interface LoadReportMessage {
@@ -25,7 +23,6 @@ export interface StatsRequestMessage {
 export interface StatsQueryResultMessage {
   type: "stats-query-result";
   requestId: string;
-  sanity: SanityStats;
   sse: SseStats;
 }
 
@@ -50,7 +47,6 @@ export interface StatsQueryMessage {
 export interface StatsResultMessage {
   type: "stats-result";
   requestId: string;
-  sanity: SanityStats;
   sse: SseStats;
 }
 

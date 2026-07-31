@@ -20,8 +20,8 @@ import {
   DeferredGraphPreloader,
   DeferredGamificationPreloader,
   DuplicateSurveyBanner,
-  MockReadBanner,
   RateLimitBanner,
+  SurveyDataStatusBanner,
 } from "./app-effects";
 import ErrorBoundary from "./error-boundary";
 
@@ -42,7 +42,7 @@ const AppInner: React.FC = () => {
     <main id="main-content" className="app-content">
       <ClientOnly>
         <AppBrowserPolicies questionnaireOpen={questionnaireOpen} vizVisible={vizVisible} />
-        <MockReadBanner />
+        <SurveyDataStatusBanner />
         <RateLimitBanner />
         <DuplicateSurveyBanner />
         <DeferredGraphPreloader />

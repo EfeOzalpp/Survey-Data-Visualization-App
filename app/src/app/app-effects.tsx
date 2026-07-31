@@ -3,9 +3,10 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 
+import { USE_MOCK_READS } from "../client-api/read-api/config";
+import { useSurveyStreamStatus } from "../client-api/read-api/surveyStreamStatus";
 import { usePreventPageZoomOutsideZones } from "../lib/hooks/usePreventPageZoom";
 import HintBanner from "./ui/HintBanner";
-import { useMockBanner } from "./useMockBanner";
 import {
   listenForDuplicateSurveyNotice,
   listenForRateLimitNotice,
@@ -143,18 +144,18 @@ export function AppBrowserPolicies({
   return null;
 }
 
-export function MockReadBanner() {
-  const { visible, setDismissed, quotaResetMonth } = useMockBanner();
+export function SurveyDataStatusBanner() {
+  const streamStatus = useSurveyStreamStatus();
+  const reconnecting = streamStatus === "reconnecting";
 
   return (
     <HintBanner
-      visible={visible}
-      className="mock-read-banner"
-      closeClassName="mock-read-banner-close"
-      closeLabel="Dismiss demo data notice"
-      onDismiss={() => { setDismissed(true); }}
+      visible={USE_MOCK_READS || reconnecting}
+      className="survey-data-status-banner"
     >
-      {`API quota exceeded. Demo data until ${quotaResetMonth} 1.`}
+      {USE_MOCK_READS
+        ? "Demo data mode. Responses are stored only in this browser session."
+        : "Survey data is temporarily unavailable. Reconnecting…"}
     </HintBanner>
   );
 }

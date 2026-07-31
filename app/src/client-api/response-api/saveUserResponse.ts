@@ -1,4 +1,4 @@
-import { USE_MOCK_READS, enableMockReadFallback, shouldUseMockReads } from '../read-api/config';
+import { USE_MOCK_READS } from '../read-api/config';
 import { createMockUserResponse } from '../mock-survey-data/mockData';
 import type { SurveyRow, SurveyWeights } from '../../domain/survey/types';
 import { setSessionItem } from '../../app/session';
@@ -6,7 +6,6 @@ import {
   getClientId,
   makeRandomId,
   makeWriteApiError,
-  WriteApiError,
 } from './writeApi';
 
 interface SavedUserResponse {
@@ -59,10 +58,6 @@ function isSavedUserResponse(value: unknown): value is SavedUserResponse {
   if (!value || typeof value !== 'object') return false;
   const record = value as Record<string, unknown>;
   return typeof record._id === 'string';
-}
-
-function shouldFallbackToMockWrite(error: unknown) {
-  return error instanceof WriteApiError && error.code === 'SANITY_WRITE_UNAVAILABLE';
 }
 
 export function createOptimisticUserResponse(section: string, weights: SurveyWeights): SavedUserResponse {
@@ -143,17 +138,10 @@ export async function saveUserResponse(section: string, weights: SurveyWeights):
   const clamped = normalizeWeights(weights);
 
   let created: SavedUserResponse;
-  if (USE_MOCK_READS || shouldUseMockReads()) {
+  if (USE_MOCK_READS) {
     created = createMockUserResponse(section, clamped);
   } else {
-    try {
-      created = await saveUserResponseViaApi(section, clamped);
-    } catch (error) {
-      if (!shouldFallbackToMockWrite(error)) throw error;
-
-      enableMockReadFallback(error);
-      created = createMockUserResponse(section, clamped);
-    }
+    created = await saveUserResponseViaApi(section, clamped);
   }
 
   persistUserResponseSession(created, section);

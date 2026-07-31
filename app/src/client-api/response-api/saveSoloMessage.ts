@@ -1,5 +1,5 @@
 import { getSessionItem, setSessionItem } from '../../app/session';
-import { USE_MOCK_READS, shouldUseMockReads } from '../read-api/config';
+import { USE_MOCK_READS } from '../read-api/config';
 import {
   getClientId,
   isWriteApiEditToken,
@@ -75,7 +75,7 @@ export async function saveSoloMessage(message: string): Promise<SavedSoloMessage
     throw new Error('Your response is still being saved. Try again in a moment.');
   }
 
-  if (USE_MOCK_READS || shouldUseMockReads()) {
+  if (USE_MOCK_READS) {
     const updated = updateMockSoloMessage(responseId, normalized);
     persistSoloMessageSnapshot(updated);
     return updated;

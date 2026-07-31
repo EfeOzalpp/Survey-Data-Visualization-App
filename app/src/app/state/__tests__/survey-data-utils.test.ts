@@ -1,4 +1,9 @@
-import { filterRowsForSection, deriveSectionCounts } from "../survey-data-utils";
+import {
+  filterRowsForSection,
+  deriveSectionCounts,
+  removeSurveyRow,
+  upsertSurveyRow,
+} from "../survey-data-utils";
 import type { SurveyRow } from "../../../domain/survey/types";
 
 const makeRow = (section: string): SurveyRow => ({
@@ -55,5 +60,25 @@ describe("deriveSectionCounts", () => {
     const counts = deriveSectionCounts([]);
     expect(counts.all).toBe(0);
     expect(counts.visitor).toBe(0);
+  });
+});
+
+describe("survey row mutations", () => {
+  test("upsert replaces an optimistic row with the persisted row", () => {
+    const optimistic = { ...makeRow("design"), _id: "pending-1" };
+    const persisted = { ...makeRow("design"), _id: "persisted-1" };
+
+    expect(upsertSurveyRow([optimistic], persisted, optimistic._id)).toEqual([
+      persisted,
+    ]);
+  });
+
+  test("remove deletes a failed optimistic row", () => {
+    const optimistic = { ...makeRow("design"), _id: "pending-1" };
+    const persisted = { ...makeRow("visitor"), _id: "persisted-1" };
+
+    expect(removeSurveyRow([optimistic, persisted], optimistic._id)).toEqual([
+      persisted,
+    ]);
   });
 });
