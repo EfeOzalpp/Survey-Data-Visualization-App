@@ -142,8 +142,8 @@
   .logs-table-wrap { min-height: calc(100svh - 12.8rem); max-height: calc(100svh - 12.8rem); }
   .logs-popover-shell { width: min(460px, calc(100vw - 3.2rem)); }
 
-  .logs-th--section { width: 30%; }
+  .logs-th--section { width: 28%; }
   .logs-th--qs {width: 36%;  }
-  .logs-th--avg { width: 14%; }
-  .logs-th--rank { width: 14%; }
+  .logs-th--avg { width: 15%; }
+  .logs-th--rank { width: 15%; }
 }
