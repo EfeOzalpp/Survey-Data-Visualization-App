@@ -100,6 +100,8 @@ until k6 ends their scenarios.
 
 ## Sanity-backed write throughput
 
+This result is the pre-PostgreSQL write baseline.
+
 The fixed-arrival writer test exercised the complete Express validation,
 Sanity mutation, synchronous visibility, and JWT response path.
 
@@ -144,9 +146,14 @@ deduplicated by response ID and coalesced for 750 ms before one patch is
 broadcast. Visible patch batches therefore reflect both Sanity's query-visible
 mutation timing and the backend's coalescing window.
 
-The recorded SSE throughput and concurrency results above were isolated read
-tests. A simultaneous writer-plus-SSE run is still required before claiming
-those read rates remain unchanged under sustained mutations.
+The recorded 225-read/s throughput and 10,160-connection results above remain
+isolated read tests; they should not be presented as mixed-workload results.
+
+As a PostgreSQL migration regression, a smaller simultaneous run scheduled 25
+complete SSE reads/s and 10 survey creates/s for 10 seconds. It completed
+251/251 SSE reads and 100/100 writes with no dropped iterations, connection
+errors, incomplete reads, or write failures. This validates the combined
+read/write path, but it is a smoke test rather than a mixed-load ceiling.
 
 ## Run
 
@@ -164,9 +171,10 @@ From the `k6` directory:
   -PeakHold 60
 ```
 
-The write tests create real documents. Run the container with
-`LOAD_TEST_MODE=true` and explicitly set `SANITY_DATASET=load-test`; a dataset
-value supplied by `.env` overrides the load-test fallback.
+The current write tests create real PostgreSQL rows. Run the container with
+`LOAD_TEST_MODE=true` and target a disposable database. The Sanity figures
+above are a historical pre-migration baseline, not a mode of the current
+scripts.
 
 ```powershell
 .\run-writers-ceiling.ps1 -Vus 25
@@ -191,7 +199,7 @@ With the dataset held at 488 rows, reducing the streamed row projection cut a
 250-reader burst from approximately 45 MB to 23 MB, a 49% reduction. Stored
 Sanity documents were unchanged.
 
-Writer tests create real Sanity mutations, so their results include Sanity's
-limits and latency rather than measuring Express alone. Both writer tests
-isolate survey creates. Use the disposable `load-test` dataset and remove its
-generated documents after benchmarking.
+Writer tests create real datastore rows. The recorded Sanity-backed runs
+include Sanity's limits and latency; current runs measure the
+Express-to-PostgreSQL path. Both writer tests isolate survey creates and should
+target disposable data.
