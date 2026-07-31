@@ -1,13 +1,12 @@
-import type { ListenEvent } from "@sanity/client";
-
-import { normalizeSurveyRow } from "../../domain/survey/normalizeSurveyRow";
-import type { RawSurveyRow, SurveyRow } from "../../domain/survey/types";
+import type { SurveyRow } from "../../domain/survey/types";
+import { listenToPostgresSurveyResponses } from "../upstreams/postgres/surveyResponseListener";
+import { fetchSurveyResponsePage } from "../upstreams/postgres/surveyResponseRepository";
 import {
-  fetchSnapshotPage,
-  listenToSurveyResponses,
-  SNAPSHOT_CHUNK_SIZE,
-  type SnapshotCursor,
-} from "../upstreams/sanity/surveyResponseQueries";
+  SURVEY_RESPONSE_CHUNK_SIZE,
+  type SurveyResponseChange,
+  type SurveyResponseCursor,
+  type SurveyResponseSubscription,
+} from "../upstreams/postgres/surveyResponseTypes";
 
 const PATCH_COALESCE_MS = 750;
 const RECONNECT_DELAY_MS = 15_000;
@@ -29,7 +28,8 @@ interface SurveyResponseFeedCallbacks {
 
 export class SurveyResponseFeed {
   private snapshotPromise: Promise<void> | null = null;
-  private listenerSubscription: { unsubscribe: () => void } | null = null;
+  private listenerSubscription: SurveyResponseSubscription | null = null;
+  private listenerStartPromise: Promise<void> | null = null;
   private reconnectTimer: NodeJS.Timeout | null = null;
   private patchTimer: NodeJS.Timeout | null = null;
   private readonly pendingUpserts = new Map<string, SurveyRow>();
@@ -51,20 +51,37 @@ export class SurveyResponseFeed {
   }
 
   startListener() {
-    if (this.listenerSubscription || !this.callbacks.hasClients()) return;
+    if (this.listenerSubscription || !this.callbacks.hasClients()) {
+      return Promise.resolve();
+    }
+    if (this.listenerStartPromise) return this.listenerStartPromise;
     this.clearReconnectTimer();
 
-    this.listenerSubscription = listenToSurveyResponses({
-      onEvent: (event) => {
-        this.handleSanityEvent(event);
+    const startPromise = listenToPostgresSurveyResponses({
+      onChange: (change) => {
+        this.handleSourceChange(change);
       },
-      onError: (error: unknown) => {
-        console.error("[surveyResponseStream] Sanity listener failed:", error);
-        this.listenerSubscription = null;
-        this.callbacks.onError(error);
-        this.scheduleListenerRestart();
+      onError: (error) => {
+        this.handleListenerError(error);
       },
-    });
+    })
+      .then((subscription) => {
+        if (!this.callbacks.hasClients()) {
+          subscription.unsubscribe();
+          return;
+        }
+        this.listenerSubscription = subscription;
+      })
+      .catch((error: unknown) => {
+        this.handleListenerError(error);
+      })
+      .finally(() => {
+        if (this.listenerStartPromise === startPromise) {
+          this.listenerStartPromise = null;
+        }
+      });
+    this.listenerStartPromise = startPromise;
+    return startPromise;
   }
 
   stopIfIdle() {
@@ -79,12 +96,12 @@ export class SurveyResponseFeed {
   private async refreshSnapshot() {
     this.callbacks.onSnapshotReset();
 
-    let cursor: SnapshotCursor | null = null;
+    let cursor: SurveyResponseCursor | null = null;
     let sentAnyPage = false;
 
     while (this.callbacks.hasClients()) {
-      const rows = await fetchSnapshotPage(cursor);
-      const complete = rows.length < SNAPSHOT_CHUNK_SIZE;
+      const rows = await fetchSurveyResponsePage(cursor);
+      const complete = rows.length < SURVEY_RESPONSE_CHUNK_SIZE;
 
       this.callbacks.onSnapshotPage(rows, {
         reset: !sentAnyPage,
@@ -120,15 +137,24 @@ export class SurveyResponseFeed {
 
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
-      this.startListener();
-      void this.ensureSnapshot().catch((error: unknown) => {
-        console.error(
-          "[surveyResponseStream] snapshot refresh failed after reconnect:",
-          error
-        );
-        this.callbacks.onError(error);
+      void this.startListener().then(() => {
+        void this.ensureSnapshot().catch((error: unknown) => {
+          console.error(
+            "[surveyResponseStream] snapshot refresh failed after reconnect:",
+            error
+          );
+          this.callbacks.onError(error);
+        });
       });
     }, RECONNECT_DELAY_MS);
+  }
+
+  private handleListenerError(error: unknown) {
+    console.error("[surveyResponseStream] PostgreSQL listener failed:", error);
+    this.listenerSubscription?.unsubscribe();
+    this.listenerSubscription = null;
+    this.callbacks.onError(error);
+    this.scheduleListenerRestart();
   }
 
   private flushPendingPatch() {
@@ -177,28 +203,14 @@ export class SurveyResponseFeed {
     }, PATCH_COALESCE_MS);
   }
 
-  private handleSanityEvent(event: ListenEvent<RawSurveyRow>) {
-    if (event.type !== "mutation") return;
-
-    if (event.transition === "disappear") {
-      this.callbacks.onDelete(event.documentId);
-      this.queuePatch({ deletes: [event.documentId] });
+  private handleSourceChange(change: SurveyResponseChange) {
+    if (change.type === "delete") {
+      this.callbacks.onDelete(change.id);
+      this.queuePatch({ deletes: [change.id] });
       return;
     }
 
-    if (!event.result) {
-      void this.ensureSnapshot().catch((error: unknown) => {
-        console.error(
-          "[surveyResponseStream] snapshot refresh failed after mutation:",
-          error
-        );
-        this.callbacks.onError(error);
-      });
-      return;
-    }
-
-    const row = normalizeSurveyRow(event.result);
-    this.callbacks.onUpsert(row);
-    this.queuePatch({ upserts: [row] });
+    this.callbacks.onUpsert(change.row);
+    this.queuePatch({ upserts: [change.row] });
   }
 }

@@ -1,0 +1,89 @@
+name: butterfly-effect
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: butterfly_effect
+      POSTGRES_USER: butterfly_effect_app
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-butterfly-effect-local}"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U butterfly_effect_app -d butterfly_effect",
+        ]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  postgres-test:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: butterfly_effect_test
+      POSTGRES_USER: butterfly_effect_test
+      POSTGRES_PASSWORD: butterfly-effect-test
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U butterfly_effect_test -d butterfly_effect_test",
+        ]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  migrate:
+    build: .
+    command:
+      [
+        "node",
+        "dist-server/server/upstreams/postgres/migrate.js",
+      ]
+    environment:
+      DATABASE_URL: "postgresql://butterfly_effect_app:${POSTGRES_PASSWORD:-butterfly-effect-local}@postgres:5432/butterfly_effect"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  repository-test:
+    build:
+      context: .
+      target: builder
+    command:
+      [
+        "sh",
+        "-c",
+        "node dist-server/server/upstreams/postgres/migrate.js && npm run test:postgres",
+      ]
+    environment:
+      DATABASE_URL: "postgresql://butterfly_effect_test:butterfly-effect-test@postgres-test:5432/butterfly_effect_test"
+      IDEMPOTENCY_SALT: postgres-integration-test-idempotency
+      JWT_SECRET: postgres-integration-test-jwt-secret
+      LOAD_TEST_MODE: "true"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+
+  app:
+    build: .
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      DATABASE_URL: "postgresql://butterfly_effect_app:${POSTGRES_PASSWORD:-butterfly-effect-local}@postgres:5432/butterfly_effect"
+      CLUSTER_MODE: "${CLUSTER_MODE:-true}"
+      LOAD_TEST_MODE: "${LOAD_TEST_MODE:-false}"
+    ports:
+      - "3000:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-data:

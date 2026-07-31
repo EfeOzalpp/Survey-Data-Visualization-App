@@ -4,8 +4,8 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
-  name: 'userResponse',
-  title: 'Butterfly Habits',
+  name: 'butterflyEffectCms',
+  title: 'Butterfly Effect CMS',
 
   projectId: '2dnm6wwp',
   dataset: 'butterfly-habits',

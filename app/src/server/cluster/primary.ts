@@ -2,35 +2,16 @@ import cluster from "node:cluster";
 import type { Worker } from "node:cluster";
 import { consumeRateLimits } from "../security/rateLimiter";
 import { MAX_WORKERS, WORKER_SCALE_UP_THRESHOLD } from "./clusterMode";
-import type { PrimaryToWorkerMessage, SanityStats, SseStats, WorkerToPrimaryMessage } from "./messages";
+import type { PrimaryToWorkerMessage, SseStats, WorkerToPrimaryMessage } from "./messages";
 
 const STATS_AGGREGATION_TIMEOUT_MS = 1000;
-const EMPTY_SANITY_STATS: SanityStats = {
-  snapshotFetch: 0,
-  listenSubscriptionOpened: 0,
-  writeCreate: 0,
-  writePatch: 0,
-};
 const EMPTY_SSE_STATS: SseStats = { totalOpened: 0, current: 0, peakConcurrent: 0 };
 
 interface PendingStatsAggregation {
   requesterWorkerId: number;
   expected: number;
-  sanity: SanityStats[];
   sse: SseStats[];
   timer: NodeJS.Timeout;
-}
-
-function sumSanityStats(entries: SanityStats[]): SanityStats {
-  return entries.reduce(
-    (acc, s) => ({
-      snapshotFetch: acc.snapshotFetch + s.snapshotFetch,
-      listenSubscriptionOpened: acc.listenSubscriptionOpened + s.listenSubscriptionOpened,
-      writeCreate: acc.writeCreate + s.writeCreate,
-      writePatch: acc.writePatch + s.writePatch,
-    }),
-    EMPTY_SANITY_STATS
-  );
 }
 
 // peakConcurrent is summed per-worker as a conservative upper-bound estimate
@@ -63,7 +44,6 @@ export function runPrimary() {
     const reply: PrimaryToWorkerMessage = {
       type: "stats-result",
       requestId,
-      sanity: sumSanityStats(entry.sanity),
       sse: sumSseStats(entry.sse),
     };
     requesterWorker.send(reply);
@@ -93,7 +73,6 @@ export function runPrimary() {
       pendingStats.set(msg.requestId, {
         requesterWorkerId: worker.id,
         expected: liveWorkers.length,
-        sanity: [],
         sse: [],
         timer: setTimeout(() => {
           finishStatsAggregation(msg.requestId);
@@ -109,9 +88,8 @@ export function runPrimary() {
     // return early for every other member of the WorkerToPrimaryMessage union.
     const entry = pendingStats.get(msg.requestId);
     if (!entry) return;
-    entry.sanity.push(msg.sanity);
     entry.sse.push(msg.sse);
-    if (entry.sanity.length >= entry.expected) finishStatsAggregation(msg.requestId);
+    if (entry.sse.length >= entry.expected) finishStatsAggregation(msg.requestId);
   }
 
   function forkWorker() {

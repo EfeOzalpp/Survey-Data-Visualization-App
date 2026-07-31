@@ -5,8 +5,7 @@ import { type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
 import { checkRateLimits } from "../cluster/clusterRateLimit";
 import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
-import { recordSanityRequest } from "../load-testing/requestStats"; // load-testing
-import { sanityWriteClient } from "../upstreams/sanity/writeClient";
+import { updateSurveyResponseSoloMessage } from "../upstreams/postgres/surveyResponseRepository";
 import { sha256 } from "../utils/hash";
 import { isRecord, readOptionalId, rejectDisallowedOrigin } from "./shared";
 
@@ -15,11 +14,6 @@ interface ValidPayload {
   message: string;
   clientId: string | null;
   clientRequestId: string | null;
-}
-
-interface SavedMessageResponse {
-  _id: string;
-  soloMessage?: string;
 }
 
 const MAX_MESSAGE_LENGTH = 160;
@@ -125,30 +119,28 @@ export async function saveSoloMessageRoute(req: Request, res: Response) {
   }
 
   try {
-    recordSanityRequest("writePatch"); // load-testing
-    const patch = sanityWriteClient.patch(verified.responseId);
-    if (validation.payload.message.length > 0) {
-      patch.set({
-        soloMessage: validation.payload.message,
-        soloMessageUpdatedAt: new Date().toISOString(),
+    const updated = await updateSurveyResponseSoloMessage(
+      verified.responseId,
+      validation.payload.message || null
+    );
+
+    if (!updated) {
+      res.status(404).json({
+        error: "Survey response not found",
+        code: "SURVEY_RESPONSE_NOT_FOUND",
       });
-    } else {
-      patch.unset(["soloMessage", "soloMessageUpdatedAt"]);
+      return;
     }
 
-    const updated = await patch.commit<SavedMessageResponse>({
-      returnDocuments: true,
-      visibility: "sync",
-    });
-
-    const responseBody = {
+    res.status(200).json({
       _id: updated._id,
       ...(updated.soloMessage ? { soloMessage: updated.soloMessage } : {}),
-    };
-
-    res.status(200).json(responseBody);
+    });
   } catch (error) {
     console.error("[save-solo-message] failed:", error);
-    res.status(500).json({ error: "Unable to save message", code: "SERVER_ERROR" });
+    res.status(503).json({
+      error: "Unable to save message",
+      code: "DATABASE_WRITE_UNAVAILABLE",
+    });
   }
 }

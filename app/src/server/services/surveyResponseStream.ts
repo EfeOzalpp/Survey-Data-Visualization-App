@@ -1,6 +1,6 @@
 import type { Response } from "express";
 
-import { SNAPSHOT_CHUNK_SIZE } from "../upstreams/sanity/surveyResponseQueries";
+import { SURVEY_RESPONSE_CHUNK_SIZE } from "../upstreams/postgres/surveyResponseTypes";
 import {
   ResponseStore,
   type SurveyResponseLimit,
@@ -12,7 +12,7 @@ import { SurveyResponseFeed } from "./surveyResponseFeed";
 export type { SurveyResponseLimit } from "./responseStore";
 
 const responseStore = new ResponseStore();
-const snapshotCache = new SnapshotCache(responseStore, SNAPSHOT_CHUNK_SIZE);
+const snapshotCache = new SnapshotCache(responseStore, SURVEY_RESPONSE_CHUNK_SIZE);
 
 const clientHub = new SseClientHub(() => {
   surveyResponseFeed.stopIfIdle();
@@ -75,13 +75,14 @@ export function openSurveyResponseStream({
     );
   }
 
-  surveyResponseFeed.startListener();
-  if (!responseStore.hasCompleteSnapshot || isFirstClient) {
-    void surveyResponseFeed.ensureSnapshot().catch((error: unknown) => {
-      console.error("[surveyResponseStream] initial snapshot failed:", error);
-      clientHub.sendError(client, error);
-    });
-  }
+  void surveyResponseFeed.startListener().then(() => {
+    if (!responseStore.hasCompleteSnapshot || isFirstClient) {
+      void surveyResponseFeed.ensureSnapshot().catch((error: unknown) => {
+        console.error("[surveyResponseStream] initial snapshot failed:", error);
+        clientHub.sendError(client, error);
+      });
+    }
+  });
 
   return () => {
     clientHub.remove(client.id);

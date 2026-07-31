@@ -1,12 +1,11 @@
 import cluster from "node:cluster";
 import { randomUUID } from "node:crypto";
-import { readSanityRequestStats, resetSanityRequestStats } from "../load-testing/requestStats";
 import { readSseConnectionStats, resetSseConnectionStats } from "../load-testing/sseConnectionStats";
 import { CLUSTER_MODE } from "./clusterMode";
-import type { PrimaryToWorkerMessage, SanityStats, SseStats, WorkerToPrimaryMessage } from "./messages";
+import type { PrimaryToWorkerMessage, SseStats, WorkerToPrimaryMessage } from "./messages";
 
 const IPC_TIMEOUT_MS = 2000;
-const pending = new Map<string, (stats: { sanity: SanityStats; sse: SseStats }) => void>();
+const pending = new Map<string, (stats: { sse: SseStats }) => void>();
 
 if (CLUSTER_MODE && cluster.isWorker) {
   process.on("message", (msg: PrimaryToWorkerMessage) => {
@@ -14,13 +13,11 @@ if (CLUSTER_MODE && cluster.isWorker) {
     // aggregation another worker (or this one) requested.
     if (msg.type === "stats-query") {
       if (msg.reset) {
-        resetSanityRequestStats();
         resetSseConnectionStats();
       }
       const reply: WorkerToPrimaryMessage = {
         type: "stats-query-result",
         requestId: msg.requestId,
-        sanity: readSanityRequestStats(),
         sse: readSseConnectionStats(),
       };
       process.send?.(reply);
@@ -31,7 +28,7 @@ if (CLUSTER_MODE && cluster.isWorker) {
       const resolve = pending.get(msg.requestId);
       if (!resolve) return;
       pending.delete(msg.requestId);
-      resolve({ sanity: msg.sanity, sse: msg.sse });
+      resolve({ sse: msg.sse });
     }
   });
 }
@@ -42,13 +39,12 @@ if (CLUSTER_MODE && cluster.isWorker) {
 // Outside cluster mode, this is just this process's own local stats.
 export async function requestClusterStats(
   reset = false
-): Promise<{ sanity: SanityStats; sse: SseStats }> {
+): Promise<{ sse: SseStats }> {
   if (!CLUSTER_MODE || !cluster.isWorker || typeof process.send !== "function") {
     if (reset) {
-      resetSanityRequestStats();
       resetSseConnectionStats();
     }
-    return { sanity: readSanityRequestStats(), sse: readSseConnectionStats() };
+    return { sse: readSseConnectionStats() };
   }
 
   const requestId = randomUUID();
@@ -62,10 +58,9 @@ export async function requestClusterStats(
       if (!pending.delete(requestId)) return;
       // Fail closed to this worker's own numbers rather than hanging the request.
       if (reset) {
-        resetSanityRequestStats();
         resetSseConnectionStats();
       }
-      resolve({ sanity: readSanityRequestStats(), sse: readSseConnectionStats() });
+      resolve({ sse: readSseConnectionStats() });
     }, IPC_TIMEOUT_MS);
   });
 }
