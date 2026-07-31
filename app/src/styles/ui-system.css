@@ -132,7 +132,7 @@ p span, li span, label span { font-family: var(--font-body); font-size: var(--ty
 .hint-banner-close:hover { background: var(--hint-bg-hover); color: var(--hint-text); }
 .hint-banner-close svg [stroke] { stroke: var(--hint-svg); }
 
-.mock-read-banner {
+.survey-data-status-banner {
   position: fixed;
   top: calc(1rem + env(safe-area-inset-bottom, 0px));
   left: 50%;

@@ -55,3 +55,7 @@ export function upsertSurveyRow(
   );
   return [nextRow, ...filtered].sort((a, b) => newestTimestampOf(b) - newestTimestampOf(a));
 }
+
+export function removeSurveyRow(allRows: SurveyRow[], id: string) {
+  return allRows.filter((row) => row._id !== id);
+}

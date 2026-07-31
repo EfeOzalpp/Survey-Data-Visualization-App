@@ -66,9 +66,10 @@ export function useSurveySubmission({
       resetToStart: s.resetToStart,
     }))
   );
-  const { counts, upsertLocalSurveyRow, setSection } = useSurveyDataStore(
+  const { counts, removeLocalSurveyRow, upsertLocalSurveyRow, setSection } = useSurveyDataStore(
     useShallow((s) => ({
       counts: s.counts,
+      removeLocalSurveyRow: s.removeLocalSurveyRow,
       upsertLocalSurveyRow: s.upsertLocalSurveyRow,
       setSection: s.setSection,
     }))
@@ -133,6 +134,7 @@ export function useSurveySubmission({
 
     } catch (err) {
       console.error('[Survey] submit error:', err);
+      removeLocalSurveyRow(optimistic._id);
       const submitErrorMessage = err instanceof WriteApiError
         ? err.code === 'RATE_LIMITED'
           ? 'Too many submissions from this network. Please wait a moment and try again.'
@@ -177,6 +179,7 @@ export function useSurveySubmission({
     setLiveAvg,
     counts,
     setSection,
+    removeLocalSurveyRow,
     upsertLocalSurveyRow,
     setMySection,
     setMyEntryId,

@@ -1,10 +1,8 @@
 // src/client-api/read-api/api.ts
 // Survey reads through the same-origin backend SSE stream, with mock-data fallback when reads are unavailable.
 
-import {
-  enableMockReadFallback,
-  shouldUseMockReads,
-} from './config';
+import { shouldUseMockReads } from './config';
+import { setSurveyStreamStatus } from './surveyStreamStatus';
 import { subscribeMockSurveyData } from '../mock-survey-data/mockData';
 import type { SurveyRow, Unsubscribe } from '../../domain/survey/types';
 
@@ -117,56 +115,59 @@ export function subscribeSurveyData({
   }
 
   let closed = false;
-  let mockUnsub: Unsubscribe | null = null;
-  let source: EventSource | null = new EventSource(streamUrl(section, limit));
+  const source = new EventSource(streamUrl(section, limit));
   let rows: SurveyRow[] = [];
+  setSurveyStreamStatus('connecting');
 
   const emitRows = () => {
     onData(rowsWithinLimit(rows, limit));
   };
 
-  const switchToMock = (error: unknown) => {
-    if (closed || mockUnsub) return;
-    source?.close();
-    source = null;
-    enableMockReadFallback(error);
-    mockUnsub = subscribeMockSurveyData({ section, limit, onData });
+  const reportStreamIssue = (error: unknown) => {
+    if (closed) return;
+    setSurveyStreamStatus('reconnecting');
+    console.error('[read-api] survey response stream', error);
   };
 
   source.addEventListener('snapshot', (event) => {
-    if (closed || mockUnsub) return;
+    if (closed) return;
     try {
       const snapshot = readRowsFromEvent(event);
       rows = mergeRows(snapshot.reset ? [] : rows, snapshot.rows);
       emitRows();
+      setSurveyStreamStatus('live');
     } catch (error) {
-      switchToMock(error);
+      reportStreamIssue(error);
     }
   });
 
   source.addEventListener('patch', (event) => {
-    if (closed || mockUnsub) return;
+    if (closed) return;
     try {
       rows = applyPatch(rows, readPatchFromEvent(event));
       emitRows();
+      setSurveyStreamStatus('live');
     } catch (error) {
-      switchToMock(error);
+      reportStreamIssue(error);
     }
   });
 
   source.addEventListener('stream-error', (event) => {
-    if (closed || mockUnsub) return;
-    switchToMock(new Error(event.data as string));
+    if (closed) return;
+    reportStreamIssue(new Error(event.data as string));
   });
 
+  source.onopen = () => {
+    if (!closed) setSurveyStreamStatus('live');
+  };
+
   source.onerror = (error) => {
-    if (closed || mockUnsub) return;
-    console.error('[read-api] survey response stream', error);
+    reportStreamIssue(error);
   };
 
   return () => {
     closed = true;
-    source?.close();
-    mockUnsub?.();
+    source.close();
+    setSurveyStreamStatus('idle');
   };
 }

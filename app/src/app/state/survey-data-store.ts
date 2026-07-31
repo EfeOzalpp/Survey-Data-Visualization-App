@@ -4,7 +4,12 @@ import { startTransition, useEffect } from 'react';
 import { getSessionItem, removeSessionItems, setSessionItem } from '../session';
 import { parentAggregateForSection } from '../../domain/survey/sections';
 import type { SurveyRow } from '../../domain/survey/types';
-import { deriveSectionCounts, filterRowsForSection, upsertSurveyRow } from './survey-data-utils';
+import {
+  deriveSectionCounts,
+  filterRowsForSection,
+  removeSurveyRow,
+  upsertSurveyRow,
+} from './survey-data-utils';
 
 const ALL_ROWS_LIMIT = 'all';
 const FIRST_SECTION_SUBMISSION_COUNT = 1;
@@ -101,6 +106,7 @@ export interface SurveyDataStoreState {
   allRows: SurveyRow[];
   allFilteredRows: SurveyRow[];
   loading: boolean;
+  removeLocalSurveyRow: (id: string) => void;
   upsertLocalSurveyRow: (row: SurveyRow, replaceId?: string) => void;
   subscribeToSurveyData: () => () => void;
   mySection: string | null;
@@ -127,6 +133,14 @@ export const useSurveyDataStore = create<SurveyDataStoreState>((set, get) => ({
     localRows = upsertSurveyRow(localRows, row, replaceId);
     set((s) => {
       const nextAllRows = upsertSurveyRow(s.allRows, row, replaceId);
+      return { allRows: nextAllRows, ...computeDerived(nextAllRows, s.section) };
+    });
+  },
+
+  removeLocalSurveyRow: (id) => {
+    localRows = removeSurveyRow(localRows, id);
+    set((s) => {
+      const nextAllRows = removeSurveyRow(s.allRows, id);
       return { allRows: nextAllRows, ...computeDerived(nextAllRows, s.section) };
     });
   },
