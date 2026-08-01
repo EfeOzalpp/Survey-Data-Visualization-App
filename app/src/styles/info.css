@@ -1,0 +1,331 @@
+.role-step__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: var(--space-md);
+}
+
+.role-select button.more-info-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-title);
+  font-family: var(--font-title);
+  font-size: var(--type-h4-size);
+  font-weight: 420 !important;
+  line-height: var(--type-h4-line);
+  letter-spacing: 0.02rem;
+  text-decoration-line: underline;
+  text-decoration-color: var(--btn-secondary-bg);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  vertical-align: baseline;
+  transition: color 120ms ease;
+}
+
+.role-select button.more-info-trigger:hover {
+  color: var(--ui-title);
+  text-decoration-color: var(--btn-secondary-hover-bg);
+}
+
+.role-select .more-info-trigger__icon-box {
+  display: inline-flex;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-left: 0.3em;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--btn-radius);
+  background: var(--btn-secondary-bg);
+}
+
+.role-select .more-info-trigger__icon {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+.role-select .more-info-trigger__icon [stroke] {
+  stroke: currentColor;
+}
+
+.role-select button.more-info-trigger:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}
+
+.info-dialog-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: grid;
+  align-items: end;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear 140ms;
+}
+
+.info-dialog-root.is-open {
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.info-dialog-overlay {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 100ms ease-out;
+}
+
+.info-dialog-root.is-open .info-dialog-overlay {
+  opacity: 1;
+}
+
+.info-dialog-shell {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(100%);
+  transition:
+    transform 140ms cubic-bezier(.4,0,1,1),
+    opacity 90ms ease-out;
+  will-change: transform, opacity;
+}
+
+.info-dialog-root.is-open .info-dialog-shell {
+  opacity: 1;
+  transform: translateY(0);
+  transition-timing-function: cubic-bezier(.22,.61,.36,1), ease-out;
+}
+
+.info-dialog {
+  display: flex;
+  flex-direction: column;
+  height: 20rem;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ui-bg-surface);
+  color: var(--ui-text);
+  border: 1px solid var(--ui-border);
+  border-bottom: 0;
+  box-shadow: 0 -18px 42px var(--ui-drop-shadow);
+}
+
+.info-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: 1rem 1rem 0.8rem 1.2rem;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.info-dialog-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  min-width: 0;
+  font-size: var(--type-h4-size);
+  line-height: var(--type-h4-line);
+}
+
+.info-dialog-title span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info-dialog-close {
+  flex: 0 0 auto;
+}
+
+.info-dialog-close .ui-close {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.info-dialog-copy {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 9rem;
+  overflow: hidden;
+  padding: 1.4rem 1.2rem;
+}
+
+.info-dialog-copy p {
+  margin: 0;
+  color: var(--ui-text-secondary);
+}
+
+.info-dialog-slide { display: block; }
+
+.info-dialog-slide.has-media {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--space-md);
+  height: 100%;
+}
+
+.info-dialog-media {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--ui-bg-page);
+}
+
+.info-dialog-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ui-icon-nav.info-dialog-slider-controls {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: 0.55rem 0.45rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+}
+
+.info-dialog-slider-button svg.ui-icon {
+  width: 1.6rem !important;
+  height: 1.6rem !important;
+}
+
+.info-dialog-timeline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.info-dialog-progress {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+button.info-dialog-progress-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.info-dialog-progress-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ui-text) 24%, transparent);
+}
+
+.info-dialog-progress-fill {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ui-text) 62%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.info-dialog-progress-fill.is-complete {
+  transform: scaleX(1);
+}
+
+.info-dialog-progress-fill.is-active {
+  animation-name: info-dialog-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+button.info-dialog-progress-button:hover .info-dialog-progress-track {
+  background: color-mix(in srgb, var(--ui-text) 38%, transparent);
+}
+
+button.info-dialog-progress-button:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 1px;
+  border-radius: var(--radius-md);
+}
+
+.info-dialog-pause {
+  flex: 0 0 auto;
+  margin-left: var(--space-md);
+}
+
+.info-dialog-pause svg.ui-icon {
+  width: 1.6rem !important;
+  height: 1.6rem !important;
+}
+
+@keyframes info-dialog-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (max-width: 767px) {
+  .info-dialog-root,
+  .info-dialog-shell {
+    width: 100dvw;
+  }
+}
+
+@media (min-width: 768px) {
+  .info-dialog-root {
+    place-items: center;
+  }
+
+  .info-dialog-shell {
+    width: min(540px, calc(100vw - 4rem));
+    transform: translateY(0.5rem) scale(0.985);
+  }
+
+  .info-dialog-root.is-open .info-dialog-shell {
+    transform: translateY(0) scale(1);
+  }
+
+  .info-dialog {
+    max-height: min(72svh, 620px);
+    border-bottom: 1px solid var(--ui-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 18px 42px var(--ui-drop-shadow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .info-dialog-root,
+  .info-dialog-overlay,
+  .info-dialog-shell {
+    transition: none;
+  }
+
+}

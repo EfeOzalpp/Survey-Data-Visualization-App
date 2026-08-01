@@ -3,6 +3,7 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import LinkIcon from "../../assets/svg/link/LinkIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
 import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
 
@@ -146,10 +147,16 @@ export default function CanvasInfo() {
               target="_blank"
               rel="noreferrer"
               aria-label="Open Canvas Engine repository"
-              data-label="View Canvas Engine"
+              data-label="Canvas Engine"
             >
-              <span className="canvas-engine-link__ghost" aria-hidden="true">View Canvas Engine</span>
-              <span className="canvas-engine-link__inner">View Canvas Engine</span>
+              <span className="canvas-engine-link__ghost" aria-hidden="true">
+                <LinkIcon />
+                Canvas Engine
+              </span>
+              <span className="canvas-engine-link__inner">
+                <LinkIcon />
+                Canvas Engine
+              </span>
             </a>
           </div>
         </div>

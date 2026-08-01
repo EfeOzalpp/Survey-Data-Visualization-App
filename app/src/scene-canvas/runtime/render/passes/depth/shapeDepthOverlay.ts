@@ -35,6 +35,16 @@ interface ShapeDepthOverlay {
   blend: number;
 }
 
+// Shapes whose canopy/crown is authored to rise well above their footprint's
+// top edge (see e.g. trees.ts TREES.layout.maxOverflowTopK + tall poplar
+// canopies). The generic `pad` below is sized off cell size, not footprint
+// height, so on multi-row footprints it undershoots this overflow and clips
+// the top of the shape's cached mask/selection-highlight canvas even though
+// the live color draw (unclipped) renders the full shape.
+const EXTRA_TOP_PAD_K: Record<string, number> = {
+  trees: 0.5,
+};
+
 function resolveMaskBounds(item: EngineFieldItem, rEff: number, opts: RuntimeShapeOptions): MaskBounds | null {
   const projection = shapeProjection(opts);
   const cell = finiteNumber(projection.cell, rEff);
@@ -49,11 +59,12 @@ function resolveMaskBounds(item: EngineFieldItem, rEff: number, opts: RuntimeSha
   // A little breathing room catches roof overhangs and anti-aliased edges.
   // This is still item-sized, not a full-scene canvas.
   const pad = Math.ceil(Math.max(8, rEff * 0.65, Math.max(cellW, cellH) * 0.7));
+  const topPad = pad + Math.ceil(rect.h * (EXTRA_TOP_PAD_K[item.shape] ?? 0));
   return {
     x: Math.floor(rect.x - pad),
-    y: Math.floor(rect.y - pad),
+    y: Math.floor(rect.y - topPad),
     w: Math.ceil(rect.w + pad * 2),
-    h: Math.ceil(rect.h + pad * 2),
+    h: Math.ceil(rect.h + topPad + pad),
   };
 }
 
@@ -209,8 +220,9 @@ export function createShapeDepthOverlayRenderer(getPolicy: () => ShapeDepthMaskC
     color: RGB;
     timeMs: number;
     dpr: number;
+    quantizeLiveAvg: boolean;
   }) {
-    const { entry, shapeRegistry, item, rEff, opts, color, timeMs, dpr } = args;
+    const { entry, shapeRegistry, item, rEff, opts, color, timeMs, dpr, quantizeLiveAvg } = args;
     const { ctx, p: maskP, bounds, canvas } = entry;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -225,7 +237,12 @@ export function createShapeDepthOverlayRenderer(getPolicy: () => ShapeDepthMaskC
     const pass = bakeOpts.pass ?? (bakeOpts.pass = {});
     // Match the far-bitmap cache: bake with the quantized liveAvg so the mask
     // silhouette always corresponds to the same variant as the visible bitmap.
-    if (!style.gradientRGBOverrideActive) {
+    // Skip quantizing on the always-live rebake path: that path re-bakes every
+    // frame to track the live color draw exactly, and a bucketed liveAvg there
+    // gives shapes with time-integrated motion (e.g. power's rotor speed) a
+    // persistently different rate than the live draw, so the error compounds
+    // every frame into unbounded drift instead of a one-off rounding gap.
+    if (!style.gradientRGBOverrideActive && quantizeLiveAvg) {
       style.liveAvg = liveAvgBucketAvg(style.liveAvg);
     }
     style.alpha = 255;
@@ -337,6 +354,7 @@ export function createShapeDepthOverlayRenderer(getPolicy: () => ShapeDepthMaskC
           color: overlay.color,
           timeMs: shapeLifecycle(opts).timeMs ?? performance.now(),
           dpr,
+          quantizeLiveAvg: !alwaysLiveMask,
         });
         cache.set(key, entry);
         fallbackKeys.set(fallbackKey, key);
@@ -355,6 +373,7 @@ export function createShapeDepthOverlayRenderer(getPolicy: () => ShapeDepthMaskC
           color: overlay.color,
           timeMs: shapeLifecycle(opts).timeMs ?? performance.now(),
           dpr,
+          quantizeLiveAvg: false,
         });
       }
       cache.touch(key, entry);

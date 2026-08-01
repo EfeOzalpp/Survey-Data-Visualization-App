@@ -77,13 +77,13 @@
 
 @media (max-width: 767px) {
   .survey-section:has(.survey.survey-step.role-select) { height: 100%; }
-  .survey.survey-step.role-select .onboarding { padding: 2.4rem 20px 3.2rem; min-width: 320px; max-width: 320px; }
+  .survey.survey-step.role-select .onboarding { padding: 2.4rem 20px 3.2rem; min-width: 360px; max-width: 360px; }
   .role-indicator-spacer { width: 1.1rem !important; height: 1.1rem !important; min-width: 1.1rem; min-height: 1.1rem; }
   .welcome-title, .welcome-text { text-align: center; }
   .welcome-title { padding: 2.4rem; top: 3.1rem; }
   .onboarding-canvas { height: 640px; }
   .welcome-title-layer { height: 640px; }
-  .radio-group { width: 90%; }
+  .radio-group { width: 288px; }
   .onboarding-info.canvas-info { padding: 0rem 1.2rem 3.2rem; }
   .canvas-info__spotlight-frame { height: min(72vw, 360px); }
   .canvas-info__slider-controls { right: 0.25rem; bottom: 0.25rem; }
@@ -116,7 +116,7 @@
 
 @media (min-width: 768px) {
   .survey-section:has(.survey.survey-step.role-select) { height: 100%; }
-  .survey.survey-step.role-select .onboarding { padding: 3.2rem 0 2.4rem; min-width: 520px; max-width: 520px; }
+  .survey.survey-step.role-select .onboarding { padding: 3.2rem 0 2.4rem; min-width: 580px; max-width: 580px; }
   .welcome-title, .welcome-text { text-align: center; }
   .welcome-title { white-space: nowrap; padding: 2.4rem 0 3.2rem; }
   .radio-group { min-width: 260px; max-width: 260px; }

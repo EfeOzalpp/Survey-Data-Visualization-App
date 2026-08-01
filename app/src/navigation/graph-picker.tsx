@@ -232,7 +232,6 @@ export default function GraphPicker({
                   ) : (
                     <>
                       <span className="label option-label">
-                        {opt.id === "visitor" && <span className="explorer-emoji" aria-hidden>🌍</span>}
                         {ALL_LABELS.get(opt.id) ?? titleFromId(opt.id)}
                       </span>
                       <span className="picker-labels">

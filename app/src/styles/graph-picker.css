@@ -230,8 +230,7 @@
   .option { padding: 0.8rem; }
 }
 
-/* Explorer icon */
-.explorer-emoji { position: relative; display: inline-flex; align-items: center; justify-content: center; margin-right: 0.3em; width: 1.5em; height: 1.5em; line-height: 1; flex-shrink: 0; }
+.listbox .option { padding-left: 1.2rem; }
 
 /* Theme wiring: graph picker */
 .label,

@@ -1,11 +1,13 @@
 // src/onboarding/role-picker/role-step.tsx
 import RolePicker from ".";
 import type { RoleValue } from ".";
+import InfoIcon from "../../assets/svg/info/InfoIcon";
+import { useUiStore } from "../../app/state/ui-store";
 
 const DISPLAY: Record<RoleValue, string> = {
   student: "Step In",
   staff: "Step In",
-  visitor: "Start Survey",
+  visitor: "Let's Begin",
 };
 
 interface RoleStepProps {
@@ -19,11 +21,27 @@ export default function RoleStep({ value, onChange, onNext, error }: RoleStepPro
   const isSelected = Boolean(value);
   const buttonLabel = value === "" ? "Start Exploring" : DISPLAY[value];
   const errorId = !isSelected && error ? "role-picker-error" : undefined;
+  const setInfoOpen = useUiStore((state) => state.setInfoOpen);
 
   return (
     <section className="survey survey-step role-select">
         <div className="onboarding">
-          <h2 className="welcome-text">See your answers change the scenery, then receive a shape that joins the others.</h2>
+          <div className="role-step__heading">
+            <h2 className="welcome-text">
+              Answer a short survey, and I'll match you with a shape from the scene above.
+            </h2>
+            <button
+              type="button"
+              className="more-info-trigger"
+              aria-haspopup="dialog"
+              onClick={() => { setInfoOpen(true); }}
+            >
+              more info
+              <span className="more-info-trigger__icon-box" aria-hidden="true">
+                <InfoIcon className="ui-icon more-info-trigger__icon" />
+              </span>
+            </button>
+          </div>
 
           <RolePicker value={value} onChange={onChange} errorId={errorId} />
 
