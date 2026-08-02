@@ -1,6 +1,6 @@
-## BE: Real-Time Rendering & Analytics
+## BE: Real-Time Rendering & Visualization
 
-`Butterfly Effect` is an interactive survey and analytics application that transforms responses into personalized scenes and a collective 3D visualization.
+`Butterfly Effect` is an interactive survey and visualization application that transforms responses into personalized scenes and a collective 3D visualization.
 
 Its custom 2.5D-capable Canvas2D renderer uses shared draw functions to generate both the city canvases and reusable offscreen sprites consumed by the Three.js/WebGL layer on the visualization page.
 
@@ -96,17 +96,23 @@ Zustand stores manage canvas runtime, survey data, and UI state through per-fiel
 
 Identity and user preferences remain in React Context. Twelve components beneath rendering-heavy parents use `React.memo` to prevent unrelated state changes from propagating through the component tree.
 
+Zustand and `React.memo` were benchmarked separately to see what each one actually moved. [Results](app/src/render-test/README.md)
+
 <br>
 
-## Data Layer
+## Data Flow
 
-**PostgreSQL:** Stores transactional survey responses and message edits. Row
-changes are published through a PostgreSQL trigger and `LISTEN` connection,
-then delivered through the existing SSE patch contract.
+#### PostgreSQL
 
-**Sanity:** Remains the CMS for editable gamification copy. A transactional,
-repeatable importer moves exported `userResponseV4` history into PostgreSQL
-without changing the browser-facing REST or SSE interfaces.
+**Connections:** A `pg.Pool` reuses database connections for REST reads and writes instead of opening a new connection for every request. A separate `pg.Client` stays open for the PostgreSQL `LISTEN` subscription without occupying a connection from the query pool.
+
+**Schema and queries:** SQL migration files define the `survey_responses` table, weight and message constraints, a unique idempotency hash, and indexes for newest-first history reads. A repository module keeps parameterized `INSERT`, `UPDATE`, and paginated `SELECT` queries behind the existing REST and SSE interfaces, then maps database records into the application's survey-response format.
+
+**Live changes:** An `AFTER INSERT OR UPDATE OR DELETE` trigger publishes committed row changes through `pg_notify`. The dedicated listener converts those notifications into upsert or delete events consumed by the SSE feed, keeping connected clients synchronized without polling PostgreSQL.
+
+#### Sanity
+
+**CMS reads:** A server-only `@sanity/client` queries the `gamificationGeneralCopy` and `gamificationPersonalizedCopy` schemas through one GROQ request. Drafts and disabled entries are excluded, results are grouped by copy type, and the Express endpoint caches them for 60 seconds before returning them to the client.
 
 <br>
 

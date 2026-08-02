@@ -62,6 +62,8 @@ export interface UiState {
   setLogsOpen: (v: boolean) => void;
   widgetsOpen: boolean;
   setWidgetsOpen: (v: boolean) => void;
+  infoOpen: boolean;
+  setInfoOpen: (v: boolean) => void;
   mode: Mode;
   setMode: (m: Mode) => void;
 
@@ -95,6 +97,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   surveyResetKey: 0,
   logsOpen: false,
   widgetsOpen: false,
+  infoOpen: false,
   mode: 'absolute',
   spotlightRequest: null,
   questionnaireNav: DEFAULT_QUESTIONNAIRE_NAV,
@@ -111,6 +114,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   incrementSurveyResetKey: () => { set((s) => ({ surveyResetKey: s.surveyResetKey + 1 })); },
   setLogsOpen: (v) => { set({ logsOpen: v }); },
   setWidgetsOpen: (v) => { set({ widgetsOpen: v }); },
+  setInfoOpen: (v) => { set({ infoOpen: v }); },
   setSpotlightRequest: (req) => { set({ spotlightRequest: req }); },
   setVizVisible: (v) => {
     if (!v) graphReturn = false;

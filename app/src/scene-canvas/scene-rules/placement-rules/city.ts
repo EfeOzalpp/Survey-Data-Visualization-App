@@ -561,7 +561,7 @@ export const CITY_PLACEMENTS: ScenePlacementRules = {
         radius: { tiles: 4, xDistort: 4, yTiles: 0.6 },
         shapes: {
           house: { count: count(1, 1, 2), quota: C.house },
-          villa: { count: count(1, 1, 2), quota: C.villa },
+          villa: { count: count(1, 1, 3), quota: C.villa },
         },
       },
       {
@@ -571,7 +571,7 @@ export const CITY_PLACEMENTS: ScenePlacementRules = {
         radius: { tiles: 4, xDistort: 4, yTiles: 0.6 },
         shapes: {
           house: { count: count(1, 0, 2), quota: C.house },
-          villa: { count: count(1, 1, 2), quota: C.villa },
+          villa: { count: count(1, 1, 4), quota: C.villa },
           car: { count: count(1, 1, 2), quota: C.car },
           carFactory: { count: count(1, 1, 1), quota: C.carFactory },
         },
@@ -583,7 +583,7 @@ export const CITY_PLACEMENTS: ScenePlacementRules = {
         radius: { tiles: 4, xDistort: 4, yTiles: 0.6 },
         shapes: {
           house: { count: count(0, 0, 1), quota: C.house },
-          villa: { count: count(1, 0, 2), quota: C.villa },
+          villa: { count: count(1, 0, 3), quota: C.villa },
           car: { count: count(1, 1, 1), quota: C.car },
         },
       },
@@ -619,7 +619,7 @@ export const CITY_PLACEMENTS: ScenePlacementRules = {
         radius: { tiles: 4, xDistort: 4, yTiles: 1 },
         shapes: {
           house: { count: count(1, 0, 1), quota: C.house },
-          villa: { count: count(1, 1, 2), quota: C.villa },
+          villa: { count: count(1, 1, 4), quota: C.villa },
           car: { count: count(1, 1, 1), quota: C.car },
           bus: { count: count(1, 1, 1), quota: C.bus },
           sea: { count: count(1, 1, 1), quota: C.sea },
@@ -631,9 +631,9 @@ export const CITY_PLACEMENTS: ScenePlacementRules = {
         center: { x: 0.55, y: 1 },
         radius: { tiles: 4, xDistort: 4, yTiles: 1 },
         shapes: {
-          house: { count: count(0, 1, 0), quota: C.house },
-          villa: { count: count(1, 3, 2), quota: C.villa },
-          car: { count: count(1, 1, 1), quota: C.car },
+          house: { count: count(0, 1, 1), quota: C.house },
+          villa: { count: count(1, 3, 3), quota: C.villa },
+          car: { count: count(1, 1, 2), quota: C.car },
         },
       },
       // city proper far

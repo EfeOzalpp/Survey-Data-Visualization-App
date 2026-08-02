@@ -72,7 +72,7 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
 
   const showPicker = (observerMode || hasCompletedSurvey) && !isSurveyActive;
   const showObserverButton = !isSurveyActive || observerMode || hasCompletedSurvey;
-  const observerLabel = observerMode || hasCompletedSurvey ? "Back" : "View now";
+  const observerLabel = observerMode || hasCompletedSurvey ? "Back" : "Explore Results";
   const savedEntryId = myEntryId;
   const savedSection = mySection;
   const hasSavedSubmission = Boolean(savedEntryId && savedSection);
@@ -142,7 +142,7 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
             className={cx("observe-results", observerMode && "active")}
             onClick={toggleObserverMode}
             aria-pressed={observerMode || hasCompletedSurvey}
-            aria-label={observerMode || hasCompletedSurvey ? "Back" : "View"}
+            aria-label={observerMode || hasCompletedSurvey ? "Back" : "Explore Results"}
             data-label={observerLabel}
           >
             <span className="observe-results__ghost" aria-hidden="true">{observerLabel}</span>

@@ -4,7 +4,6 @@ import { profilerOnRender, recordOwnRender } from '../render-test/renderProfiler
 
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";
-import { useSurveyDataStore } from "../app/state/survey-data-store";
 import "../styles/onboarding-info.css";
 import "../styles/section-questionnaire.css";
 
@@ -39,9 +38,7 @@ function Survey({
 
   const {
     setAnimationVisible,
-    setSurveyActive,
     observerMode,
-    openGraph,
     hasCompletedSurvey,
     setQuestionnaireOpen,
     setSectionOpen,
@@ -50,18 +47,13 @@ function Survey({
   } = useUiStore(
     useShallow((s) => ({
       setAnimationVisible: s.setAnimationVisible,
-      setSurveyActive: s.setSurveyActive,
       observerMode: s.observerMode,
-      openGraph: s.openGraph,
       hasCompletedSurvey: s.hasCompletedSurvey,
       setQuestionnaireOpen: s.setQuestionnaireOpen,
       setSectionOpen: s.setSectionOpen,
       surveyResetKey: s.surveyResetKey,
       resetToStart: s.resetToStart,
     }))
-  );
-  const { section, setSection } = useSurveyDataStore(
-    useShallow((s) => ({ section: s.section, setSection: s.setSection }))
   );
 
   // Keep questionnaireOpen in sync with our stage (and finished latch).
@@ -101,13 +93,12 @@ function Survey({
     return () => { window.clearTimeout(timer); };
   }, []);
 
-  useEffect(() => {
-    if (observerMode) {
-      setSurveyActive(false);
-      if (!section) setSection('fine-arts');
-      openGraph();
-    }
-  }, [observerMode, section, setSection, openGraph, setSurveyActive]);
+  // NOTE: opening/closing the graph in response to observerMode used to be
+  // duplicated here via an effect *and* directly in NavRight's click handler.
+  // Removed the duplicate — NavRight is the only place observerMode ever
+  // transitions to true, and it already does this work in the same batch as
+  // the click itself (an effect-based copy here just added an extra, later,
+  // unbatched commit on top of it).
 
   useEffect(() => {
     if (prevCompletedRef.current && !hasCompletedSurvey) {

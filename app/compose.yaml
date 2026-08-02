@@ -38,6 +38,7 @@ services:
       retries: 15
 
   migrate:
+    image: ghcr.io/efeozalpp/butterfly-effect:latest
     build: .
     command:
       [
@@ -70,6 +71,7 @@ services:
         condition: service_healthy
 
   app:
+    image: ghcr.io/efeozalpp/butterfly-effect:latest
     build: .
     env_file:
       - .env

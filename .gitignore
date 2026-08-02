@@ -37,3 +37,6 @@ app/cold-start-videos/
 
 # xk6-built k6 binary (custom SSE-capable build, not the stock CLI install)
 k6/k6.exe
+
+# local ops notes (server IPs, SSH usage) -- keep infra details out of the repo
+bash-scripts

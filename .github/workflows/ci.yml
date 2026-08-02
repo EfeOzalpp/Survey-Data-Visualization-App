@@ -42,8 +42,34 @@ jobs:
         env:
           VITE_USE_MOCK_DATA: "true"
 
-  deploy:
+  build-image:
     needs: ci
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: app
+          push: true
+          tags: |
+            ghcr.io/efeozalpp/butterfly-effect:latest
+            ghcr.io/efeozalpp/butterfly-effect:${{ github.sha }}
+
+  deploy:
+    needs: build-image
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
@@ -55,5 +81,12 @@ jobs:
         run: |
           echo "$EC2_SSH_KEY" | tr -d '\r' > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
-          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no -o BatchMode=yes "${EC2_USER}@${EC2_HOST}" "cd ~/butterfly-effect && git fetch origin main && git reset --hard origin/main && cd app && npm install --include=dev && npm run build:all && pm2 restart all"
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no -o BatchMode=yes "${EC2_USER}@${EC2_HOST}" '
+            set -e
+            cd ~/butterfly-effect && git fetch origin main && git reset --hard origin/main && cd app
+            docker compose pull postgres migrate app
+            docker compose up -d --remove-orphans postgres migrate app
+            sleep 5
+            curl -fsS http://127.0.0.1:3000/api/health > /dev/null
+          '
           rm -f /tmp/deploy_key

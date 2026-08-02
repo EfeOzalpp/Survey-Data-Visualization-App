@@ -74,7 +74,7 @@ function HtmlDocument({
         />
         <meta
           name="description"
-          content="Butterfly Effect is a playful project shaped by quick questions and shared responses."
+          content="Butterfly Effect: an interactive sustainability survey where your answers reshape a city scene, then join a shared visualization with everyone else's."
         />
         <link rel="canonical" href="https://butterflyeff3ct.online/" />
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f3ef" />

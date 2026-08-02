@@ -72,6 +72,8 @@
 .button-questionnaire__button-plus-icon, .button-questionnaire__button-check-icon { width: 100%; height: 100%; }
 .button-questionnaire__button-label { line-height: 1.15; }
 
+.section-group-header { border-bottom: 1px solid var(--ui-border); }
+
 @media (max-width: 767px) {
   .survey-section:has(.survey.survey-step.section-select) { height: 100%; }
   .survey.survey-step.section-select { height: 100%; }
@@ -109,3 +111,5 @@
   .section-empty { padding: 1rem 0.9rem; }
   .survey.survey-step.questionnaire { gap: var(--space-md); }
 }
+
+.section-listbox .section-option { padding-left: 1.2rem; }

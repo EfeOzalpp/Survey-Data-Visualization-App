@@ -178,6 +178,14 @@ function liveAvgKey(liveAvg: number | undefined) {
   return String(liveAvgBucketId(liveAvg));
 }
 
+// Shapes authored with a canopy/crown that rises above their own footprint
+// (see trees.ts TREES.layout.maxOverflowTopK). Padding below is sized off
+// cell size, not footprint height, so multi-row footprints need extra top
+// room or this overflow gets clipped out of the cached bitmap/mask.
+const EXTRA_TOP_PAD_K: Record<string, number> = {
+  trees: 0.5,
+};
+
 function resolveShapeBounds(item: EngineFieldItem, rEff: number, opts: RuntimeShapeOptions): ShapeBitmapBounds | null {
   const projection = shapeProjection(opts);
   const cell = finiteNumber(projection.cell, rEff);
@@ -191,11 +199,12 @@ function resolveShapeBounds(item: EngineFieldItem, rEff: number, opts: RuntimeSh
 
   // The cache is item-sized. Padding catches overhangs, strokes, and anti-aliasing.
   const pad = Math.ceil(Math.max(8, rEff * 0.75, Math.max(cellW, cellH) * 0.8));
+  const topPad = pad + Math.ceil(rect.h * (EXTRA_TOP_PAD_K[item.shape] ?? 0));
   return {
     x: Math.floor(rect.x - pad),
-    y: Math.floor(rect.y - pad),
+    y: Math.floor(rect.y - topPad),
     w: Math.ceil(rect.w + pad * 2),
-    h: Math.ceil(rect.h + pad * 2),
+    h: Math.ceil(rect.h + topPad + pad),
   };
 }
 

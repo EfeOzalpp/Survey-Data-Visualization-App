@@ -8,6 +8,7 @@ import { startWorkerLoadReporting } from "./cluster/workerLoadReporter";
 import { loadTestStatsRoute, resetLoadTestStatsRoute } from "./load-testing/loadTestStats"; // load-testing
 import { LOAD_TEST_MODE } from "./load-testing/loadTestMode"; // load-testing
 import { gamificationCopyRoute } from "./routes/gamificationCopy";
+import { infoMediaRoute } from "./routes/infoMedia";
 import { saveSoloMessageRoute } from "./routes/saveSoloMessage";
 import { saveUserResponseRoute } from "./routes/saveUserResponse";
 import { surveyResponseStreamRoute } from "./routes/surveyResponseStream";
@@ -34,6 +35,7 @@ if (CLUSTER_MODE && cluster.isPrimary) {
   });
   app.get("/api/survey-responses/stream", (req, res) => { void surveyResponseStreamRoute(req, res); });
   app.get("/api/gamification-copy", (req, res) => { void gamificationCopyRoute(req, res); });
+  app.get("/api/info-media", (req, res) => { void infoMediaRoute(req, res); });
   app.post("/api/save-user-response", (req, res) => { void saveUserResponseRoute(req, res); });
   app.post("/api/save-solo-message", (req, res) => { void saveSoloMessageRoute(req, res); });
 

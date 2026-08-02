@@ -3,6 +3,7 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import LinkIcon from "../../assets/svg/link/LinkIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
 import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
 
@@ -134,10 +135,10 @@ export default function CanvasInfo() {
 
       <section className="canvas-info__information">
         <div className="canvas-info-div">
-          <h3 className="canvas-info__eyebrow">Like the scene system?</h3>
+          <h3 className="canvas-info__eyebrow">Deeper Dive into This Scene Canvas</h3>
           <p className="canvas-info__copy">
             <span>Butterfly Effect's city is powered by Scene Canvas, the custom Canvas2D system behind the live scenery and shape previews.</span>
-            <span>I'm building Canvas Engine as a cleaner, reusable renderer for interactive visual tools. Contribute on GitHub or reach out at efe.ozalp@canvas-engine.com.</span>
+            <span>I'm building Canvas Engine, a more complete renderer for interactive visual tools — contribute on GitHub or reach out at efe.ozalp@canvas-engine.com.</span>
           </p>
           <div className="canvas-info__actions">
             <a
@@ -146,10 +147,16 @@ export default function CanvasInfo() {
               target="_blank"
               rel="noreferrer"
               aria-label="Open Canvas Engine repository"
-              data-label="View Canvas Engine"
+              data-label="Canvas Engine"
             >
-              <span className="canvas-engine-link__ghost" aria-hidden="true">View Canvas Engine</span>
-              <span className="canvas-engine-link__inner">View Canvas Engine</span>
+              <span className="canvas-engine-link__ghost" aria-hidden="true">
+                <LinkIcon />
+                Canvas Engine
+              </span>
+              <span className="canvas-engine-link__inner">
+                <LinkIcon />
+                Canvas Engine
+              </span>
             </a>
           </div>
         </div>

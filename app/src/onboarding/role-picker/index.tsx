@@ -81,7 +81,7 @@ export default function RolePicker({
       >
 
         {/* Visitor */}
-        <div className="role-tag role-tag--center"><span className="role-label" id="role-picker-label">Select Your Role</span></div>
+        <div className="role-tag role-tag--center"><span className="role-label" id="role-picker-label">Choose Your Role</span></div>
         <div
           ref={(node) => { optionRefs.current.visitor = node; }}
           role="radio"
