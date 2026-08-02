@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import CloseIcon from "../../assets/svg/close/CloseIcon";
@@ -21,6 +21,7 @@ export default function InfoDialog() {
   const [paused, setPaused] = useState(false);
   const [progressCycle, setProgressCycle] = useState(0);
   const [mediaBySlide, setMediaBySlide] = useState<InfoSlideMediaMap>({});
+  const [mediaLoaded, setMediaLoaded] = useState(false);
   const closeDialog = useCallback(() => {
     setInfoOpen(false);
   }, [setInfoOpen]);
@@ -48,7 +49,7 @@ export default function InfoDialog() {
         if (active) setMediaBySlide(media);
       })
       .catch((error: unknown) => {
-        console.warn("[product-tour-media] Using slides without CMS media", error);
+        console.warn("[info-media] Using slides without CMS media", error);
       });
 
     return () => {
@@ -58,6 +59,10 @@ export default function InfoDialog() {
 
   const slide = INFO_SLIDES[activeSlide];
   const slideMedia = mediaBySlide[slide.key];
+
+  useEffect(() => {
+    setMediaLoaded(false);
+  }, [slide.key, darkMode]);
 
   const dialog = (
     <div className={`info-dialog-root${open ? " is-open" : ""}`} aria-hidden={!open}>
@@ -104,33 +109,34 @@ export default function InfoDialog() {
               role="group"
               aria-roledescription="slide"
               aria-label={`${String(activeSlide + 1)} of ${String(INFO_SLIDES.length)}`}
+              data-slide-key={slide.key}
             >
+              <p>
+                {slide.copy.map((line, index) => (
+                  <Fragment key={line}>
+                    {index > 0 && <br className="info-dialog-copy-break" />}
+                    {line}
+                  </Fragment>
+                ))}
+              </p>
               {slideMedia && (
-                <figure className="info-dialog-media">
-                  <img
+                <figure className={`info-dialog-media${mediaLoaded ? "" : " is-loading"}`}>
+                  <video
                     key={`${slide.key}-${darkMode ? "dark" : "light"}`}
-                    src={darkMode ? slideMedia.darkGifUrl : slideMedia.lightGifUrl}
-                    alt={slideMedia.alt}
-                    decoding="async"
+                    src={darkMode ? slideMedia.darkVideoUrl : slideMedia.lightVideoUrl}
+                    aria-label={darkMode ? slideMedia.darkAlt : slideMedia.lightAlt}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onLoadedData={() => { setMediaLoaded(true); }}
                   />
                 </figure>
               )}
-              <p>{slide.copy}</p>
             </section>
           </div>
 
           <div className="ui-icon-nav info-dialog-slider-controls" aria-label="More information slides">
-            <button
-              type="button"
-              className="ui-icon-nav-button info-dialog-slider-button"
-              aria-label="Previous information slide"
-              onClick={() => { changeSlide(-1); }}
-            >
-              <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M15 18L9 12L15 6" />
-              </svg>
-            </button>
-
             <div className="info-dialog-timeline">
               <div className="info-dialog-progress" role="group" aria-label="Choose an information slide">
                 {INFO_SLIDES.map((item, index) => {
@@ -161,6 +167,19 @@ export default function InfoDialog() {
                   );
                 })}
               </div>
+            </div>
+
+            <div className="info-dialog-control-cluster">
+              <button
+                type="button"
+                className="ui-icon-nav-button info-dialog-slider-button"
+                aria-label="Previous information slide"
+                onClick={() => { changeSlide(-1); }}
+              >
+                <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M15 18L9 12L15 6" />
+                </svg>
+              </button>
 
               <button
                 type="button"
@@ -171,18 +190,18 @@ export default function InfoDialog() {
               >
                 <PlayPauseIcon mode={paused ? "play" : "pause"} className="ui-icon" />
               </button>
-            </div>
 
-            <button
-              type="button"
-              className="ui-icon-nav-button info-dialog-slider-button"
-              aria-label="Next information slide"
-              onClick={() => { changeSlide(1); }}
-            >
-              <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M9 18L15 12L9 6" />
-              </svg>
-            </button>
+              <button
+                type="button"
+                className="ui-icon-nav-button info-dialog-slider-button"
+                aria-label="Next information slide"
+                onClick={() => { changeSlide(1); }}
+              >
+                <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M9 18L15 12L9 6" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>

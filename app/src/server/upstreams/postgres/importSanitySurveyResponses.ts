@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { access } from "node:fs/promises";
 import { spawn, execFile } from "node:child_process";
-import { resolve } from "node:path";
+import { basename, dirname, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import type { Readable } from "node:stream";
 
@@ -188,8 +188,12 @@ function tarMembers(archivePath: string) {
   return new Promise<string[]>((resolveMembers, reject) => {
     execFile(
       "tar",
-      ["-tzf", archivePath],
-      { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 },
+      ["-tzf", basename(archivePath)],
+      {
+        encoding: "utf8",
+        maxBuffer: 10 * 1024 * 1024,
+        cwd: dirname(archivePath),
+      },
       (error, stdout) => {
         if (error) {
           reject(
@@ -212,8 +216,9 @@ async function tarDataStream(archivePath: string) {
     throw new Error(`${archivePath} does not contain data.ndjson`);
   }
 
-  const child = spawn("tar", ["-xOzf", archivePath, dataMember], {
+  const child = spawn("tar", ["-xOzf", basename(archivePath), dataMember], {
     stdio: ["ignore", "pipe", "pipe"],
+    cwd: dirname(archivePath),
   });
   let stderr = "";
   child.stderr.setEncoding("utf8");

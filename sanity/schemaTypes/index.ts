@@ -1,5 +1,5 @@
 import gamificationPersonalized from './gamificationPersonalizedCopy'
 import gamificationGeneral from './gamificationGeneralCopy'
-import productTourMedia from './productTourMedia'
+import infoMedia from './infoMedia'
 
-export const schemaTypes = [gamificationGeneral, gamificationPersonalized, productTourMedia];
+export const schemaTypes = [gamificationGeneral, gamificationPersonalized, infoMedia];

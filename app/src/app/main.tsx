@@ -6,6 +6,7 @@ import { AppProvider } from "./app-provider";
 import ClientOnly from "./client-only"; // wrapper to exclude certain files from server-side rendering.
 import { useUiStore } from "./state/ui-store";
 import { profilerOnRender, recordOwnRender } from "../render-test/renderProfilerStats";
+import PlayIcon from "../assets/svg/info/PlayIcon";
 
 import Survey from "../onboarding"; // survey is included in server-side.
 import Navigation from "../navigation"; // navigation is included in server-side. 
@@ -37,6 +38,7 @@ const AppInner: React.FC = () => {
   const questionnaireOpen = useUiStore((s) => s.questionnaireOpen);
   const cityPanelOpen = useUiStore((s) => s.cityPanelOpen);
   const animationVisible = useUiStore((s) => s.animationVisible);
+  const setInfoOpen = useUiStore((s) => s.setInfoOpen);
 
   return (
     <main id="main-content" className="app-content">
@@ -63,7 +65,21 @@ const AppInner: React.FC = () => {
 
       {!vizVisible && !animationVisible && !cityPanelOpen && !questionnaireOpen && (
         <div className="welcome-title-layer">
-          <h1 className="welcome-title">Butterfly Effect</h1>
+          <div className="welcome-title-inner">
+            <h1 className="welcome-title">Butterfly Effect</h1>
+            <button
+              type="button"
+              className="more-info-trigger"
+              aria-haspopup="dialog"
+              onClick={() => { setInfoOpen(true); }}
+            >
+              Watch how it works
+              <span className="more-info-trigger__duration">(60 sec)</span>
+              <span className="more-info-trigger__icon-box" aria-hidden="true">
+                <PlayIcon className="ui-icon more-info-trigger__icon" />
+              </span>
+            </button>
+          </div>
         </div>
       )}
 

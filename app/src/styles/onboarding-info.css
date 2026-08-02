@@ -28,7 +28,8 @@
 
 /* Landing canvas */
 .welcome-title-layer { position: relative; display: flex; justify-content: center; align-items: flex-start; z-index: 5; }
-.welcome-title { position: relative; background: var(--ui-text-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; }
+.welcome-title-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); }
+.welcome-title { background: var(--ui-text-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; }
 .welcome-text { color: var(--ui-title); opacity: 0.9; }
 .onboarding-canvas { top: 0; right: 0; width: 100%; position: absolute; overflow: hidden; }
 
@@ -52,10 +53,10 @@
 .role-check-icon [fill] { fill: var(--btn-primary-icon); color: var(--btn-primary-icon); }
 
 /* Canvas information area */
-.onboarding-info.canvas-info { display: flex; flex-direction: row; height: 560px; gap: 3.2rem; padding: 2.4rem 3.2rem 4.8rem; }
+.onboarding-info.canvas-info { display: flex; flex-direction: row; height: 560px; gap: calc(var(--space-lg) * 2); padding: 2.4rem 3.2rem 4.8rem; }
 .canvas-info__slider { width: 55%; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-end; }
 .canvas-info__information { width: 45%; }
-.canvas-info-div { position: relative; height: 100%; width: min(500px, 100%); display: flex; flex-direction: column; justify-content: center; gap: 1.2rem; }
+.canvas-info-div { position: relative; height: 100%; width: min(500px, 100%); display: flex; flex-direction: column; justify-content: center; gap: var(--space-lg); }
 .canvas-info__eyebrow { max-width: 18ch; }
 .canvas-info__copy { display: flex; flex-direction: column; gap: var(--space-lg); max-width: 42ch; margin: 0; color: var(--ui-text); }
 .canvas-info__copy > span { display: block; }
@@ -80,7 +81,8 @@
   .survey.survey-step.role-select .onboarding { padding: 2.4rem 20px 3.2rem; min-width: 360px; max-width: 360px; }
   .role-indicator-spacer { width: 1.1rem !important; height: 1.1rem !important; min-width: 1.1rem; min-height: 1.1rem; }
   .welcome-title, .welcome-text { text-align: center; }
-  .welcome-title { padding: 2.4rem; top: 3.1rem; }
+  .welcome-title { padding: 2rem 2.4rem 0.2rem; }
+  .welcome-title-inner { top: 3.1rem; }
   .onboarding-canvas { height: 640px; }
   .welcome-title-layer { height: 640px; }
   .radio-group { width: 288px; }
@@ -110,7 +112,7 @@
 @media (min-width: 1025px) {
   .onboarding-canvas { height: clamp(675px, 2.8vw, 860px); }
   .welcome-title-layer { height: clamp(675px, 2.8vw, 860px); align-items: center; }
-  .welcome-title { top: -148px; }
+  .welcome-title-inner { top: -164px; }
   .onboarding-info.canvas-info { width: auto; margin-inline: 4rem; }
 }
 
@@ -118,6 +120,6 @@
   .survey-section:has(.survey.survey-step.role-select) { height: 100%; }
   .survey.survey-step.role-select .onboarding { padding: 3.2rem 0 2.4rem; min-width: 580px; max-width: 580px; }
   .welcome-title, .welcome-text { text-align: center; }
-  .welcome-title { white-space: nowrap; padding: 2.4rem 0 3.2rem; }
+  .welcome-title { white-space: nowrap; padding: 0 0 0.8rem; }
   .radio-group { min-width: 260px; max-width: 260px; }
 }
