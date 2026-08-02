@@ -1,7 +1,7 @@
 
 // src/onboarding/information/canvas-info.tsx
 
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, startTransition, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import LinkIcon from "../../assets/svg/link/LinkIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
@@ -46,13 +46,17 @@ export default function CanvasInfo() {
   useEffect(() => {
     const el = asideRef.current;
     if (!el || typeof IntersectionObserver === "undefined") {
-      setInView(true);
+      startTransition(() => {
+        setInView(true);
+      });
       return;
     }
     const observer = new IntersectionObserver(
       ([entry]) => {
         const visible = entry.isIntersecting && entry.intersectionRatio >= SPOTLIGHT_INTERSECTION_THRESHOLD;
-        setInView(visible);
+        startTransition(() => {
+          setInView(visible);
+        });
       },
       { threshold: SPOTLIGHT_INTERSECTION_THRESHOLD }
     );
@@ -62,7 +66,9 @@ export default function CanvasInfo() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setLoadDelayComplete(true);
+      startTransition(() => {
+        setLoadDelayComplete(true);
+      });
     }, SPOTLIGHT_LOAD_DELAY_MS);
 
     return () => {
@@ -136,10 +142,11 @@ export default function CanvasInfo() {
       <section className="canvas-info__information">
         <div className="canvas-info-div">
           <h3 className="canvas-info__eyebrow">Deeper Dive into This Scene Canvas</h3>
-          <p className="canvas-info__copy">
-            <span>Butterfly Effect's city is powered by Scene Canvas, the custom Canvas2D system behind the live scenery and shape previews.</span>
-            <span>I'm building Canvas Engine, a more complete renderer for interactive visual tools — contribute on GitHub or reach out at efe.ozalp@canvas-engine.com.</span>
-          </p>
+          <ul className="canvas-info__copy">
+            <li>Butterfly Effect's city is powered by a custom Canvas2D renderer.</li>
+            <li>I'm building Canvas Engine, a more complete renderer for interactive visual tools.</li>
+            <li>Let's collaborate on GitHub. You can also reach out at efe.ozalp@canvas-engine.com.</li>
+          </ul>
           <div className="canvas-info__actions">
             <a
               className="canvas-engine-link"

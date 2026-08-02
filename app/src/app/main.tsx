@@ -9,7 +9,7 @@ import { profilerOnRender, recordOwnRender } from "../render-test/renderProfiler
 import PlayIcon from "../assets/svg/info/PlayIcon";
 
 import Survey from "../onboarding"; // survey is included in server-side.
-import Navigation from "../navigation"; // navigation is included in server-side. 
+import Navigation from "../navigation"; // navigation is included in server-side.
 
 // gated via ClientOnly
 import DataVisualization from "../graph-runtime";
@@ -71,7 +71,23 @@ const AppInner: React.FC = () => {
               type="button"
               className="more-info-trigger"
               aria-haspopup="dialog"
-              onClick={() => { setInfoOpen(true); }}
+              onClick={() => {
+                // Synchronous, inside this real click: iOS Safari exempts
+                // muted video from gesture rules only for the declarative
+                // `autoplay` attribute, not for script-triggered play(), and
+                // only within a trusted event's own callstack — not a
+                // useEffect that runs after commit. InfoDialog is always
+                // mounted (hidden via CSS), so its video element already
+                // exists; priming it here, right here, is what makes later
+                // auto-advanced slides (no gesture behind them) keep playing.
+                const primer = document.querySelector('video[data-info-video-primer]');
+                if (primer instanceof HTMLVideoElement) {
+                  primer.muted = true;
+                  primer.defaultMuted = true;
+                  void primer.play().catch(() => {});
+                }
+                setInfoOpen(true);
+              }}
             >
               Watch how it works
               <span className="more-info-trigger__duration">(60 sec)</span>

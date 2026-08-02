@@ -1,4 +1,4 @@
-import { useId, useMemo } from "react";
+import { useMemo } from "react";
 
 import darkModeSvg from "./dark_mode.svg?raw";
 import lightModeSvg from "./light_mode.svg?raw";
@@ -10,12 +10,14 @@ interface ThemeIconProps {
 }
 
 export default function ThemeIcon({ mode, className = "ui-icon" }: ThemeIconProps) {
-  const iconId = useId().replace(/:/g, "");
-
   const markup = useMemo(() => {
     const svg = mode === "dark" ? darkModeSvg : lightModeSvg;
-    return prepareRawSvgMarkup(svg, `theme-${mode}-${iconId}`, className);
-  }, [className, iconId, mode]);
+    // Only one ThemeIcon is ever mounted at a time, so `mode` alone is a
+    // stable, unique-enough id scope — no useId() needed, which sidesteps
+    // an SSR/hydration id mismatch (useId's counter depends on every prior
+    // useId()-consuming component rendering identically server vs client).
+    return prepareRawSvgMarkup(svg, `theme-${mode}`, className);
+  }, [className, mode]);
 
   return (
     <span

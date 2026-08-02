@@ -28,12 +28,15 @@
     "build:ssr": "vite build --ssr src/server-rendering/entry-server.tsx --outDir dist-ssr",
     "build:all": "npm run build && npm run build:ssr && npm run build:server",
     "build:analyze": "vite build --config vite.analyze.ts && start dist/stats.html",
+
     "db:migrate": "tsx src/server/upstreams/postgres/migrate.ts",
     "db:migrate:production": "node dist-server/server/upstreams/postgres/migrate.js",
     "db:import:sanity-survey": "tsx src/server/upstreams/postgres/importSanitySurveyResponses.ts",
     "db:import:sanity-survey:production": "node dist-server/server/upstreams/postgres/importSanitySurveyResponses.js",
+    
     "preview": "vite preview",
-    "start": "node -e \"process.env.NODE_ENV='production'; require('./dist-server/server/index.js')\"",
+    "start": "node --env-file=.env -e \"process.env.NODE_ENV='production'; require('./dist-server/server/index.js')\"",
+    
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "lint:ci": "eslint src/scene-canvas src/graph-runtime/sprites",

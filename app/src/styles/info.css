@@ -112,7 +112,8 @@ button.more-info-trigger:focus-visible {
 .info-dialog {
   display: flex;
   flex-direction: column;
-  min-height: min(60svh, 560px);
+  min-height: 460px;
+  max-height: 460px;
   overflow: hidden;
   background: var(--ui-bg-surface);
   color: var(--ui-text);
@@ -182,7 +183,7 @@ button.more-info-trigger:focus-visible {
   aspect-ratio: 3 / 2;
   margin: 0;
   overflow: hidden;
-  background: var(--ui-bg-page);
+  background: var(--ui-bg-surface);
 }
 
 .info-dialog-media img,
@@ -322,6 +323,11 @@ button.info-dialog-progress-button:focus-visible {
   .info-dialog-copy-break {
     display: none;
   }
+
+  html.info-dialog-scroll-lock {
+    overflow: hidden;
+    scrollbar-gutter: auto;
+  }
 }
 
 @media (max-width: 767px) {
@@ -346,10 +352,23 @@ button.info-dialog-progress-button:focus-visible {
   }
 
   .info-dialog {
-    min-height: min(72svh, 600px);
     border-bottom: 1px solid var(--ui-border);
     border-radius: var(--radius-lg);
     box-shadow: 0 18px 42px var(--ui-drop-shadow);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .info-dialog {
+    min-height: min(60svh, 600px);
+    max-height: min(60svh, 600px);
+  }
+}
+
+@media (min-width: 1025px) {
+  .info-dialog {
+    min-height: min(80.4svh, 680px);
+    max-height: min(80.4svh, 680px);
   }
 }
 

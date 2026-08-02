@@ -7,8 +7,10 @@ export interface InfoSlide {
 export interface InfoSlideMedia {
   slideKey: string;
   lightVideoUrl: string;
+  lightVideoMp4Url: string;
   lightAlt: string;
   darkVideoUrl: string;
+  darkVideoMp4Url: string;
   darkAlt: string;
 }
 
@@ -17,33 +19,33 @@ export type InfoSlideMediaMap = Partial<Record<string, InfoSlideMedia>>;
 export const INFO_SLIDES: InfoSlide[] = [
   {
     key: "shape-scenery",
-    title: "Buttons are your answers",
-    copy: ["Each selected answer changes the scene in real time.", "The text inside the buttons defines the type of change."],
+    title: "First, a short survey",
+    copy: ["Click on a button to answer.", " There are only 5 questions, and they're just the beginning."],
   },
   {
     key: "multi-selection",
-    title: "Multi-selection",
-    copy: ["There are a total of 5 questions.", "You can toggle multiple answer when several options fit."],
+    title: "Toggle more buttons",
+    copy: ["You may multi-select when several options fit.", " The button text determines the kind of change."],
   },
   {
     key: "receive-shape",
     title: "Receive your shape",
-    copy: ["Your answers are combined into a personalized shape.", "You can also share any message that'd stay with your shape."],
+    copy: ["Your answers are combined into a personalized shape.", " You can also share any message that'd stay with your shape."],
   },
   {
     key: "join-collective",
     title: "Join the collective",
-    copy: ["Once finished, your results joins the shared visualizations.", "One example of it is the bar graph widget."],
+    copy: ["Once finished, your results join the shared visualizations.", " One example of it is the bar graph widget."],
   },
   {
     key: "shared-patterns",
     title: "Explore shared patterns",
-    copy: ["Use tooltips, filters and widgets to see how your responses relate to everyone or specific groups."],
+    copy: ["Use tooltips, filters, and widgets to compare your responses against everyone, or specific groups."],
   },
   {
     key: "live-changes",
-    title: "Watch the collection grow",
-    copy: ["New responses are sreamed, allowing the visualization to keep growing, even when you're idle."],
+    title: "Watch the world grow",
+    copy: ["New responses are streamed so each update is live instantly, even when you're idle."],
   },
 ];
 
@@ -54,8 +56,10 @@ function isMediaRow(value: unknown): value is InfoSlideMedia {
   const row = value as Record<string, unknown>;
   return typeof row.slideKey === "string" &&
     typeof row.lightVideoUrl === "string" &&
+    typeof row.lightVideoMp4Url === "string" &&
     typeof row.lightAlt === "string" &&
     typeof row.darkVideoUrl === "string" &&
+    typeof row.darkVideoMp4Url === "string" &&
     typeof row.darkAlt === "string";
 }
 
