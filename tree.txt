@@ -16,8 +16,8 @@ butterfly-effect/
 |   |-- Dockerfile
 |   |-- eslint.config.mjs
 |   |-- index.html
-|   |-- package.json
 |   |-- package-lock.json
+|   |-- package.json
 |   |-- public/
 |   |   |-- be-icon.svg
 |   |   |-- manifest.json
@@ -44,8 +44,8 @@ butterfly-effect/
 |   |   |   |   |-- ui-store.ts
 |   |   |   |   |-- useIdentityState.ts
 |   |   |   |   \-- usePreferencesState.ts
-|   |   |   |-- ui/
-|   |   |   |   \-- HintBanner.tsx
+|   |   |   \-- ui/
+|   |   |       \-- HintBanner.tsx
 |   |   |-- assets/
 |   |   |   |-- fonts/
 |   |   |   |   |-- heebo/
@@ -113,12 +113,12 @@ butterfly-effect/
 |   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCnkaWzU.woff2
 |   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkCXkaWzU.woff2
 |   |   |   |   |   |-- KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkenkaWzU.woff2
+|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBGEe.woff2
 |   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBGEe.woff2
 |   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBGEe.woff2
 |   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBGEe.woff2
 |   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBGEe.woff2
 |   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBGEe.woff2
-|   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBGEe.woff2
 |   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2
 |   |   |   |   |   |-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBGEe.woff2
 |   |   |   |   |   \-- KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBGEe.woff2
@@ -150,6 +150,14 @@ butterfly-effect/
 |   |   |       |   |-- collapse_all.svg
 |   |   |       |   |-- expand_all.svg
 |   |   |       |   \-- ExpandIcon.tsx
+|   |   |       |-- info/
+|   |   |       |   |-- info.svg
+|   |   |       |   |-- InfoIcon.tsx
+|   |   |       |   |-- play.svg
+|   |   |       |   \-- PlayIcon.tsx
+|   |   |       |-- link/
+|   |   |       |   |-- link.svg
+|   |   |       |   \-- LinkIcon.tsx
 |   |   |       |-- play/
 |   |   |       |   |-- pause.svg
 |   |   |       |   \-- PlayPauseIcon.tsx
@@ -311,8 +319,8 @@ butterfly-effect/
 |   |   |   |-- responsive/
 |   |   |   |   |-- breakpoints.ts
 |   |   |   |   \-- graph-tools-offset.ts
-|   |   |   |-- sentry.ts
 |   |   |   |-- sentry-replay.ts
+|   |   |   |-- sentry.ts
 |   |   |   \-- utils/
 |   |   |       |-- __tests__/
 |   |   |       |   |-- live-average.test.ts
@@ -337,6 +345,9 @@ butterfly-effect/
 |   |   |   |-- gp-data.ts
 |   |   |   |-- graph-picker.tsx
 |   |   |   |-- index.tsx
+|   |   |   |-- info/
+|   |   |   |   |-- index.tsx
+|   |   |   |   \-- slides.ts
 |   |   |   |-- left/
 |   |   |   |   |-- logo.tsx
 |   |   |   |   \-- nav-left.tsx
@@ -364,6 +375,7 @@ butterfly-effect/
 |   |   |   |-- survey-reducer.ts
 |   |   |   \-- useSurveySubmission.ts
 |   |   |-- render-test/
+|   |   |   |-- README.md
 |   |   |   |-- renderProfilerStats.ts
 |   |   |   |-- renderProfilerStatsGraph.ts
 |   |   |   \-- rerenderBenchmark.ts
@@ -641,6 +653,7 @@ butterfly-effect/
 |   |   |   |   \-- sseConnectionStats.ts
 |   |   |   |-- routes/
 |   |   |   |   |-- gamificationCopy.ts
+|   |   |   |   |-- infoMedia.ts
 |   |   |   |   |-- saveSoloMessage.ts
 |   |   |   |   |-- saveUserResponse.ts
 |   |   |   |   |-- shared.ts
@@ -682,8 +695,9 @@ butterfly-effect/
 |   |   |   |-- fonts.css
 |   |   |   |-- gamification.css
 |   |   |   |-- global-styles.css
-|   |   |   |-- graph.css
 |   |   |   |-- graph-picker.css
+|   |   |   |-- graph.css
+|   |   |   |-- info.css
 |   |   |   |-- logs.css
 |   |   |   |-- navigation.css
 |   |   |   |-- onboarding-info.css
@@ -696,8 +710,8 @@ butterfly-effect/
 |   |       |   |-- particle-worker.ts
 |   |       |   \-- worker-host.ts
 |   |       \-- scene/
-|   |           |-- compose-worker.ts
-|   |           \-- compose-worker-host.ts
+|   |           |-- compose-worker-host.ts
+|   |           \-- compose-worker.ts
 |   |-- tsconfig.json
 |   |-- tsconfig.server.json
 |   |-- vite.analyze.ts
@@ -710,9 +724,9 @@ butterfly-effect/
 |   |-- mobile-collective-viz.png
 |   |-- mobile-cta.png
 |   |-- mobile-graph.gif
-|   |-- mobile-logs.png
 |   |-- mobile-logs-bargraph.png
 |   |-- mobile-logs-per-question.png
+|   |-- mobile-logs.png
 |   |-- mobile-onboarding.png
 |   |-- mobile-personalized-result.png
 |   |-- mobile-questionnaire.png
@@ -737,8 +751,8 @@ butterfly-effect/
 |   |-- data-backups/
 |   |   |-- butterfly-habits-pre-postgresql-2026-07-30.sha256
 |   |   \-- butterfly-habits-pre-postgresql-2026-07-30.tar.gz
-|   |-- package.json
 |   |-- package-lock.json
+|   |-- package.json
 |   |-- sanity.cli.ts
 |   |-- sanity.config.ts
 |   |-- schema-backups/
@@ -752,7 +766,8 @@ butterfly-effect/
 |   |-- schemaTypes/
 |   |   |-- gamificationGeneralCopy.ts
 |   |   |-- gamificationPersonalizedCopy.ts
-|   |   \-- index.ts
+|   |   |-- index.ts
+|   |   \-- infoMedia.ts
 |   |-- static/
 |   |   \-- .gitkeep
 |   \-- tsconfig.jsonc
