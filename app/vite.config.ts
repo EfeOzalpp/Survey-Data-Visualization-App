@@ -36,9 +36,20 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // React must stay out of three-vendor to prevent duplicate instances causing hydration errors.
-          if (id.includes('node_modules/react') || id.includes('node_modules/scheduler')) {
-            return undefined;
+          // React (and react-reconciler/scheduler, which @react-three/fiber pulls
+          // in and which are otherwise only reachable through it) must get an
+          // explicit chunk here, not `undefined` — opting out isn't enough, since
+          // Rollup's default chunker will still inline a dependency into
+          // three-vendor if that's the only chunk that reaches it. That's how a
+          // second copy of react-dom's hydration/scheduler code previously ended
+          // up bundled inside three-vendor, causing hydration errors (#421).
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react-reconciler/') ||
+            id.includes('node_modules/scheduler/')
+          ) {
+            return 'react-vendor';
           }
           if (id.includes('node_modules/three/build/three.core.js')) {
             return 'three-core';

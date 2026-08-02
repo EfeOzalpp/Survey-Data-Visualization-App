@@ -25,9 +25,17 @@ export default {
     },
     {
       name: 'lightVideo',
-      title: 'Light Mode Video',
+      title: 'Light Mode Video (WebM)',
       type: 'file',
       options: {accept: 'video/webm'},
+      validation: (rule: Rule) => rule.required(),
+    },
+    {
+      name: 'lightVideoMp4',
+      title: 'Light Mode Video (MP4 fallback)',
+      description: 'Same clip, exported as H.264 MP4.',
+      type: 'file',
+      options: {accept: 'video/mp4'},
       validation: (rule: Rule) => rule.required(),
     },
     {
@@ -38,9 +46,17 @@ export default {
     },
     {
       name: 'darkVideo',
-      title: 'Dark Mode Video',
+      title: 'Dark Mode Video (WebM)',
       type: 'file',
       options: {accept: 'video/webm'},
+      validation: (rule: Rule) => rule.required(),
+    },
+    {
+      name: 'darkVideoMp4',
+      title: 'Dark Mode Video (MP4 fallback)',
+      description: 'iOS Safari cannot play WebM. Same clip, exported as H.264 MP4.',
+      type: 'file',
+      options: {accept: 'video/mp4'},
       validation: (rule: Rule) => rule.required(),
     },
     {

@@ -34,7 +34,7 @@ Own-render grand total on the current branch: **223** (no `with-profiler` baseli
 ```bash
 VITE_USE_MOCK_DATA=true npm run dev
 
-npx tsx src/render-test/rerenderBenchmark.ts              # both metrics
+npx tsx src/render-test/rerenderBenchmark.ts # both metrics
 npx tsx src/render-test/rerenderBenchmark.ts --metric=subtree
 npx tsx src/render-test/rerenderBenchmark.ts --metric=own
 ```

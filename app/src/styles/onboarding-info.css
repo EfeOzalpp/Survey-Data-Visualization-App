@@ -53,13 +53,14 @@
 .role-check-icon [fill] { fill: var(--btn-primary-icon); color: var(--btn-primary-icon); }
 
 /* Canvas information area */
-.onboarding-info.canvas-info { display: flex; flex-direction: row; height: 560px; gap: calc(var(--space-lg) * 2); padding: 2.4rem 3.2rem 4.8rem; }
+.onboarding-info.canvas-info { display: flex; flex-direction: row; height: 560px; gap: calc(var(--space-lg) * 2); padding: 1.6rem 3.2rem 4.8rem; }
 .canvas-info__slider { width: 55%; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-end; }
 .canvas-info__information { width: 45%; }
 .canvas-info-div { position: relative; height: 100%; width: min(500px, 100%); display: flex; flex-direction: column; justify-content: center; gap: var(--space-lg); }
 .canvas-info__eyebrow { max-width: 18ch; }
-.canvas-info__copy { display: flex; flex-direction: column; gap: var(--space-lg); max-width: 42ch; margin: 0; color: var(--ui-text); }
-.canvas-info__copy > span { display: block; }
+.canvas-info__copy { display: flex; flex-direction: column; gap: var(--space-lg); max-width: 42ch; margin: 0; padding: 0; list-style: none; color: var(--ui-text); }
+.canvas-info__copy > li { position: relative; padding-left: 1.1em; }
+.canvas-info__copy > li::before { content: "\2022"; position: absolute; left: 0; color: var(--ui-text); }
 .canvas-info__actions { display: flex; align-items: center; margin-top: 0.4rem; }
 .canvas-info__spotlight-frame { position: relative; height: 100%; width: min(650px, 100%); display: flex; }
 .canvas-info__spotlight-canvas { position: relative; height: 100%; width: 100%; }
@@ -85,7 +86,10 @@
   .welcome-title-inner { top: 3.1rem; }
   .onboarding-canvas { height: 640px; }
   .welcome-title-layer { height: 640px; }
-  .radio-group { width: 288px; }
+  .radio-group { width: 260px; }
+  .canvas-info-div { padding-left: 8px; }
+  .ui-icon-nav { padding: 0.6rem; }
+  .role-step__heading { padding: 0 0.8rem; }
   .onboarding-info.canvas-info { padding: 0rem 1.2rem 3.2rem; }
   .canvas-info__spotlight-frame { height: min(72vw, 360px); }
   .canvas-info__slider-controls { right: 0.25rem; bottom: 0.25rem; }
@@ -95,6 +99,8 @@
   .onboarding-canvas { height: 900px; }
   .welcome-title-layer { height: 900px; top: 144px; }
   .role-indicator-spacer { height: 16px !important; width: 16px !important; }
+  .ui-icon-nav { padding: 0.9rem 0.6rem 0.75rem 0.6rem; }
+  .canvas-info__information { padding-left: 3rem; }
   .onboarding-info.canvas-info { padding: 1.6rem 2.4rem 4rem; }
   .canvas-info__spotlight-frame { height: min(62vw, 500px); }
 }
@@ -103,7 +109,7 @@
   .onboarding-info.canvas-info { flex-direction: column; height: auto; gap: calc(var(--space-lg) * 2); align-items: center; }
   .canvas-info__slider, .canvas-info__information { width: min(100%, 720px); }
   .canvas-info__slider { align-content: center; }
-  .canvas-info__information { display: flex; justify-content: center; }
+  .canvas-info__information { display: flex; justify-content: left; }
   .canvas-info-div { width: min(100%, 520px); height: auto; min-height: 0; }
   .canvas-info__copy { max-width: 100%; }
   .canvas-info__spotlight-frame { width: 100%; }
@@ -114,6 +120,7 @@
   .welcome-title-layer { height: clamp(675px, 2.8vw, 860px); align-items: center; }
   .welcome-title-inner { top: -164px; }
   .onboarding-info.canvas-info { width: auto; margin-inline: 4rem; }
+  .ui-icon-nav { padding: 0.9rem 0.6rem 0.75rem 0.6rem; }
 }
 
 @media (min-width: 768px) {

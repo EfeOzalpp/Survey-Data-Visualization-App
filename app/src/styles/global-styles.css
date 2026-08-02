@@ -215,6 +215,7 @@
     --type-small-size: 1rem;
     --type-label-size: 1rem;
     --type-h1-size: clamp(2.6rem, 1.6rem + 2.4vw, 4.8rem);
+    --type-h2-size: clamp(1.3rem, 1.1rem + 1vw, 1.6rem);
   }
   :root[data-theme="dark"] {
     --ui-questionnaire-title: linear-gradient(150deg, rgb(240, 240, 240), rgba(255, 255, 255, 0.71));

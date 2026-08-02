@@ -16,11 +16,17 @@ import { useSurveySubmission } from "./useSurveySubmission";
 import { track } from "../lib/posthog";
 import { getSessionItem } from "../app/session";
 
-const RoleStep = React.lazy(() => import("./role-picker/role-step"));
-const CanvasInfo = React.lazy(() => import("./information/canvas-info"));
-const SectionPickerIntro = React.lazy(
-  () => import("./section-picker")
-);
+// RoleStep/CanvasInfo render on the very first paint for every visitor
+// (stage === 'role' is the initial state), so lazy-loading them gained no
+// real code-splitting benefit while making them the content of a Suspense
+// boundary that's present from the first byte of SSR output — any update
+// reaching that boundary before it finished hydrating bailed it to client
+// rendering (React error #421). Eager here; SectionPickerIntro keeps its own
+// separate boundary below since it only mounts after a user interaction,
+// safely past the hydration window.
+import RoleStep from "./role-picker/role-step";
+import CanvasInfo from "./information/canvas-info";
+const SectionPickerIntro = React.lazy(() => import("./section-picker"));
 
 function Survey({
   onAnswersUpdate,
@@ -32,9 +38,6 @@ function Survey({
   const { stage, audience, surveySection, error, submitting, fadeState, finished } = state;
   const [introActive, setIntroActive] = useState(true);
   const shouldScrollToSectionRef = useRef(false);
-
-  // latches
-  const prevCompletedRef = useRef(false);
 
   const {
     setAnimationVisible,
@@ -100,22 +103,11 @@ function Survey({
   // the click itself (an effect-based copy here just added an extra, later,
   // unbatched commit on top of it).
 
-  useEffect(() => {
-    if (prevCompletedRef.current && !hasCompletedSurvey) {
-      dispatch({ type: 'RESET' });
-      setQuestionnaireOpen(false);
-      setSectionOpen(false);
-      setAnimationVisible(false);
-    }
-
-    prevCompletedRef.current = hasCompletedSurvey;
-  }, [
-    hasCompletedSurvey,
-    setAnimationVisible,
-    setQuestionnaireOpen,
-    setSectionOpen,
-  ]);
-
+  // Full reset is keyed solely on surveyResetKey (incremented only by
+  // resetToStart()) rather than also on hasCompletedSurvey transitioning to
+  // false — that also happens on a failed-submission retry (see
+  // useSurveySubmission.ts), which must NOT wipe the in-progress answers a
+  // second effect watching hasCompletedSurvey would have reset.
   const prevResetKeyRef = useRef(surveyResetKey);
   useEffect(() => {
     if (surveyResetKey === prevResetKeyRef.current) return;
@@ -229,7 +221,7 @@ function Survey({
   return (
     <div className={`survey-section ${fadeState} ${introActive ? 'survey-first-enter' : ''}`}>
       {!observerMode && (
-        <Suspense fallback={null}>
+        <>
           {stage === 'role' && (
             <>
               <RoleStep value={audience} onChange={handleAudienceChange} onNext={handleRoleNext} error={error} />
@@ -240,16 +232,18 @@ function Survey({
           )}
 
           {stage === 'section' && (
-            <SectionPickerIntro
-              value={surveySection}
-              onChange={handleSectionChange}
-              onBegin={handleBeginFromSection}
-              error={error}
-              sections={availableSections}
-              placeholderOverride={audience === 'student' ? 'Your Major...' : undefined}
-              titleOverride={audience === 'student' ? 'Select Your Major' : undefined}
-              onOpenChange={setSectionOpen}
-            />
+            <Suspense fallback={null}>
+              <SectionPickerIntro
+                value={surveySection}
+                onChange={handleSectionChange}
+                onBegin={handleBeginFromSection}
+                error={error}
+                sections={availableSections}
+                placeholderOverride={audience === 'student' ? 'Your Major...' : undefined}
+                titleOverride={audience === 'student' ? 'Select Your Major' : undefined}
+                onOpenChange={setSectionOpen}
+              />
+            </Suspense>
           )}
 
           {stage === 'questions' && !finished && (
@@ -261,7 +255,7 @@ function Survey({
               />
             </Profiler>
           )}
-        </Suspense>
+        </>
       )}
     </div>
   );

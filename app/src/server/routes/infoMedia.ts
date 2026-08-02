@@ -11,16 +11,20 @@ interface SanityMediaRow {
   _updatedAt?: string;
   slideKey?: string;
   lightVideoUrl?: string;
+  lightVideoMp4Url?: string;
   lightAlt?: string;
   darkVideoUrl?: string;
+  darkVideoMp4Url?: string;
   darkAlt?: string;
 }
 
 interface InfoMediaRow {
   slideKey: string;
   lightVideoUrl: string;
+  lightVideoMp4Url: string;
   lightAlt: string;
   darkVideoUrl: string;
+  darkVideoMp4Url: string;
   darkAlt: string;
 }
 
@@ -41,15 +45,25 @@ function normalizeMedia(rows: SanityMediaRow[]) {
   for (const row of rows) {
     const slideKey = readText(row.slideKey);
     const lightVideoUrl = readText(row.lightVideoUrl);
+    const lightVideoMp4Url = readText(row.lightVideoMp4Url);
     const lightAlt = readText(row.lightAlt);
     const darkVideoUrl = readText(row.darkVideoUrl);
+    const darkVideoMp4Url = readText(row.darkVideoMp4Url);
     const darkAlt = readText(row.darkAlt);
 
-    if (!slideKey || !lightVideoUrl || !lightAlt || !darkVideoUrl || !darkAlt) continue;
+    if (!slideKey || !lightVideoUrl || !lightVideoMp4Url || !lightAlt || !darkVideoUrl || !darkVideoMp4Url || !darkAlt) continue;
 
     // Rows are ordered oldest-first, so a duplicate slideKey lets the most
     // recently created row win.
-    bySlideKey.set(slideKey, { slideKey, lightVideoUrl, lightAlt, darkVideoUrl, darkAlt });
+    bySlideKey.set(slideKey, {
+      slideKey,
+      lightVideoUrl,
+      lightVideoMp4Url,
+      lightAlt,
+      darkVideoUrl,
+      darkVideoMp4Url,
+      darkAlt,
+    });
   }
 
   return [...bySlideKey.values()];
@@ -69,8 +83,10 @@ async function readInfoMedia() {
   _updatedAt,
   slideKey,
   "lightVideoUrl": lightVideo.asset->url,
+  "lightVideoMp4Url": lightVideoMp4.asset->url,
   lightAlt,
   "darkVideoUrl": darkVideo.asset->url,
+  "darkVideoMp4Url": darkVideoMp4.asset->url,
   darkAlt
 }
 `);
