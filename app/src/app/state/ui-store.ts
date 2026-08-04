@@ -64,6 +64,8 @@ export interface UiState {
   setWidgetsOpen: (v: boolean) => void;
   infoOpen: boolean;
   setInfoOpen: (v: boolean) => void;
+  cityStatsOpen: boolean;
+  setCityStatsOpen: (v: boolean) => void;
   mode: Mode;
   setMode: (m: Mode) => void;
 
@@ -98,6 +100,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   logsOpen: false,
   widgetsOpen: false,
   infoOpen: false,
+  cityStatsOpen: false,
   mode: 'absolute',
   spotlightRequest: null,
   questionnaireNav: DEFAULT_QUESTIONNAIRE_NAV,
@@ -115,6 +118,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   setLogsOpen: (v) => { set({ logsOpen: v }); },
   setWidgetsOpen: (v) => { set({ widgetsOpen: v }); },
   setInfoOpen: (v) => { set({ infoOpen: v }); },
+  setCityStatsOpen: (v) => { set({ cityStatsOpen: v }); },
   setSpotlightRequest: (req) => { set({ spotlightRequest: req }); },
   setVizVisible: (v) => {
     if (!v) graphReturn = false;
