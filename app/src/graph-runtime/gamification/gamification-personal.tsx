@@ -330,6 +330,8 @@ export default function GamificationPersonalized({
   }
 
   const saveLabel = currentMessageStatus === 'saving' ? 'Saving' : 'Save';
+  const isTopPercentile = safePct >= 50;
+  const percentileValue = Math.max(1, isTopPercentile ? 100 - safePct : safePct);
 
   return (
     <div
@@ -379,9 +381,9 @@ export default function GamificationPersonalized({
               <>
                 <p className="gam-copy">{relativeLine}</p>
                 <p className="gam-team-story">
-                  Your result is <strong>{safeScore}</strong>. The current group averages{' '}
-                  <strong>{safeGroupAverage}</strong>, placing you in the{' '}
-                  <strong>{ordinalSuffix(safePct)} percentile</strong>.
+                  Your score is <strong>{safeScore}%</strong>. The group averages{' '}
+                  <strong>{safeGroupAverage}%</strong>. This makes you{' '}
+                  <strong>{isTopPercentile ? 'top' : 'bottom'} {ordinalSuffix(percentileValue)} percentile</strong>.
                 </p>
               </>
             ) : null}
