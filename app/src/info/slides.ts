@@ -40,7 +40,7 @@ export const INFO_SLIDES: InfoSlide[] = [
   {
     key: "shared-patterns",
     title: "Explore shared patterns",
-    copy: ["Use tooltips, filters, and widgets to compare your responses against everyone, or specific groups."],
+    copy: ["Use tooltips, filters and widgets to compare your responses against people. Team/solo toggle shows messages or ranks."],
   },
   {
     key: "live-changes",

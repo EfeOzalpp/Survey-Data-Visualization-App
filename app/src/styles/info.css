@@ -59,67 +59,11 @@ button.more-info-trigger:focus-visible {
   border-radius: var(--radius-md);
 }
 
-.info-dialog-root {
-  position: fixed;
-  inset: 0;
-  z-index: 1300;
-  display: grid;
-  align-items: end;
-  visibility: hidden;
-  pointer-events: none;
-  transition: visibility 0s linear 140ms;
-}
-
-.info-dialog-root.is-open {
-  visibility: visible;
-  pointer-events: auto;
-  transition-delay: 0s;
-}
-
-.info-dialog-overlay {
-  position: absolute;
-  inset: 0;
-  padding: 0;
-  border: 0;
-  background: rgba(0, 0, 0, 0.55);
-  opacity: 0;
-  transition: opacity 100ms ease-out;
-}
-
-.info-dialog-root.is-open .info-dialog-overlay {
-  opacity: 1;
-}
-
-.info-dialog-shell {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  opacity: 0;
-  transform: translateY(100%);
-  transition:
-    transform 140ms cubic-bezier(.4,0,1,1),
-    opacity 90ms ease-out;
-  will-change: transform, opacity;
-}
-
-.info-dialog-root.is-open .info-dialog-shell {
-  opacity: 1;
-  transform: translateY(0);
-  transition-timing-function: cubic-bezier(.22,.61,.36,1), ease-out;
-}
-
+/* Root/overlay/shell positioning + transitions live in the shared Modal
+   (styles/ui/modal.css) via .ui-modal-*. Only dialog-specific sizing stays here. */
 .info-dialog {
-  display: flex;
-  flex-direction: column;
   min-height: 460px;
   max-height: 460px;
-  overflow: hidden;
-  background: var(--ui-bg-surface);
-  color: var(--ui-text);
-  border: 1px solid var(--ui-border);
-  border-bottom: 0;
-  box-shadow: 0 -18px 42px var(--ui-drop-shadow);
 }
 
 .info-dialog-header {
@@ -330,31 +274,9 @@ button.info-dialog-progress-button:focus-visible {
   }
 }
 
-@media (max-width: 767px) {
-  .info-dialog-root,
-  .info-dialog-shell {
-    width: 100dvw;
-  }
-}
-
 @media (min-width: 768px) {
-  .info-dialog-root {
-    place-items: center;
-  }
-
   .info-dialog-shell {
     width: min(540px, calc(100vw - 4rem));
-    transform: translateY(0.5rem) scale(0.985);
-  }
-
-  .info-dialog-root.is-open .info-dialog-shell {
-    transform: translateY(0) scale(1);
-  }
-
-  .info-dialog {
-    border-bottom: 1px solid var(--ui-border);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 18px 42px var(--ui-drop-shadow);
   }
 }
 
@@ -362,6 +284,8 @@ button.info-dialog-progress-button:focus-visible {
   .info-dialog {
     min-height: min(60svh, 600px);
     max-height: min(60svh, 600px);
+    position: relative; 
+    top: var(--space-md);
   }
 }
 
@@ -369,16 +293,12 @@ button.info-dialog-progress-button:focus-visible {
   .info-dialog {
     min-height: min(80.4svh, 680px);
     max-height: min(80.4svh, 680px);
+    position: relative; 
+    top: var(--space-md);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .info-dialog-root,
-  .info-dialog-overlay,
-  .info-dialog-shell {
-    transition: none;
-  }
-
   .info-dialog-media.is-loading::before {
     animation: none;
   }
