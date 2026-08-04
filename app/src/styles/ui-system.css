@@ -44,7 +44,7 @@ p span, li span, label span { font-family: var(--font-body); font-size: var(--ty
   padding: 0.55rem 0.85rem;
   border: 1px solid var(--ui-border);
   border-radius: var(--radius-md);
-  background: var(--ui-bg-surface);
+  background: var(--btn-tertiary-bg);
   color: var(--ui-text-secondary);
   font-family: var(--font-body);
   font-size: var(--type-label-size);
@@ -56,7 +56,7 @@ p span, li span, label span { font-family: var(--font-body); font-size: var(--ty
 .ui-toggle-option.is-active    { background: var(--ui-bg-surface-selected); color: var(--ui-text); }
 
 @media (hover: hover) and (pointer: fine) {
-  .ui-toggle-option:hover { background: var(--ui-bg-surface-hover); color: var(--ui-text); }
+  .ui-toggle-option:hover { background: var(--btn-tertiary-hover-bg); color: var(--ui-text); }
   .ui-toggle-option.is-active:hover { background: var(--ui-bg-surface-selected); color: var(--ui-text); }
 }
 
@@ -99,38 +99,8 @@ p span, li span, label span { font-family: var(--font-body); font-size: var(--ty
   stroke: currentColor;
 }
 
-.hint-banner {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: max-content;
-  max-width: min(92vw, 420px);
-  padding: 0.7rem 1rem;
-  border: 1px solid var(--hint-border);
-  border-radius: var(--radius-lg);
-  background: var(--hint-bg);
-  color: var(--hint-text);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
-  opacity: 0;
-  pointer-events: none;
-  transform: var(--hint-banner-hidden-transform, translateY(-8px) scale(0.98));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hint-banner { transition: opacity 180ms ease, transform 220ms cubic-bezier(.22,.61,.36,1); }
-}
-
-.hint-banner.is-visible { opacity: 1; transform: var(--hint-banner-visible-transform, translateY(0) scale(1)); }
-.hint-banner.is-visible.is-dismissible { pointer-events: auto; }
-.hint-banner-copy { color: var(--hint-text) !important; }
-
-.hint-banner-close { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 1px solid var(--hint-border); border-radius: 4px; background: transparent; color: var(--hint-text); appearance: none; -webkit-appearance: none; -webkit-tap-highlight-color: transparent; line-height: 0; }
-.hint-banner-close > span { display: flex; align-items: center; justify-content: center; }
-.hint-banner-close:hover { background: var(--hint-bg-hover); color: var(--hint-text); }
-.hint-banner-close svg [stroke] { stroke: var(--hint-svg); }
-
+/* .hint-banner* primitive styles live in styles/ui/hint-banner.css.
+   These banners below are feature-specific callers of it. */
 .survey-data-status-banner {
   position: fixed;
   top: calc(1rem + env(safe-area-inset-bottom, 0px));
@@ -416,17 +386,15 @@ button.city-button:hover .city-button__inner,
   justify-content: center;
   border: none;
   border-radius: 50%;
-  background: var(--btn-tertiary-bg);
+  background: transparent;
   color: var(--btn-tertiary-text);
-  margin-right: calc(-1 * var(--space-md));
 }
-
-.system-color:hover  { background: var(--btn-tertiary-hover-bg); }
+.system-color { margin-right: calc(-1 * var(--space-md)); }
+.system-color:hover  { background: var(--btn-theme); }
 
 /* -- Responsive overrides ------------------------------------------- */
 
 button.begin-button { width: fit-content; box-sizing: border-box; margin: 0 0.4rem; }
-.hint-banner-close  { width: 20px !important; height: 20px !important; }
 
 @media (max-width: 767px)                      { .svg-lg { max-height: 40px; max-width: 40px; min-height: 40px; min-width: 40px; } }
 @media (min-width: 768px) and (max-width: 1024px) { .svg-lg { max-height: 52px; max-width: 52px; min-height: 52px; min-width: 52px; } }
@@ -452,8 +420,7 @@ button.city-button:focus-visible .city-button__inner,
   border-radius: inherit;
 }
 
-.system-color:focus-visible,
-.hint-banner-close:focus-visible {
+.system-color:focus-visible {
   outline: 2px solid var(--ui-border-strong);
   outline-offset: 3px;
 }

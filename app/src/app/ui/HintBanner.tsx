@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import CloseIcon from "../../assets/svg/close/CloseIcon";
+import "../../styles/ui/hint-banner.css";
 
 interface HintBannerProps {
   visible: boolean;

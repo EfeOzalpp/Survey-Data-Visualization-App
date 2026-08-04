@@ -86,9 +86,12 @@
   --btn-secondary-hover-bg: rgb(166, 135, 182);
 
   /* Tertiary button */
-  --btn-tertiary-bg: transparent;
+  --btn-tertiary-bg: #e7e4e0;
   --btn-tertiary-text: var(--ui-text);
-  --btn-tertiary-hover-bg: rgba(31, 41, 55, 0.08);
+  --btn-tertiary-hover-bg: #d5d0ce;
+
+  /* light-mode dark-mode */
+  --btn-theme:#1f293714;; 
 
   /* Hint theme */
   --hint-bg: #f8fafc;
@@ -175,10 +178,13 @@
   --btn-secondary-hover-bg: #83678e;
 
   /* Tertiary button */
-  --btn-tertiary-bg: transparent;
+  --btn-tertiary-bg: #676562;
   --btn-tertiary-text: var(--ui-text);
-  --btn-tertiary-hover-bg: rgba(255, 255, 255, 0.08);
+  --btn-tertiary-hover-bg: #797873;
 
+  /* light-mode dark-mode */
+  --btn-theme: #ffffff14; 
+  
   /* Hint theme */
   --hint-bg: #2c2c2c;
   --hint-bg-hover: #3a3a3a;
