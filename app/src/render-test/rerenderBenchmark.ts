@@ -122,7 +122,7 @@ async function run() {
 
   // --- Observer/graph view: open, then close after 3s ---
   // Reachable here because isSurveyActive is still false pre-survey.
-  await page.getByRole("button", { name: "View", exact: true }).click();
+  await page.getByRole("button", { name: "Explore Results", exact: true }).click();
   await page.waitForTimeout(3000);
   await page.getByRole("button", { name: "Back", exact: true }).click();
   await page.waitForTimeout(1000);
