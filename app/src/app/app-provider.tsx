@@ -24,9 +24,31 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   useSyncMySectionForSurveyData(mySection);
 
   // Sanity subscription starts once at the app boundary and writes into the survey-data store.
+  // Mobile browsers can silently kill/freeze the underlying EventSource while the tab is
+  // backgrounded (phone locked) without it cleanly self-reconnecting on resume, so force a
+  // fresh subscription when the page returns to the foreground after a real backgrounding.
   useEffect(() => {
-    const unsub = useSurveyDataStore.getState().subscribeToSurveyData();
-    return () => { unsub(); };
+    let unsub = useSurveyDataStore.getState().subscribeToSurveyData();
+    let hiddenAt: number | null = null;
+    const RECONNECT_AFTER_HIDDEN_MS = 10000;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        hiddenAt = Date.now();
+        return;
+      }
+      const wasHiddenLongEnough = hiddenAt !== null && Date.now() - hiddenAt > RECONNECT_AFTER_HIDDEN_MS;
+      hiddenAt = null;
+      if (!wasHiddenLongEnough) return;
+      unsub();
+      unsub = useSurveyDataStore.getState().subscribeToSurveyData();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      unsub();
+    };
   }, []);
 
   const resetToStart = useCallback(() => {
