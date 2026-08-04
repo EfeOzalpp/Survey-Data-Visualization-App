@@ -45,7 +45,9 @@ butterfly-effect/
 |   |   |   |   |-- useIdentityState.ts
 |   |   |   |   \-- usePreferencesState.ts
 |   |   |   \-- ui/
-|   |   |       \-- HintBanner.tsx
+|   |   |       |-- HintBanner.tsx
+|   |   |       |-- Modal.tsx
+|   |   |       \-- Popover.tsx
 |   |   |-- assets/
 |   |   |   |-- fonts/
 |   |   |   |   |-- heebo/
@@ -150,6 +152,9 @@ butterfly-effect/
 |   |   |       |   |-- collapse_all.svg
 |   |   |       |   |-- expand_all.svg
 |   |   |       |   \-- ExpandIcon.tsx
+|   |   |       |-- filter/
+|   |   |       |   |-- filter.svg
+|   |   |       |   \-- FilterIcon.tsx
 |   |   |       |-- info/
 |   |   |       |   |-- info.svg
 |   |   |       |   |-- InfoIcon.tsx
@@ -158,6 +163,9 @@ butterfly-effect/
 |   |   |       |-- link/
 |   |   |       |   |-- link.svg
 |   |   |       |   \-- LinkIcon.tsx
+|   |   |       |-- map/
+|   |   |       |   |-- map.svg
+|   |   |       |   \-- MapIcon.tsx
 |   |   |       |-- play/
 |   |   |       |   |-- pause.svg
 |   |   |       |   \-- PlayPauseIcon.tsx
@@ -175,6 +183,8 @@ butterfly-effect/
 |   |   |   |-- OnboardingEntry.tsx
 |   |   |   |-- QuestionnaireEntry.tsx
 |   |   |   \-- SpotlightEntry.tsx
+|   |   |-- city-stats/
+|   |   |   \-- index.tsx
 |   |   |-- client-api/
 |   |   |   |-- mock-survey-data/
 |   |   |   |   \-- mockData.ts
@@ -301,6 +311,9 @@ butterfly-effect/
 |   |   |   |-- useGraphData.ts
 |   |   |   \-- useSharedGraphData.ts
 |   |   |-- index.tsx
+|   |   |-- info/
+|   |   |   |-- index.tsx
+|   |   |   \-- slides.ts
 |   |   |-- lib/
 |   |   |   |-- hooks/
 |   |   |   |   |-- useAbsoluteScore.ts
@@ -330,24 +343,31 @@ butterfly-effect/
 |   |   |       |-- quantize-average.ts
 |   |   |       |-- score.ts
 |   |   |       \-- session-cache.ts
+|   |   |-- logs/
+|   |   |   |-- constants.ts
+|   |   |   |-- format.ts
+|   |   |   |-- index.tsx
+|   |   |   |-- search.ts
+|   |   |   \-- sort.ts
 |   |   |-- navigation/
 |   |   |   |-- bottom/
+|   |   |   |   |-- city-stats-button.tsx
 |   |   |   |   |-- logs-button.tsx
 |   |   |   |   |-- mode-toggle.tsx
+|   |   |   |   |-- my-city-button.tsx
 |   |   |   |   |-- nav-bottom.tsx
-|   |   |   |   \-- widgets/
-|   |   |   |       |-- bargraph/
-|   |   |   |       |   |-- EmptyArt.tsx
-|   |   |   |       |   \-- index.tsx
-|   |   |   |       |-- compact-graph-tools.tsx
-|   |   |   |       |-- section-scores.tsx
-|   |   |   |       \-- widget-section-nav.tsx
+|   |   |   |   |-- questionnaire-nav.tsx
+|   |   |   |   |-- widgets/
+|   |   |   |   |   |-- bargraph/
+|   |   |   |   |   |   |-- EmptyArt.tsx
+|   |   |   |   |   |   \-- index.tsx
+|   |   |   |   |   |-- compact-graph-tools.tsx
+|   |   |   |   |   |-- section-scores.tsx
+|   |   |   |   |   \-- widget-section-nav.tsx
+|   |   |   |   \-- widgets-button.tsx
 |   |   |   |-- gp-data.ts
 |   |   |   |-- graph-picker.tsx
 |   |   |   |-- index.tsx
-|   |   |   |-- info/
-|   |   |   |   |-- index.tsx
-|   |   |   |   \-- slides.ts
 |   |   |   |-- left/
 |   |   |   |   |-- logo.tsx
 |   |   |   |   \-- nav-left.tsx
@@ -356,6 +376,8 @@ butterfly-effect/
 |   |   |       |-- nav-right.tsx
 |   |   |       \-- system-color.tsx
 |   |   |-- onboarding/
+|   |   |   |-- canvas-info/
+|   |   |   |   \-- index.tsx
 |   |   |   |-- index.tsx
 |   |   |   |-- information/
 |   |   |   |   \-- canvas-info.tsx
@@ -692,6 +714,7 @@ butterfly-effect/
 |   |   |   |-- entry-server.tsx
 |   |   |   \-- streamDocument.tsx
 |   |   |-- styles/
+|   |   |   |-- city-stats.css
 |   |   |   |-- fonts.css
 |   |   |   |-- gamification.css
 |   |   |   |-- global-styles.css
@@ -702,6 +725,10 @@ butterfly-effect/
 |   |   |   |-- navigation.css
 |   |   |   |-- onboarding-info.css
 |   |   |   |-- section-questionnaire.css
+|   |   |   |-- ui/
+|   |   |   |   |-- hint-banner.css
+|   |   |   |   |-- modal.css
+|   |   |   |   \-- popover.css
 |   |   |   |-- ui-system.css
 |   |   |   \-- widgets.css
 |   |   |-- vite-env.d.ts
