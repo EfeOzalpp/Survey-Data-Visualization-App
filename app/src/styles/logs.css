@@ -2,25 +2,59 @@
 
 .logs-button { display: inline-flex; align-items: center; justify-content: center; gap: 0; flex-direction: row; }
 
-.logs-wrap { position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; pointer-events: all; }
+.logs-wrap { display: inline-flex; flex-direction: column; align-items: flex-start; pointer-events: all; }
 
-.logs-popover-shell { display: grid; position: absolute; left: 0; bottom: 0; z-index: 2; grid-template-rows: 0fr; opacity: 0; pointer-events: none; transition: grid-template-rows 180ms cubic-bezier(.22,.61,.36,1), opacity 120ms ease; }
+/* Shell/clip mechanics (position, grid-collapse transition) and the card's
+   border/shadow come from the shared Popover (styles/ui/popover.css) via
+   shellClassName="logs-popover-shell" on the <Popover> in logs-button.tsx -
+   that only applies on desktop/tablet, though. On mobile, LogsPanel renders
+   directly inside compact-tools-modal (compact-graph-tools.tsx) with no
+   Popover involved at all, so .logs-popover can't rely on .ui-popover for
+   anything; border/radius/shadow are correctly zeroed there instead via
+   .compact-tools-modal .logs-popover in widgets.css. Background has no such
+   override, so it stays declared here explicitly for the mobile path rather
+   than depending on .ui-popover's identical value only being visible by
+   coincidence (compact-tools-modal happens to share the same token).
+   The combined selector below (two classes) outguns Popover's single-class
+   placement rule regardless of stylesheet import order. */
+.ui-popover-shell.logs-popover-shell {
+  left: 0;
+  bottom: 0;
+  top: auto;
+  margin-bottom: 0;
+}
 
-.logs-popover-shell.is-open { grid-template-rows: 1fr; opacity: 1; pointer-events: auto; z-index: 205; }
+/* .ui-popover-clip's default align-items:flex-start (shrink-to-fit) is for
+   auto-width popovers. This shell gets an explicit width from the media
+   queries below, so its card needs to stretch to fill it instead of
+   shrink-wrapping around the table's natural content width. */
+.ui-popover-shell.logs-popover-shell .ui-popover-clip {
+  align-items: stretch;
+}
 
-.logs-popover-clip { min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
-
-.logs-popover { width: 100%; background: var(--ui-bg-surface); border: 1px solid var(--ui-border); border-radius: var(--radius-lg); overflow: hidden; pointer-events: all; box-shadow: 0 18px 42px var(--ui-drop-shadow); display: flex; flex-direction: column; }
+.logs-popover { width: 100%; background: var(--ui-bg-surface); overflow: hidden; pointer-events: all; display: flex; flex-direction: column; }
 
 .logs-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding: 0.9rem 1rem 0.75rem; flex-shrink: 0; }
 
-.logs-title { font-size: var(--type-p-size); color: var(--ui-text); font-weight: var(--fw-bold); }
+.logs-title { margin: 0; font-size: var(--type-p-size); color: var(--ui-text); font-weight: var(--fw-bold); }
 
-.logs-header-tools { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.65rem; flex-shrink: 0; }
+.logs-header-tools { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--space-md); flex-shrink: 0; }
 
 .logs-entry-count { white-space: nowrap; }
 
-.logs-filter-trigger { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--ui-border); border-radius: var(--radius-md); background: var(--ui-bg-surface); color: var(--ui-text-muted); cursor: pointer; transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease; }
+.logs-filter-trigger { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid transparent; border-radius: var(--radius-md); background: var(--ui-bg-surface); color: var(--ui-text-muted); cursor: pointer; transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease; }
+
+.logs-filter-trigger:focus-visible { border-color: var(--ui-border); }
+
+.logs-sort-menu { display: flex; flex-direction: column; gap: var(--space-sm); padding: 0.6rem 0; min-width: 160px; }
+
+.logs-sort-menu__label { padding-left: 1.2rem; font-size: var(--type-label-size); line-height: var(--type-tight-line); color: var(--ui-text-secondary); }
+
+.logs-sort-menu__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+
+.logs-sort-menu__option { width: 100%; text-align: left; padding: 0.45rem 0.6rem 0.45rem 1.2rem; border: none; background: transparent; color: var(--ui-text); font-size: var(--type-p-size); font-family: inherit; cursor: pointer; transition: background 0.12s ease, color 0.12s ease; }
+
+.logs-sort-menu__option.is-active { background: var(--ui-bg-surface-hover); font-weight: var(--fw-bold); }
 
 .logs-filter-trigger .ui-icon { width: 16px; height: 16px; stroke: currentColor; }
 
@@ -61,7 +95,12 @@
 
 .logs-td { font-size: var(--type-label-size); color: var(--ui-text); text-align: right; padding: 0.7rem 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.logs-td--section { text-align: left; color: var(--ui-text-secondary); }
+.logs-td--section {
+  text-align: left;
+  color: var(--ui-text-secondary);
+  white-space: normal;
+  line-height: var(--type-tight-line);
+}
 .logs-td--qs { text-align: left; color: var(--ui-text-muted); letter-spacing: 0.01em; }
 .logs-td--avg { font-weight: var(--fw-bold); text-align: left; }
 .logs-td--rank { color: var(--ui-text-muted); text-align: left; }
@@ -105,6 +144,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .logs-filter-trigger:hover { background: var(--ui-bg-surface-hover); color: var(--ui-text); }
+  .logs-sort-menu__option:hover { background: var(--ui-bg-surface-hover); }
   .logs-filter-field:hover { background: var(--ui-bg-text-input-hover); }
   .logs-row:hover { background: var(--ui-bg-surface-hover); }
   .logs-row--empty:hover { background: transparent; }
@@ -113,7 +153,7 @@
 }
 
 @media (max-width: 767px) {
-  .logs-footer { justify-content: flex-end; padding: 0.6rem 0;}
+  .logs-footer { justify-content: flex-end; padding: 0.3rem 0;}
   .compact-tools-modal .widgets-panel.bar-graph { 
     padding: 0.9rem 1rem 0.9rem;
   }
@@ -122,28 +162,28 @@
     height: min(46svh, 340px);
     max-height: 360px;
   }
-  .logs-th--section { width: 30%; }
+  .logs-th--section { width: 25%; }
   .logs-th--qs {width: 40%;  }
-  .logs-th--avg { width: 15%; }
+  .logs-th--avg { width: 20%; }
   .logs-th--rank { width: 15%; }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .logs-table-wrap { min-height: min(58svh, 520px); max-height: min(58svh, 520px); }
-  .logs-popover-shell { width: calc(55vw - 1.8rem); }
+  .ui-popover-shell.logs-popover-shell { width: calc(55vw - 1.8rem); }
 
-  .logs-th--section { width: 30%; }
-  .logs-th--qs {width: 40%;  }
-  .logs-th--avg { width: 15%; }
-  .logs-th--rank { width: 15%; }
+  .logs-th--section { width: 25%; }
+  .logs-th--qs {width: 35%;  }
+  .logs-th--avg { width: 16%; }
+  .logs-th--rank { width: 12%; }
 }
 
 @media (min-width: 1025px) {
   .logs-table-wrap { min-height: calc(100svh - 12.8rem); max-height: calc(100svh - 12.8rem); }
-  .logs-popover-shell { width: min(460px, calc(100vw - 3.2rem)); }
+  .ui-popover-shell.logs-popover-shell { width: min(460px, calc(100vw - 3.2rem)); }
 
-  .logs-th--section { width: 28%; }
-  .logs-th--qs {width: 36%;  }
-  .logs-th--avg { width: 15%; }
+  .logs-th--section { width: 30%; }
+  .logs-th--qs {width: 38%;  }
+  .logs-th--avg { width: 17%; }
   .logs-th--rank { width: 15%; }
 }

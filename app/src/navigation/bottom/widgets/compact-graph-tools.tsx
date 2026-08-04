@@ -1,5 +1,6 @@
 import { Profiler, Suspense, lazy, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import "../../../styles/widgets.css";
 import { profilerOnRender, recordOwnRender } from "../../../render-test/renderProfilerStats";
 import CloseIcon from "../../../assets/svg/close/CloseIcon";
 import { useSurveyDataStore } from "../../../app/state/survey-data-store";
@@ -7,7 +8,7 @@ import { GraphDataProvider } from "../../../graph-runtime/GraphDataContext";
 import { useDisclosure } from "../../../lib/hooks/useDisclosure";
 import { useEscapeToClose } from "../../../lib/hooks/useEscapeToClose";
 import { useFocusTrap } from "../../../lib/hooks/useFocusTrap";
-import { LogsPanel } from "../logs-button";
+import { LogsPanel } from "../../../logs";
 import SectionScores from "./section-scores";
 
 const BarGraph = lazy(() => import("./bargraph/index"));
@@ -69,7 +70,7 @@ export default function CompactGraphTools() {
         <div ref={modalRef} className="compact-tools-modal" role="dialog" aria-modal="true" aria-label="Graph tools">
           <button
             type="button"
-            className="compact-tools-close"
+            className="ui-icon-nav-button compact-tools-close"
             aria-label="Close graph tools"
             onClick={closeDisclosure}
           >

@@ -1,0 +1,72 @@
+/* Generic anchored floating panel: used to build menus, pickers, etc.
+   Colors/border/shadow match .logs-popover and .widgets-popover exactly.
+   Always mounted (not conditionally rendered) so open/close can animate via
+   the grid-row collapse trick, same mechanism .logs-popover-shell and
+   .widgets-popover-shell already use. */
+
+.ui-popover-anchor {
+  position: relative;
+  display: inline-block;
+}
+
+.ui-popover-shell {
+  position: absolute;
+  z-index: 215;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+  transition: grid-template-rows 180ms cubic-bezier(.22,.61,.36,1), opacity 120ms ease;
+}
+
+.ui-popover-shell.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ui-popover-clip {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  /* Without this, the default align-items:stretch creates a circular sizing
+     dependency (container wants content's natural width, content stretches
+     to match container) that also pushes toward that same min-content
+     collapse. */
+  align-items: flex-start;
+}
+
+/* top* placements grow upward (anchored via bottom:100%), so the card needs
+   to stay pinned to the clip's bottom edge - otherwise the grid-row collapse
+   reveals the card top-down instead of bottom-up as it opens. bottom*
+   placements grow downward and already get the right effect from the
+   default (flex-start) alignment. */
+.ui-popover-shell--top .ui-popover-clip,
+.ui-popover-shell--top-start .ui-popover-clip,
+.ui-popover-shell--top-end .ui-popover-clip {
+  justify-content: flex-end;
+}
+
+.ui-popover {
+  background: var(--ui-bg-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 42px var(--ui-drop-shadow);
+}
+
+.ui-popover-shell--bottom { top: 100%; left: 50%; margin-top: var(--space-sm); transform: translateX(-50%); }
+.ui-popover-shell--bottom-start { top: 100%; left: 0; margin-top: var(--space-sm); }
+.ui-popover-shell--bottom-end { top: 100%; right: 0; margin-top: var(--space-sm); }
+
+.ui-popover-shell--top { bottom: 100%; left: 50%; margin-bottom: var(--space-sm); transform: translateX(-50%); }
+.ui-popover-shell--top-start { bottom: 100%; left: 0; margin-bottom: var(--space-sm); }
+.ui-popover-shell--top-end { bottom: 100%; right: 0; margin-bottom: var(--space-sm); }
+
+.ui-popover-shell--left { right: 100%; top: 50%; margin-right: var(--space-sm); transform: translateY(-50%); }
+.ui-popover-shell--right { left: 100%; top: 50%; margin-left: var(--space-sm); transform: translateY(-50%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-popover-shell {
+    transition: none;
+  }
+}
