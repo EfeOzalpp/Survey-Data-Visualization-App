@@ -149,6 +149,11 @@ const CLOUDS = {
 
 const WOBBLE = { ampScale: [0.8, 0.95] } satisfies { ampScale: NumberRange };
 
+// Exponent applied to u for the cloud-body geometry ranges above (all of
+// which grow toward u=1): u^gamma with gamma < 1 front-loads the ramp so
+// clouds read as visibly bigger/fluffier well before u actually reaches 1.
+const CLOUDS_SHAPE_GAMMA = 0.5;
+
 // Palettes.
 const CLOUDS_BASE_PALETTE: CloudsPalette = {
   default: { r: 236, g: 238, b: 242 },
@@ -229,6 +234,7 @@ export function drawClouds(
     ?? `clouds|${String(f.r0)}:${String(f.c0)}|${String(f.w)}x${String(f.h)}`;
   const seed = shapeHash32(String(seedKey)) | 0;
   const u = clamp01(style.liveAvg ?? 0.5);
+  const uShape = Math.pow(u, CLOUDS_SHAPE_GAMMA);
 
   // Prefer the explicit dt from painter; fall back to p.deltaTime.
   const dt = Math.max(
@@ -251,7 +257,13 @@ export function drawClouds(
   const sizeK = rainScale.size * rainDepthSizeK * Math.pow(pixelScale, 1.15);
   const lengthK = rainScale.length * rainDepthSizeK * Math.pow(pixelScale, 1.05);
   const motionK = rainScale.motion * pixelScale;
-  const lifeK = rainScale.life * Math.pow(pixelScale, 1.2);
+  // Not scaled by pixelScale: motionK boosts speed but the spawn rect stays
+  // fixed size, so a boosted life outlives the time a particle can actually
+  // stay inside the rect. That leaves particles exiting/respawning before
+  // fadeInFrac (a fraction of life) finishes ramping in, reading as
+  // persistently faint at higher scaleBoost values. Keeping life unboosted
+  // holds the fade-in target well under the particle's real dwell time.
+  const lifeK = rainScale.life;
   const countK = rainScale.count * Math.sqrt(pixelScale);
 
   // Layout base
@@ -266,13 +278,13 @@ export function drawClouds(
   const anchorY = y0 + hTop * 0.60;
 
   // Resolve cloud geometry
-  const wEnv = wTop * resolveRangeValue(CLOUDS.widthEnv, u) * cloudRow.width;
-  const hEnv = hTop * resolveRangeValue(CLOUDS.heightEnv, u) * cloudRow.height;
-  const spreadXBase = resolveRangeValue(CLOUDS.spreadX, u) * cloudRow.overlap;
-  const arcLift = resolveRangeValue(CLOUDS.arcLift, u) * cloudRow.arcLift;
-  const rJitter = resolveRangeValue(CLOUDS.rJitter, u) * cloudRow.radiusJitter;
-  const lobeCount = Math.max(4, Math.round(resolveRangeValue(CLOUDS.lobeCount, u) * cloudRow.lobeCount));
-  const rBaseFromHeight = hTop * resolveRangeValue(CLOUDS.rBaseK, u) * cloudRow.radius;
+  const wEnv = wTop * resolveRangeValue(CLOUDS.widthEnv, uShape) * cloudRow.width;
+  const hEnv = hTop * resolveRangeValue(CLOUDS.heightEnv, uShape) * cloudRow.height;
+  const spreadXBase = resolveRangeValue(CLOUDS.spreadX, uShape) * cloudRow.overlap;
+  const arcLift = resolveRangeValue(CLOUDS.arcLift, uShape) * cloudRow.arcLift;
+  const rJitter = resolveRangeValue(CLOUDS.rJitter, uShape) * cloudRow.radiusJitter;
+  const lobeCount = Math.max(4, Math.round(resolveRangeValue(CLOUDS.lobeCount, uShape) * cloudRow.lobeCount));
+  const rBaseFromHeight = hTop * resolveRangeValue(CLOUDS.rBaseK, uShape) * cloudRow.radius;
   const rBaseFromWidth = wEnv / Math.max(4.5, lobeCount * cloudRow.radiusFromWidth);
   const rBase = Math.max(rBaseFromHeight, rBaseFromWidth);
   const continuitySpan = Math.max(
@@ -403,7 +415,13 @@ export function drawClouds(
       lifetime: { min: RAIN.lifeMin * lifeK, max: RAIN.lifeMax * lifeK },
       fadeInFrac: RAIN.fadeInFrac,
       fadeOutFrac: RAIN.fadeOutFrac,
-      warmStartSec: RAIN.warmStartSec,
+      // Sprite mode boosts particle speed via motionK (== pixelScale) without
+      // boosting the spawn rect, so particles cross it faster and the warm-up
+      // loop covers fewer respawn cycles per second of warm time. Scale the
+      // warm-up window by the same pixelScale so it still settles before the
+      // sprite bake snapshots a single frame. pixelScale is 1 outside sprite
+      // mode, so this is a no-op for the live scene.
+      warmStartSec: RAIN.warmStartSec * pixelScale,
 
       edgeFadePx: { left: RAIN.fadeLeft, right: RAIN.fadeRight, top: RAIN.fadeTop, bottom: RAIN.fadeBottom },
       respawn: true,

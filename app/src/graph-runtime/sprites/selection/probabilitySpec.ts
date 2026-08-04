@@ -25,16 +25,35 @@ export function getProbAt(curve: readonly ProbAnchor[], avg: number): number {
 
 // Art-direction table: each shape gets more or less likely as the score changes.
 // The sampler turns these curves into a stable shape pick per respondent.
+// Everything not called out below stays flat (empty curve == uniform weight 1
+// at every score) — clouds/house/power/sun/villa/sea/carFactory/bus are all
+// intentionally neutral.
 export const SHAPE_PROBABILITY_SPEC: ShapeProbSpec = {
   clouds: [],
-  snow: [],
+  // Slightly more common at the top of the range only; flat everywhere else.
+  snow: [
+    { t: 0, prob: 1 },
+    { t: 0.6, prob: 1 },
+    { t: 1, prob: 1.6 },
+  ],
   house: [],
   power: [],
   sun: [],
   villa: [],
-  car: [],
+  // Slightly more common at the bottom of the range only; flat everywhere else.
+  car: [
+    { t: 0, prob: 1.6 },
+    { t: 0.4, prob: 1 },
+    { t: 1, prob: 1 },
+  ],
   sea: [],
   carFactory: [],
   bus: [],
-  trees: [],
+  // Flat through most of the range, then ramps up sharply near the top —
+  // this is the shape meant to read as clearly more common at a good score.
+  trees: [
+    { t: 0, prob: 1 },
+    { t: 0.6, prob: 1 },
+    { t: 1, prob: 6 },
+  ],
 };
