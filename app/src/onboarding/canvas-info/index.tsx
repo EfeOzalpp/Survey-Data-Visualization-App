@@ -102,7 +102,6 @@ export default function CanvasInfo() {
           )}
           <div className="ui-icon-nav canvas-info__slider-controls" aria-label="Scene Canvas preview controls">
             <div className="canvas-info__liveavg-control">
-              <div className="canvas-info__liveavg-track" aria-hidden="true" />
               <input
                 className="canvas-info__liveavg-slider"
                 type="range"

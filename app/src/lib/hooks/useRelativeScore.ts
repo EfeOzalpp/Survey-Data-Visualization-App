@@ -127,11 +127,11 @@ export function useRelativeScores<TItem extends WithWeights>(
   };
 
   return {
-    // existing percentile API
+    // percentile API
     getForId,
     getForItem,
     getForValue,
-    // new counts API
+    // counts API
     getCountForId,
     getCountForItem,
     getCountForValue,

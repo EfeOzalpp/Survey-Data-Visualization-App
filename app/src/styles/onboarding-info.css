@@ -14,6 +14,7 @@
   .fade-in { animation: fadeIn 100ms ease-in forwards; }
   .survey-section.survey-first-enter .survey-step { animation: surveyScaleIn 520ms cubic-bezier(.22,.61,.36,1) both; }
   .welcome-title { animation: titleWipe 1800ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both; }
+  .more-info-trigger { animation: titleWipe 1000ms cubic-bezier(0.16, 1, 0.3, 1) 1100ms both; }
 }
 @media (prefers-reduced-motion: reduce) {
   .fade-out { opacity: 0; }
@@ -35,7 +36,7 @@
 
 /* Role picker */
 .survey.survey-step.role-select { display: flex; justify-content: flex-start; align-items: center; flex-direction: column; height: 100%; }
-.survey.survey-step.role-select > .onboarding { display: flex; flex-direction: column; align-items: center; gap: var(--space-md); }
+.survey.survey-step.role-select > .onboarding { display: flex; flex-direction: column; align-items: center; gap: var(--space-lg); }
 .radio-options { display: flex; flex-direction: column; gap: var(--space-sm); pointer-events: auto; }
 .input-part-inside.radio-option, .input-part-inside.radio-option * { cursor: pointer; }
 .input-part-inside.radio-option { display: flex; align-items: center; flex-direction: row; justify-content: space-between; border: 1px solid var(--ui-border); background: var(--inactive-accent-color); border-radius: var(--btn-radius); padding: var(--input-padding); transition: background-color 120ms ease, transform 50ms ease; }
@@ -56,30 +57,39 @@
 .onboarding-info.canvas-info { display: flex; flex-direction: row; height: 560px; gap: calc(var(--space-lg) * 2); padding: var(--space-md) 3.2rem 4.8rem; }
 .canvas-info__slider { width: 55%; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-end; }
 .canvas-info__information { width: 45%; }
-.canvas-info-div { position: relative; height: 100%; width: min(500px, 100%); display: flex; flex-direction: column; justify-content: center; gap: var(--space-lg); }
+.canvas-info-div { position: relative; height: 100%; width: min(500px, 100%); display: flex; flex-direction: column; justify-content: center; gap: calc(var(--space-lg) + var(--space-sm)); }
 .canvas-info__eyebrow { max-width: 18ch; }
 .canvas-info__copy { display: flex; flex-direction: column; gap: var(--space-lg); max-width: 42ch; margin: 0; padding: 0; list-style: none; color: var(--ui-text); }
 .canvas-info__copy > li { position: relative; padding-left: 1.1em; }
 .canvas-info__copy > li::before { content: "\2022"; position: absolute; left: 0; color: var(--ui-text); }
 .canvas-info__actions { display: flex; align-items: center; margin-top: 0.4rem; }
-.canvas-info__spotlight-frame { position: relative; height: 100%; width: min(650px, 100%); display: flex; }
+.canvas-info__spotlight-frame { position: relative; aspect-ratio: 4 / 3; width: min(650px, 100%); display: flex; }
 .canvas-info__spotlight-canvas { position: relative; height: 100%; width: 100%; }
 .canvas-info__slider-controls { justify-content: flex-end; position: absolute; right: 0.4rem; bottom: 0.4rem; z-index: 300; pointer-events: auto; }
+/* Two classes for specificity - wins over the media-query .ui-icon-nav padding
+   rules below (same file) without touching that shared rule, which InfoDialog's
+   slider-controls also uses. */
+.ui-icon-nav.canvas-info__slider-controls { padding: 0.35rem 0.6rem; }
 .canvas-info__slider-button svg.ui-icon { width: 1.6rem !important; height: 1.6rem !important; }
 .canvas-info__liveavg-control { position: relative; flex: 0 0 10rem; width: 10rem; height: 36px; margin: 0 0.25rem 0 0; box-sizing: border-box; border-radius: var(--radius-md); background: transparent; pointer-events: auto; transition: background 0.1s ease; }
-.canvas-info__liveavg-control:hover, .canvas-info__liveavg-control:active { background: var(--btn-tertiary-hover-bg); }
+.canvas-info__liveavg-control:hover, .canvas-info__liveavg-control:active { background: var(--transparent-btn); }
+.canvas-info__slider-controls .ui-icon-nav-button:hover { background: var(--transparent-btn); }
 .canvas-info__liveavg-control:focus-within { outline: 2px solid var(--ui-focus-ring); outline-offset: 2px; }
-.canvas-info__liveavg-track { position: absolute; left: 0.75rem; right: 0.75rem; top: 50%; height: 0.35rem; transform: translateY(-50%); background: color-mix(in srgb, var(--ui-text) 34%, transparent); pointer-events: none; }
 .canvas-info__liveavg-slider { appearance: none; -webkit-appearance: none; position: absolute; left: 0.75rem; top: 0; width: calc(100% - 1.5rem); height: 100%; margin: 0; padding: 0; background: transparent; cursor: pointer; touch-action: none; }
 .canvas-info__liveavg-slider:focus-visible { outline: none; }
-.canvas-info__liveavg-slider::-webkit-slider-runnable-track { height: 0.35rem; border-radius: 0; background: transparent; }
-.canvas-info__liveavg-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 1.1rem; height: 1.65rem; margin-top: -0.65rem; border: 0; border-radius: 0; background: var(--btn-secondary-bg); }
-.canvas-info__liveavg-slider::-moz-range-track { height: 0.35rem; border-radius: 0; background: transparent; }
-.canvas-info__liveavg-slider::-moz-range-thumb { width: 1.1rem; height: 1.65rem; border: 0; border-radius: 0; background: var(--btn-secondary-bg); }
+.canvas-info__liveavg-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 0; background: color-mix(in srgb, var(--ui-text) 50%, transparent); transition: background 0.1s ease; }
+.canvas-info__liveavg-control:hover .canvas-info__liveavg-slider::-webkit-slider-runnable-track { background: color-mix(in srgb, var(--ui-text) 75%, transparent); }
+.canvas-info__liveavg-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 1.1rem; height: 1.65rem; margin-top: -0.65rem; border: 0; border-radius: 0; background: var(--btn-secondary-bg); transition: background 0.1s ease; }
+.canvas-info__liveavg-control:hover .canvas-info__liveavg-slider::-webkit-slider-thumb { background: var(--btn-secondary-ui-bg); }
+.canvas-info__liveavg-slider::-moz-range-track { height: 4px; border-radius: 0; background: color-mix(in srgb, var(--ui-text) 50%, transparent); transition: background 0.1s ease; }
+.canvas-info__liveavg-control:hover .canvas-info__liveavg-slider::-moz-range-track { background: color-mix(in srgb, var(--ui-text) 75%, transparent); }
+.canvas-info__liveavg-slider::-moz-range-thumb { width: 1.1rem; height: 1.65rem; border: 0; border-radius: 0; background: var(--btn-secondary-bg); transition: background 0.1s ease; }
+.canvas-info__liveavg-control:hover .canvas-info__liveavg-slider::-moz-range-thumb { background: var(--btn-secondary-ui-bg); }
 
+.survey.survey-step.role-select .onboarding { padding: calc(var(--space-lg) * 3) 0; }
 @media (max-width: 767px) {
   .survey-section:has(.survey.survey-step.role-select) { height: 100%; }
-  .survey.survey-step.role-select .onboarding { padding: 2.4rem 20px 3.2rem; min-width: 360px; max-width: 360px; }
+  .survey.survey-step.role-select .onboarding { min-width: 360px; max-width: 360px; }
   .role-indicator-spacer { width: 1.1rem !important; height: 1.1rem !important; min-width: 1.1rem; min-height: 1.1rem; }
   .welcome-title, .welcome-text { text-align: center; }
   .welcome-title { padding: 2rem 2.4rem 0.2rem; }
@@ -91,7 +101,6 @@
   .ui-icon-nav { padding: 0.6rem; }
   .role-step__heading { padding: 0 0.8rem; }
   .onboarding-info.canvas-info { padding: 0rem 1.2rem 3.2rem; }
-  .canvas-info__spotlight-frame { height: min(72vw, 360px); }
   .canvas-info__slider-controls { right: 0.25rem; bottom: 0.25rem; }
 }
 
@@ -102,7 +111,6 @@
   .ui-icon-nav { padding: 0.9rem 0.6rem 0.75rem 0.6rem; }
   .canvas-info__information { padding-left: 3rem; }
   .onboarding-info.canvas-info { padding: 1.6rem 2.4rem 4rem; }
-  .canvas-info__spotlight-frame { height: min(62vw, 500px); }
 }
 
 @media (max-width: 1024px) {
@@ -118,14 +126,14 @@
 @media (min-width: 1025px) {
   .onboarding-canvas { height: clamp(675px, 2.8vw, 860px); }
   .welcome-title-layer { height: clamp(675px, 2.8vw, 860px); align-items: center; }
-  .welcome-title-inner { top: -164px; }
+  .welcome-title-inner { top: -148px; }
   .onboarding-info.canvas-info { width: auto; margin-inline: 4rem; }
   .ui-icon-nav { padding: 0.9rem 0.6rem 0.75rem 0.6rem; }
 }
 
 @media (min-width: 768px) {
   .survey-section:has(.survey.survey-step.role-select) { height: 100%; }
-  .survey.survey-step.role-select .onboarding { padding: 3.2rem 0 2.4rem; min-width: 580px; max-width: 580px; }
+  .survey.survey-step.role-select .onboarding { min-width: 580px; max-width: 580px; }
   .welcome-title, .welcome-text { text-align: center; }
   .welcome-title { white-space: nowrap; padding: 0 0 0.8rem; }
   .radio-group { min-width: 260px; max-width: 260px; }

@@ -1,6 +1,6 @@
 import { useId, useMemo } from "react";
 
-import playSvg from "./play.svg?raw";
+import playSvg from "./play_arrow.svg?raw";
 import { prepareRawSvgMarkup, RAW_SVG_WRAPPER_STYLE } from "../shared/rawSvg";
 
 interface PlayIconProps {

@@ -6,35 +6,42 @@
 
 button.more-info-trigger {
   display: inline-flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--ui-title);
-  font-family: var(--font-title);
-  font-size: var(--type-h4-size);
-  font-weight: 420 !important;
-  line-height: var(--type-h4-line);
-  letter-spacing: 0.02rem;
-  text-decoration-line: underline;
-  text-decoration-color: var(--btn-secondary-bg);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.2em;
-  vertical-align: baseline;
-  transition: color 120ms ease;
+  cursor: pointer;
 }
 
-button.more-info-trigger:hover {
+.more-info-trigger:hover .more-info-trigger__icon-box {
+  background: var(--btn-secondary-hover-bg);
+}
+
+.more-info-trigger:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}
+
+.more-info-trigger__label {
+  margin: 0;
   color: var(--ui-title);
-  text-decoration-color: var(--btn-secondary-hover-bg);
+  font-family: var(--font-body);
+  font-size: var(--type-p-size);
+  font-weight: var(--font-ui-weight);
+  line-height: var(--type-body-line);
+  vertical-align: baseline;
 }
 
 .more-info-trigger__duration {
   margin-left: 0.4em;
+  margin-right: var(--space-md);
   font-size: 0.85em;
   font-weight: 400;
+  color: var(--ui-title);
   opacity: 0.7;
 }
 
@@ -42,21 +49,15 @@ button.more-info-trigger:hover {
   display: inline-flex;
   width: 1.8rem;
   height: 1.6rem;
-  margin-left: var(--space-md);
   align-items: center;
   justify-content: center;
   border-radius: var(--btn-radius);
   background: var(--btn-secondary-bg);
+  transition: background 120ms ease;
 }
 
 .more-info-trigger__icon [stroke] {
   stroke: currentColor;
-}
-
-button.more-info-trigger:focus-visible {
-  outline: 2px solid var(--ui-border-strong);
-  outline-offset: 3px;
-  border-radius: var(--radius-md);
 }
 
 /* Root/overlay/shell positioning + transitions live in the shared Modal
@@ -270,13 +271,12 @@ button.info-dialog-progress-button:focus-visible {
 
   html.info-dialog-scroll-lock {
     overflow: hidden;
-    scrollbar-gutter: auto;
   }
 }
 
 @media (min-width: 768px) {
   .info-dialog-shell {
-    width: min(540px, calc(100vw - 4rem));
+    width: min(600px, calc(100vw - 4rem));
   }
 }
 

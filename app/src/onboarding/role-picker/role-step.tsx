@@ -25,7 +25,7 @@ export default function RoleStep({ value, onChange, onNext, error }: RoleStepPro
         <div className="onboarding">
           <div className="role-step__heading">
             <h2 className="welcome-text">
-              A Sustainability Survey Where Choices Shape the Scene.
+              A Sustainability Survey Where Choices Shape the Scene
             </h2>
           </div>
 

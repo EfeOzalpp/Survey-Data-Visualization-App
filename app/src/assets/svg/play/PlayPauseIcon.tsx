@@ -1,6 +1,6 @@
 import { useId, useMemo } from "react";
 
-import pauseSvg from "./pause.svg?raw";
+import pauseSvg from "./pause-play.svg?raw";
 import { prepareRawSvgMarkup, RAW_SVG_WRAPPER_STYLE } from "../shared/rawSvg";
 
 interface PlayPauseIconProps {
