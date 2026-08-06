@@ -1,18 +1,15 @@
-import { useCallback, useRef, type RefObject } from "react";
+import { useCallback, useRef } from "react";
 import "../../styles/logs.css";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import { Popover } from "../../app/ui/Popover";
-import { LogsPanel } from "../../logs";
+import { LogsPanel } from "../../graph-components/logs";
 
 export default function LogsButton({
   open,
   onOpenChange,
-  dismissExclude,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
-  // Forwarded to Popover - see its dismissExclude doc.
-  dismissExclude?: RefObject<HTMLElement | null>[];
 }) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -29,7 +26,7 @@ export default function LogsButton({
         onOpenChange={onOpenChange}
         placement="top-start"
         shellClassName="logs-popover-shell"
-        dismissExclude={dismissExclude}
+        dismissOnOutsideClick={false}
         trigger={
           <button
             ref={triggerRef}

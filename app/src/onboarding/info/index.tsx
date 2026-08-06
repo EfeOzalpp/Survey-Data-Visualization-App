@@ -1,11 +1,11 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
-import CloseIcon from "../assets/svg/close/CloseIcon";
-import PlayPauseIcon from "../assets/svg/play/PlayPauseIcon";
-import { usePreferences } from "../app/state/preferences-context";
-import { useUiStore } from "../app/state/ui-store";
-import { Modal } from "../app/ui/Modal";
-import "../styles/info.css";
+import CloseIcon from "../../assets/svg/close/CloseIcon";
+import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
+import { usePreferences } from "../../app/state/preferences-context";
+import { useUiStore } from "../../app/state/ui-store";
+import { Modal } from "../../app/ui/Modal";
+import "../../styles/info.css";
 import { INFO_SLIDES, readInfoSlideMedia, type InfoSlideMediaMap } from "./slides";
 
 const SLIDE_DURATION_MS = 10000;

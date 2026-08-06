@@ -3,17 +3,17 @@
 
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { usePreferences } from "../../../../app/state/preferences-context";
-import { recordOwnRender } from "../../../../render-test/renderProfilerStats";
-import { useUiStore } from "../../../../app/state/ui-store";
-import { useIdentity } from "../../../../app/state/identity-context";
+import { usePreferences } from "../../../app/state/preferences-context";
+import { recordOwnRender } from "../../../render-test/renderProfilerStats";
+import { useUiStore } from "../../../app/state/ui-store";
+import { useIdentity } from "../../../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";
-import { useSurveyDataStore } from "../../../../app/state/survey-data-store";
-import { useRelativeScores } from "../../../../lib/hooks/useRelativeScore";
-import { avgWeightOf } from "../../../../lib/utils/score";
-import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData, titleFromId } from "../../../gp-data";
+import { useSurveyDataStore } from "../../../app/state/survey-data-store";
+import { useRelativeScores } from "../../../lib/hooks/useRelativeScore";
+import { avgWeightOf } from "../../../lib/utils/score";
+import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData, titleFromId } from "../../graph-picker/gp-data";
 import WidgetSectionNav from "../widget-section-nav";
-import HintBanner from "../../../../app/ui/HintBanner";
+import HintBanner from "../../../app/ui/HintBanner";
 
 import EmptyStateArt from "./EmptyArt";
 

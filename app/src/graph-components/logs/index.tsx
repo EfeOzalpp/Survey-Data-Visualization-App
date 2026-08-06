@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type Ref } from "react";
-import "../styles/logs.css";
-import { useSurveyDataStore } from "../app/state/survey-data-store";
-import CloseIcon from "../assets/svg/close/CloseIcon";
-import SearchIcon from "../assets/svg/search/SearchIcon";
-import FilterIcon from "../assets/svg/filter/FilterIcon";
-import { Popover } from "../app/ui/Popover";
-import { recordOwnRender } from "../render-test/renderProfilerStats";
+import "../../styles/logs.css";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
+import CloseIcon from "../../assets/svg/close/CloseIcon";
+import SearchIcon from "../../assets/svg/search/SearchIcon";
+import FilterIcon from "../../assets/svg/filter/FilterIcon";
+import { Popover } from "../../app/ui/Popover";
+import { recordOwnRender } from "../../render-test/renderProfilerStats";
 import { PAGE_SIZE, SORT_OPTIONS, type SortKey } from "./constants";
 import { fmt, fmtQs, formatSectionLabel } from "./format";
 import { computeRankById, sortRows } from "./sort";
@@ -187,7 +187,7 @@ export function LogsPanel({
             trigger={
               <button
                 type="button"
-                className="logs-filter-trigger"
+                className={`logs-filter-trigger${sortMenuOpen ? " is-active" : ""}`}
                 aria-label="Open log filters"
                 aria-expanded={sortMenuOpen}
                 onClick={() => { setSortMenuOpen((v) => !v); }}

@@ -1,10 +1,10 @@
-// src/navigation/graph-picker-data.ts
+// src/graph-components/graph-picker/gp-data.ts
 // Builds the section options used by the graph picker and the radar widget.
 
 import { useMemo, useCallback } from "react";
-import { ROLE_SECTIONS } from "../onboarding/section-picker/sections";
-import { useSurveyDataStore } from "../app/state/survey-data-store";
-import { useIdentity } from "../app/state/identity-context";
+import { ROLE_SECTIONS } from "../../onboarding/section-picker/sections";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
+import { useIdentity } from "../../app/state/identity-context";
 
 interface GraphOption {
   id: string;

@@ -1,4 +1,4 @@
-import { Profiler, memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Profiler, memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
@@ -12,7 +12,7 @@ import WidgetsButton from "./widgets-button";
 import MyCityButton from "./my-city-button";
 import CityStatsButton from "./city-stats-button";
 import QuestionnaireNav from "./questionnaire-nav";
-import CompactGraphTools from "./widgets/compact-graph-tools";
+import CompactGraphTools from "../../graph-components/widgets/compact-graph-tools";
 
 function NavBottom({ introActive = false }: { introActive?: boolean }) {
   recordOwnRender("NavBottom");
@@ -44,15 +44,11 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
   const visibleLogsOpen = showSeparatedGraphTools && logsOpen;
   const visibleWidgetsOpen = showSeparatedGraphTools && widgetsOpen;
   const pickerOffset = isDesktopWidth(windowWidth) ? graphToolsOffsetPx(visibleLogsOpen, visibleWidgetsOpen) * aspectRatio : 0;
-  const toolbarRef = useRef<HTMLDivElement | null>(null);
   const widgetsRef = useRef<HTMLDivElement | null>(null);
   const logsWrapRef = useRef<HTMLDivElement | null>(null);
   const modeToggleRef = useRef<HTMLDivElement | null>(null);
   const [logsSlide, setLogsSlide] = useState(0);
   const [modeToggleShiftPx, setModeToggleShiftPx] = useState(0);
-  // Shared toolbar zone so opening Logs doesn't dismiss an already-open
-  // Widgets (and vice versa) via each Popover's own click-outside handler.
-  const toolbarDismissExclude = useMemo(() => [toolbarRef], []);
 
   useLayoutEffect(() => {
     const logsWrap = logsWrapRef.current;
@@ -130,29 +126,19 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
 
   return (
     <>
-      <div ref={toolbarRef} className={`bottom bottom-left${introActive ? " nav-first-enter" : ""}`}>
+      <div className={`bottom bottom-left${introActive ? " nav-first-enter" : ""}`}>
         <MyCityButton />
         {showSeparatedGraphTools && (
           <div ref={logsWrapRef}>
-            <LogsButton open={visibleLogsOpen} onOpenChange={setLogsOpen} dismissExclude={toolbarDismissExclude} />
+            <LogsButton open={visibleLogsOpen} onOpenChange={setLogsOpen} />
           </div>
         )}
         {showSeparatedGraphTools && (
           <div ref={widgetsRef} style={{ marginLeft: logsSlide > 0 ? `calc(${String(logsSlide)}px + 0.3rem)` : visibleWidgetsOpen ? '0.3rem' : undefined }}>
-            <WidgetsButton open={visibleWidgetsOpen} onOpenChange={setWidgetsOpen} dismissExclude={toolbarDismissExclude} />
+            <WidgetsButton open={visibleWidgetsOpen} onOpenChange={setWidgetsOpen} />
           </div>
         )}
       </div>
-      {questionnaireOpen && !vizVisible && questionnaireTotal > 0 && (
-        <div className={`bottom bottom-right${cityPanelOpen ? " is-behind-city-canvas" : ""}${introActive ? " nav-first-enter" : ""}`}>
-          <QuestionnaireNav />
-        </div>
-      )}
-      {showSeparatedGraphTools && (
-        <div className={`bottom bottom-right${introActive ? " nav-first-enter" : ""}`}>
-          <CityStatsButton />
-        </div>
-      )}
       {vizVisible && (
         <div
           ref={modeToggleRef}
@@ -172,6 +158,22 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
               <CityStatsButton />
             </>
           )}
+        </div>
+      )}
+      {questionnaireOpen && !vizVisible && questionnaireTotal > 0 && (
+        <div
+          className={`bottom bottom-right${cityPanelOpen ? " is-behind-city-canvas" : ""}${introActive ? " nav-first-enter" : ""}`}
+          style={{ transform: `translateX(${String(pickerOffset)}px)`, transition: "transform 0.2s ease" }}
+        >
+          <QuestionnaireNav />
+        </div>
+      )}
+      {showSeparatedGraphTools && (
+        <div
+          className={`bottom bottom-right${introActive ? " nav-first-enter" : ""}`}
+          style={{ transform: `translateX(${String(pickerOffset)}px)`, transition: "transform 0.2s ease" }}
+        >
+          <CityStatsButton />
         </div>
       )}
     </>

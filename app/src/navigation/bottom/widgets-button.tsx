@@ -1,4 +1,4 @@
-import { Profiler, Suspense, lazy, useCallback, useRef, useState, type RefObject } from "react";
+import { Profiler, Suspense, lazy, useCallback, useRef, useState } from "react";
 import "../../styles/widgets.css";
 import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
@@ -6,19 +6,17 @@ import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { GraphDataProvider } from "../../graph-runtime/GraphDataContext";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import { Popover } from "../../app/ui/Popover";
-import SectionScores from "./widgets/section-scores";
+import SectionScores from "../../graph-components/widgets/section-scores";
 
-const BarGraph = lazy(() => import("./widgets/bargraph/index"));
+const BarGraph = lazy(() => import("../../graph-components/widgets/bargraph/index"));
 type WidgetView = "bar" | "questions";
 
 export default function WidgetsButton({
   open,
   onOpenChange,
-  dismissExclude,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  dismissExclude?: RefObject<HTMLElement | null>[];
 }) {
   recordOwnRender("WidgetsButton");
   const allFilteredRows = useSurveyDataStore((s) => s.allFilteredRows);
@@ -41,7 +39,7 @@ export default function WidgetsButton({
         onOpenChange={handleOpenChange}
         placement="top-start"
         shellClassName="widgets-popover-shell"
-        dismissExclude={dismissExclude}
+        dismissOnOutsideClick={false}
         trigger={
           <button
             ref={triggerRef}

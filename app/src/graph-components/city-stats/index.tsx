@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { useUiStore } from "../app/state/ui-store";
-import { useSurveyDataStore } from "../app/state/survey-data-store";
-import { Modal } from "../app/ui/Modal";
-import CloseIcon from "../assets/svg/close/CloseIcon";
-import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../navigation/gp-data";
-import WidgetSectionNav from "../navigation/bottom/widgets/widget-section-nav";
-import "../styles/city-stats.css";
+import { useUiStore } from "../../app/state/ui-store";
+import { useSurveyDataStore } from "../../app/state/survey-data-store";
+import { Modal } from "../../app/ui/Modal";
+import CloseIcon from "../../assets/svg/close/CloseIcon";
+import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../graph-picker/gp-data";
+import WidgetSectionNav from "../widgets/widget-section-nav";
+import "../../styles/city-stats.css";
 
 const AUTOPLAY_MS = 5000;
 

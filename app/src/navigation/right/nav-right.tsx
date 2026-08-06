@@ -1,8 +1,8 @@
 import type { CSSProperties } from "react";
 import { memo, useState } from "react";
 
-import ColorToggle from "./color-toggle";
-import GraphPicker from "../graph-picker";
+import ColorToggle from "./theme-toggle";
+import GraphPicker from "../../graph-components/graph-picker/graph-picker";
 import { getSessionItem } from "../../app/session";
 import { useIdentity } from "../../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";

@@ -1,13 +1,13 @@
-// src/navigation/graph-picker.tsx
+// src/graph-components/graph-picker/graph-picker.tsx
 import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
-import "../styles/graph-picker.css";
+import "../../styles/graph-picker.css";
 
 import {
   useGraphPickerData,
   CHOOSE_STUDENT, CHOOSE_STAFF, GO_BACK,
   titleFromId,
 } from "./gp-data";
-import ExpandIcon from "../assets/svg/expand/ExpandIcon";
+import ExpandIcon from "../../assets/svg/expand/ExpandIcon";
 
 export default function GraphPicker({
   value = "all",
