@@ -13,6 +13,7 @@ import "../../styles/ui/modal.css";
 export function Modal({
   open,
   onOpenChange,
+  ariaLabel,
   ariaLabelledBy,
   ariaDescribedBy,
   shellClassName,
@@ -22,6 +23,8 @@ export function Modal({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  // For dialogs with no visible heading element to point ariaLabelledBy at.
+  ariaLabel?: string;
   ariaLabelledBy?: string;
   ariaDescribedBy?: string;
   shellClassName?: string;
@@ -34,8 +37,10 @@ export function Modal({
   useEscapeToClose(open, () => { onOpenChange(false); });
   useFocusTrap({ enabled: open, containerRef: dialogRef });
 
+  // Spread: `inert` isn't in this project's pinned @types/react yet, but a
+  // real boolean is correct here - see Popover.tsx for details.
   const modal = (
-    <div className={`ui-modal-root${open ? " is-open" : ""}`} aria-hidden={!open}>
+    <div className={`ui-modal-root${open ? " is-open" : ""}`} aria-hidden={!open} {...{ inert: !open }}>
       <button
         type="button"
         className="ui-modal-overlay"
@@ -50,6 +55,7 @@ export function Modal({
           className={`ui-modal-card${cardClassName ? ` ${cardClassName}` : ""}`}
           role="dialog"
           aria-modal="true"
+          aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
         >

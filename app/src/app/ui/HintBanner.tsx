@@ -26,12 +26,15 @@ export default function HintBanner({
   closeLabel = "Dismiss notice",
   onDismiss,
 }: HintBannerProps) {
+  // Spread: `inert` isn't in this project's pinned @types/react yet, but a
+  // real boolean is correct here - see Popover.tsx for details.
   return (
     <div
       className={classes("hint-banner", visible && "is-visible", onDismiss && "is-dismissible", className)}
       role="status"
       aria-live="polite"
       aria-hidden={!visible}
+      {...{ inert: !visible }}
     >
       <span className={classes("hint-banner-copy", copyClassName)}>{children}</span>
       {onDismiss ? (
@@ -39,7 +42,6 @@ export default function HintBanner({
           type="button"
           className={classes("hint-banner-close", closeClassName)}
           aria-label={closeLabel}
-          tabIndex={visible ? 0 : -1}
           onClick={() => { onDismiss(); }}
         >
           <CloseIcon className="ui-close" />
