@@ -85,7 +85,17 @@ p span, li span, label span { font-family: var(--font-body); font-size: var(--ty
 
 .ui-icon-nav-button:hover {
   color: var(--ui-text);
-  background: var(--btn-tertiary-hover-bg);
+  background: var(--ui-bg-surface-hover);
+}
+
+/* Opt-in per consumer (not every icon button represents an open/closed
+   state - a plain "previous section" arrow doesn't, a filter/menu trigger
+   does) - add "is-active" while whatever it opens stays open, so the
+   trigger visually holds the hover treatment instead of reverting to idle
+   the instant the pointer leaves it. */
+.ui-icon-nav-button.is-active {
+  color: var(--ui-text);
+  background: var(--ui-bg-surface-hover);
 }
 
 .ui-icon-nav-button:focus-visible {
@@ -390,7 +400,7 @@ button.city-button:hover .city-button__inner,
   color: var(--btn-tertiary-text);
 }
 .system-color { margin-right: calc(-1 * var(--space-md)); }
-.system-color:hover  { background: var(--btn-theme); }
+.system-color:hover  { background: var(--transparent-btn); }
 
 /* -- Responsive overrides ------------------------------------------- */
 

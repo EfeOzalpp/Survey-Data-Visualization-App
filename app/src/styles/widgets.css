@@ -39,12 +39,12 @@
   height: 22px;
 }
 
-/* Shell/clip mechanics (position, grid-collapse transition) and the card's
+/* Shell mechanics (position, open/close transition) and the card's
    border/shadow come from the shared Popover (styles/ui/popover.css) via
-   shellClassName="widgets-popover-shell" on the <Popover> in nav-bottom.tsx -
-   this widget only ever renders on desktop/tablet (mobile uses
-   CompactGraphTools instead), so no combined-selector mobile override is
-   needed here the way logs.css needs one for its mobile path. */
+   shellClassName="widgets-popover-shell" on the <Popover> in
+   widgets-button.tsx - this widget only ever renders on desktop/tablet
+   (mobile uses CompactGraphTools instead), so no combined-selector mobile
+   override is needed here the way logs.css needs one for its mobile path. */
 .ui-popover-shell.widgets-popover-shell {
   left: 0;
   bottom: 0;
@@ -52,14 +52,6 @@
   margin-bottom: 0;
   z-index: 2;
   width: min(320px, calc(100vw - 3.2rem));
-}
-
-/* .ui-popover-clip's default align-items:flex-start (shrink-to-fit) is for
-   auto-width popovers. This shell sets an explicit width above, so its card
-   needs to stretch to fill it instead - otherwise it shrink-wraps around
-   whichever tab (bar graph vs by-question) has the narrower natural width. */
-.ui-popover-shell.widgets-popover-shell .ui-popover-clip {
-  align-items: stretch;
 }
 
 .widgets-popover {
@@ -144,6 +136,20 @@
 /* Centered under the middle bar's label, but skewed toward the edge on the
    first/last bar (not fully flush) so the fixed-width tip mostly stays clear
    of the (clipped) popover edge without looking as lopsided as dead-flush. */
+@media ( max-width: 767px ) { 
+.bar-graph-bar:first-child .bar-graph-tip {
+  left: 38%;
+  --hint-banner-hidden-transform: translateX(-50%) translateY(-6px) scale(0.88);
+  --hint-banner-visible-transform: translateX(-50%) translateY(0);
+}
+
+.bar-graph-bar:last-child .bar-graph-tip {
+  right: 38%;
+  --hint-banner-hidden-transform: translateX(50%) translateY(-6px) scale(0.88);
+  --hint-banner-visible-transform: translateX(50%) translateY(0);
+ }
+}
+@media ( min-width: 768px ) { 
 .bar-graph-bar:first-child .bar-graph-tip {
   left: 60%;
   --hint-banner-hidden-transform: translateX(-50%) translateY(-6px) scale(0.88);
@@ -154,8 +160,8 @@
   right: 60%;
   --hint-banner-hidden-transform: translateX(50%) translateY(-6px) scale(0.88);
   --hint-banner-visible-transform: translateX(50%) translateY(0);
+ }
 }
-
 .bar-graph-bar:nth-child(2) .bar-graph-tip {
   left: 50%;
   --hint-banner-hidden-transform: translateX(-50%) translateY(-6px) scale(0.88);
@@ -219,8 +225,8 @@
   --hint-banner-visible-transform: translateX(0) translateY(-50%);
 }
 .q-scores-item-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-sm); }
-.q-scores-prompt { font-size: var(--type-label-size); line-height: var(--type-tight-line); color: var(--ui-text); min-width: 0; }
-.q-scores-track { width: 100%; height: 5px; background: var(--ui-border); overflow: hidden; }
+.q-scores-prompt { font-size: var(--type-label-size); padding-bottom: var(--space-sm); line-height: var(--type-tight-line); color: var(--ui-text); min-width: 0; }
+.q-scores-track { width: 100%; height: 4px; background: var(--ui-border); overflow: hidden; }
 .q-scores-fill { height: 100%; background: var(--ui-text-muted); transition: width 0.5s ease; }
 
 
@@ -249,32 +255,9 @@
 
 .widgets-close-strip .ui-close { width: 16px; height: 16px; flex: 0 0 auto; }
 
-.compact-tools-root {
-  position: fixed;
-  inset: 0;
-  z-index: 206;
-  display: grid;
-  align-items: end;
-  visibility: hidden;
-  pointer-events: none;
-  transition: visibility 0s linear 180ms;
-}
-
-.compact-tools-root.is-open { visibility: visible; pointer-events: auto; transition: none; }
-.compact-tools-overlay { position: absolute; inset: 0; padding: 0; border: none; background: rgba(0, 0, 0, 0.55); opacity: 0; transition: opacity 120ms ease; }
-.compact-tools-root.is-open .compact-tools-overlay { opacity: 1; }
-.compact-tools-shell { position: relative; z-index: 1; display: grid; width: 100%; grid-template-rows: 0fr; transition: grid-template-rows 180ms cubic-bezier(.22,.61,.36,1); }
-.compact-tools-root.is-open .compact-tools-shell { grid-template-rows: 1fr; }
-
 .compact-tools-modal {
   position: relative;
   min-height: 0;
-  overflow: hidden;
-  background: var(--ui-bg-surface);
-  border: 1px solid var(--ui-border);
-  border-bottom: none;
-  border-radius: 0;
-  box-shadow: 0 -18px 42px var(--ui-drop-shadow);
 }
 
 .compact-tools-close {
@@ -313,7 +296,7 @@
   min-height: 360px; max-height: 360px; height: 360px;
  }
  .widgets-panel.bar-graph .bar-graph-empty { min-height: 360px; }
- .ui-popover-shell.widgets-popover-shell .ui-popover-clip { margin-left: -1px; }
+ .ui-popover-shell.widgets-popover-shell .ui-popover { margin-left: -1px; }
  .widgets-wrap { margin-left: -0.2rem; }
  .ui-popover-shell.widgets-popover-shell { width: calc(45vw - 1.8rem); }
 }
@@ -323,7 +306,7 @@
   min-height: 360px; max-height: 360px; height: 360px;
  }
  .widgets-panel.bar-graph .bar-graph-empty { min-height: 360px; }
- .ui-popover-shell.widgets-popover-shell .ui-popover-clip { margin-left: -1px; }
+ .ui-popover-shell.widgets-popover-shell .ui-popover { margin-left: -1px; }
  .widgets-wrap { margin-left: -0.2rem; }
- .ui-popover-shell.widgets-popover-shell { width: min(320px, calc(100vw - 6.4rem)); }
+ .ui-popover-shell.widgets-popover-shell { width: min(330px, calc(100vw - 6.4rem)); }
 }

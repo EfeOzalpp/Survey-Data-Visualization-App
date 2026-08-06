@@ -4,32 +4,11 @@
 
 .logs-wrap { display: inline-flex; flex-direction: column; align-items: flex-start; pointer-events: all; }
 
-/* Shell/clip mechanics (position, grid-collapse transition) and the card's
-   border/shadow come from the shared Popover (styles/ui/popover.css) via
-   shellClassName="logs-popover-shell" on the <Popover> in logs-button.tsx -
-   that only applies on desktop/tablet, though. On mobile, LogsPanel renders
-   directly inside compact-tools-modal (compact-graph-tools.tsx) with no
-   Popover involved at all, so .logs-popover can't rely on .ui-popover for
-   anything; border/radius/shadow are correctly zeroed there instead via
-   .compact-tools-modal .logs-popover in widgets.css. Background has no such
-   override, so it stays declared here explicitly for the mobile path rather
-   than depending on .ui-popover's identical value only being visible by
-   coincidence (compact-tools-modal happens to share the same token).
-   The combined selector below (two classes) outguns Popover's single-class
-   placement rule regardless of stylesheet import order. */
 .ui-popover-shell.logs-popover-shell {
   left: 0;
   bottom: 0;
   top: auto;
   margin-bottom: 0;
-}
-
-/* .ui-popover-clip's default align-items:flex-start (shrink-to-fit) is for
-   auto-width popovers. This shell gets an explicit width from the media
-   queries below, so its card needs to stretch to fill it instead of
-   shrink-wrapping around the table's natural content width. */
-.ui-popover-shell.logs-popover-shell .ui-popover-clip {
-  align-items: stretch;
 }
 
 .logs-popover { width: 100%; background: var(--ui-bg-surface); overflow: hidden; pointer-events: all; display: flex; flex-direction: column; }
@@ -45,6 +24,10 @@
 .logs-filter-trigger { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid transparent; border-radius: var(--radius-md); background: var(--ui-bg-surface); color: var(--ui-text-muted); cursor: pointer; transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease; }
 
 .logs-filter-trigger:focus-visible { border-color: var(--ui-border); }
+
+/* Holds the hover treatment while the sort menu it opens stays open, so it
+   doesn't revert to idle the instant the pointer/tap leaves it. */
+.logs-filter-trigger.is-active { background: var(--ui-bg-surface-hover); color: var(--ui-text); }
 
 .logs-sort-menu { display: flex; flex-direction: column; gap: var(--space-sm); padding: 0.6rem 0; min-width: 160px; }
 
@@ -86,7 +69,7 @@
 
 .logs-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 100%; }
 
-.logs-th { position: sticky; top: 0; background: var(--ui-bg-surface); background-clip: padding-box; color: var(--ui-text-secondary); font-size: var(--type-label-size); font-weight: var(--fw-bold); text-align: right; padding: 0.55rem 0.75rem; white-space: nowrap; z-index: 3; box-shadow: 0 1px 0 var(--ui-border), 0 6px 14px color-mix(in srgb, var(--ui-bg-surface) 92%, transparent); transform: translateZ(0); }
+.logs-th { position: sticky; top: -1px; background: var(--ui-bg-surface); background-clip: padding-box; color: var(--ui-text-secondary); font-size: var(--type-label-size); font-weight: var(--fw-bold); text-align: right; padding: 0.55rem 0.75rem; white-space: nowrap; z-index: 3; box-shadow: 0 1px 0 var(--ui-border), 0 6px 14px color-mix(in srgb, var(--ui-bg-surface) 92%, transparent); transform: translateZ(0); }
 
 .logs-th--section { text-align: left; }
 .logs-th--qs { text-align: left; }
@@ -121,7 +104,7 @@
 
 .logs-page-sep { color: var(--ui-text-muted); margin: 0; }
 
-.logs-page-input { box-sizing: border-box; width: 58px; height: 36px; padding: 0 0.4rem; margin-left: var(--space-md); background: var(--ui-bg-text-input); border: 1px solid var(--ui-border); border-radius: var(--radius-md); color: var(--ui-text); font-size: var(--type-label-size); line-height: var(--type-tight-line); font-family: inherit; text-align: center; outline: none; transition: border-color 0.12s ease, background 0.12s ease; appearance: textfield; }
+.logs-page-input { box-sizing: border-box; width: 58px; height: 32px; padding: 0 0.4rem; margin-left: var(--space-md); background: var(--ui-bg-text-input); border: 1px solid var(--ui-border); border-radius: var(--radius-md); color: var(--ui-text); font-size: var(--type-label-size); line-height: var(--type-tight-line); font-family: inherit; text-align: center; outline: none; transition: border-color 0.12s ease, background 0.12s ease; appearance: textfield; }
 
 .logs-page-input::-webkit-outer-spin-button,
 .logs-page-input::-webkit-inner-spin-button { -webkit-appearance: none; }
@@ -154,9 +137,7 @@
 
 @media (max-width: 767px) {
   .logs-footer { justify-content: flex-end; padding: 0.3rem 0;}
-  .compact-tools-modal .widgets-panel.bar-graph { 
-    padding: 0.9rem 1rem 0.9rem;
-  }
+
  .compact-tools-modal .widgets-panel.bar-graph .bar-graph-container {
     min-height: 320px;
     height: min(46svh, 340px);
@@ -166,6 +147,7 @@
   .logs-th--qs {width: 40%;  }
   .logs-th--avg { width: 20%; }
   .logs-th--rank { width: 15%; }
+
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -182,8 +164,8 @@
   .logs-table-wrap { min-height: calc(100svh - 12.8rem); max-height: calc(100svh - 12.8rem); }
   .ui-popover-shell.logs-popover-shell { width: min(460px, calc(100vw - 3.2rem)); }
 
-  .logs-th--section { width: 30%; }
-  .logs-th--qs {width: 38%;  }
-  .logs-th--avg { width: 17%; }
+  .logs-th--section { width: 25%; }
+  .logs-th--qs {width: 40%;  }
+  .logs-th--avg { width: 20%; }
   .logs-th--rank { width: 15%; }
 }
