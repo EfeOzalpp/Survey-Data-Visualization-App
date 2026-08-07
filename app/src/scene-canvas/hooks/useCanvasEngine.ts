@@ -86,7 +86,7 @@ export function useCanvasEngine(opts: EngineOpts = {}) {
       zIndex,
       bounds,
       fpsCap,
-      initialDarkMode: readStoredDarkMode(true),
+      initialDarkMode: readStoredDarkMode(false),
       onReady: () => {
         readyRef.current = true;
         setReadyTick((t) => t + 1);

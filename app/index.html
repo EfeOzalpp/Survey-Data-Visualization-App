@@ -8,7 +8,7 @@
       (function () {
         try {
           var v = sessionStorage.getItem('be.darkMode');
-          document.documentElement.setAttribute('data-theme', v === 'false' ? 'light' : 'dark');
+          document.documentElement.setAttribute('data-theme', v === 'true' ? 'dark' : 'light');
         } catch (e) {}
       })();
     </script>
@@ -52,11 +52,11 @@
       html, body {
         height: 100%;
         margin: 0;
-        background-color: var(--preload-bg-dark);
+        background-color: var(--preload-bg-light);
       }
 
-      html[data-theme="light"], html[data-theme="light"] body {
-        background-color: var(--preload-bg-light);
+      html[data-theme="dark"], html[data-theme="dark"] body {
+        background-color: var(--preload-bg-dark);
       }
 
       /* iOS safe-area coverage */
@@ -104,11 +104,11 @@
         font-size: 2rem;
         font-weight: 700;
         letter-spacing: -0.06em;
-        color: rgba(255, 255, 255, 0.82);
+        color: #2a2520;
         animation: bePulse 1.6s ease-in-out infinite;
       }
 
-      html[data-theme="light"] .be-loader { color: #2a2520; }
+      html[data-theme="dark"] .be-loader { color: rgba(255, 255, 255, 0.82); }
 
       @keyframes bePulse {
         0%, 100% { opacity: 0.3; }

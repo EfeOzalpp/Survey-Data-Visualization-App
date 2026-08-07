@@ -64,7 +64,7 @@ export function readStoredMode(defaultMode: Mode): Mode {
   return saved === "absolute" || saved === "relative" ? saved : defaultMode;
 }
 
-export function readStoredDarkMode(defaultValue = true): boolean {
+export function readStoredDarkMode(defaultValue = false): boolean {
   const saved = getSessionItem("be.darkMode");
   if (saved == null) return defaultValue;
   return saved === "true";

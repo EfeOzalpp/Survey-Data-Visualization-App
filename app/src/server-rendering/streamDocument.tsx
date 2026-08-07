@@ -20,7 +20,7 @@ const THEME_BOOTSTRAP_SCRIPT = `
 (function () {
   try {
     var v = sessionStorage.getItem('be.darkMode');
-    document.documentElement.setAttribute('data-theme', v === 'false' ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', v === 'true' ? 'dark' : 'light');
   } catch (e) {}
 })();
 `;
