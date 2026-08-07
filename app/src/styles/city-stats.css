@@ -4,8 +4,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: var(--nav-control-h);
+  height: var(--nav-control-h);
   flex: 0 0 auto;
   margin-left: var(--space-md);
   padding: 0;
@@ -34,7 +34,6 @@
 }
 
 @media (min-width: 768px) {
-  .city-stats-trigger { width: 44px; height: 44px; }
   .city-stats-trigger .ui-icon { width: 26px; height: 26px; }
 }
 
@@ -69,18 +68,28 @@
   height: 16px !important;
 }
 
-.city-stats-dialog-nav {
-  flex-shrink: 0;
-}
-
 .city-stats-dialog-body {
   flex: 1 1 auto;
   min-height: 280px;
   overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.city-stats-dialog-placeholder {
+  margin: 0;
+  color: var(--ui-text-secondary);
+  font-size: var(--type-h4-size);
+  text-align: center;
 }
 
 @media (min-width: 768px) {
-  .city-stats-dialog-shell {
+  /* Compounded with .ui-modal-shell (not just .city-stats-dialog-shell
+     alone) so this reliably beats modal.css's base `width: 100%` on
+     specificity - both are otherwise single-class selectors (0,1,0), tied,
+     which left the outcome dependent on stylesheet load order. */
+  .ui-modal-shell.city-stats-dialog-shell {
     width: min(460px, calc(100vw - 4rem));
   }
 }

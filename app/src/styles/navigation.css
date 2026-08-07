@@ -131,7 +131,7 @@
   .bottom-right { right: 1.2rem; }
   .bottom { bottom: 1rem; }
   .svg-lg { height: var(--nav-control-h); }
-  .mode-toggle-switch { height: 40px; }
+  .mode-toggle-switch { height: var(--nav-control-h); }
   .city-button:hover { transform: translateY(3%); }
 }
 
@@ -167,9 +167,10 @@
 /* 768 and above */
 @media (min-width: 768px) {
   
-  .navigation { padding: 1rem 2.4rem; }
+  .navigation { padding: 1rem 1.6rem; }
 
-  .mode-toggle-switch { height: 48px; }
+  :root { --nav-control-h: 48px; }
+  .mode-toggle-switch { height: var(--nav-control-h); }
 
   .right { height: 36px; }
 

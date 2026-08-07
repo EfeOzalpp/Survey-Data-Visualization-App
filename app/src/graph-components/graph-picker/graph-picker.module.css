@@ -1,0 +1,135 @@
+/* GraphPicker-only styling (CSS module, co-located with graph-picker.tsx).
+   Shared trigger/listbox/option chrome (also used by the onboarding
+   SectionPicker) lives in styles/ui/listbox-picker.css and is rendered by
+   ListboxShell with literal, unscoped class names - reached here via
+   :global() wherever a rule needs to combine with them. */
+
+.picker { position: relative; width: 100%; display: flex; }
+
+.picker :global(.trigger) {
+  z-index: 600;
+  padding: var(--button-padding);
+}
+.picker :global(.trigger):hover { padding: var(--button-padding-hover); }
+.picker :global(.trigger.is-open) { padding: var(--button-padding); }
+
+.triggerLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1 1 auto;
+  max-width: calc(100% - 34px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: var(--fw-bold);
+  color: var(--ui-text);
+}
+
+.triggerLabel h4 {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.backIcon,
+.chooserIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  color: var(--ui-text-muted);
+  line-height: 0;
+}
+
+.backIcon :global(.ui-icon),
+.chooserIcon :global(.ui-icon) {
+  color: currentColor;
+  stroke: currentColor;
+}
+
+:global(.option.is-active) .backIcon,
+:global(.option.is-active) .chooserIcon {
+  color: var(--ui-text);
+}
+
+/* Floating dropdown additions on top of the shared .listbox-shell - this
+   picker sits in the top nav and needs to flip up/down based on available
+   viewport space (the onboarding SectionPicker's equivalent stays static
+   in the page flow, so it doesn't need any of this). */
+.picker :global(.listbox-shell) {
+  position: absolute;
+  left: 50%;
+  z-index: 210;
+  transform: translateX(-50%);
+}
+.picker :global(.listbox-shell.drop-down) { top: calc(100% + 0px); }
+.picker :global(.listbox-shell.drop-up) {
+  bottom: calc(100% + 8px);
+  border-top: 1px solid var(--ui-border);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.optionStudentChooser,
+.optionStaffChooser {
+  border-top: 1px solid var(--ui-border);
+}
+.optionBack {
+  border-bottom: 1px solid var(--ui-border);
+  display: inline-flex; align-items: center;
+}
+
+.pickerLabels {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.pickerCount,
+.pickerYou {
+  flex: 0 0 auto;
+}
+
+.labelWrap {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.selectedChild {
+  font-size: var(--type-label-size);
+  color: var(--ui-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --picker-rest-w / --picker-hover-w / --picker-open-w feed the shared
+   rest/hover/open sizing mechanism defined once on .picker-shell in
+   styles/ui/listbox-picker.css - only the numbers live here. */
+@media (max-width: 767px) {
+  .picker { --picker-rest-w: 160px; --picker-open-w: 280px; }
+  .picker :global(.listbox-shell) { width: 280px; }
+  .picker :global(.listbox) { max-height: 400px; }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .picker { --picker-rest-w: 200px; --picker-hover-w: 260px; --picker-open-w: 320px; }
+  .picker :global(.listbox-shell) { width: 320px; }
+  .picker :global(.listbox) { min-height: 360px; max-height: 440px;}
+}
+
+@media (min-width: 1025px) {
+  .picker { --picker-rest-w: 200px; --picker-hover-w: 220px; --picker-open-w: 320px; }
+  .picker :global(.listbox-shell) { width: 320px; max-width: 320px; min-width: 320px; }
+  .picker :global(.listbox) { min-height: 360px; max-height: 440px;}
+  .picker :global(.option) { padding: 0.8rem; }
+}

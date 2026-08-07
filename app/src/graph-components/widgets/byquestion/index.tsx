@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useSurveyDataStore } from "../../app/state/survey-data-store";
-import HintBanner from "../../app/ui/HintBanner";
-import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../graph-picker/gp-data";
-import { BUTTON_QUESTIONS } from "../../onboarding/questionnaire/button-input/button-questions";
-import WidgetSectionNav from "./widget-section-nav";
-import { recordOwnRender } from "../../render-test/renderProfilerStats";
+import { useSurveyDataStore } from "../../../app/state/survey-data-store";
+import HintBanner from "../../../app/ui/HintBanner";
+import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../../graph-picker/gp-data";
+import { BUTTON_QUESTIONS } from "../../../onboarding/questionnaire/button-input/button-questions";
+import WidgetSectionNav from "../widget-section-nav";
+import { recordOwnRender } from "../../../render-test/renderProfilerStats";
 
 interface LocalSectionState {
   sourceSection: string;

@@ -1,5 +1,6 @@
 import { Profiler, Suspense, lazy, useState } from "react";
 import "../../styles/widgets.css";
+import styles from "./compact-tools.module.css";
 import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import { useSurveyDataStore } from "../../app/state/survey-data-store";
@@ -7,7 +8,7 @@ import { GraphDataProvider } from "../../graph-runtime/GraphDataContext";
 import { useDisclosure } from "../../lib/hooks/useDisclosure";
 import { Modal } from "../../app/ui/Modal";
 import { LogsPanel } from "../logs";
-import SectionScores from "./section-scores";
+import SectionScores from "./byquestion";
 
 const BarGraph = lazy(() => import("./bargraph/index"));
 
@@ -21,7 +22,7 @@ const TOOL_LABELS: Record<CompactTool, string> = {
 
 function ToolsGridIcon() {
   return (
-    <svg className="compact-tools-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className={styles.compactToolsIcon} viewBox="0 0 24 24" aria-hidden="true">
       <g fill="currentColor">
         <circle cx="6" cy="6" r="1.7" />
         <circle cx="12" cy="6" r="1.7" />
@@ -53,7 +54,7 @@ export default function CompactGraphTools() {
     <>
       <button
         type="button"
-        className="compact-tools-button"
+        className={styles.compactToolsButton}
         aria-label="Open graph tools"
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -66,19 +67,23 @@ export default function CompactGraphTools() {
         open={open}
         onOpenChange={setOpen}
         ariaLabel="Graph tools"
-        cardClassName="compact-tools-modal"
+        // Plain "compact-tools-modal" string kept alongside the module
+        // class deliberately - styles/widgets.css's Modal :has() overrides
+        // (and this file's own :global() descendant selectors) target that
+        // stable name, not the hashed one, so they survive rebuilds.
+        cardClassName={`compact-tools-modal ${styles.compactToolsModal}`}
         overlayLabel="Close graph tools"
       >
         <button
           type="button"
-          className="ui-icon-nav-button compact-tools-close"
+          className={`ui-icon-nav-button ${styles.compactToolsClose}`}
           aria-label="Close graph tools"
           onClick={closeDisclosure}
         >
           <CloseIcon className="ui-close" />
         </button>
 
-        <div className="compact-tools-content">
+        <div className={styles.compactToolsContent}>
           {activeTool === "logs" && (
             <LogsPanel
               className="logs-popover compact-tools-logs"
@@ -93,7 +98,7 @@ export default function CompactGraphTools() {
                 <Profiler id="BarGraph:compact-tools" onRender={profilerOnRender}>
                   <BarGraph
                     navOutsidePanel
-                    panelClassName="widgets-panel bar-graph compact-tools-widget-panel"
+                    panelClassName={`widgets-panel bar-graph ${styles.compactToolsWidgetPanel}`}
                     paused={widgetAutoplayPaused}
                     onPausedChange={setWidgetAutoplayPaused}
                   />
@@ -105,19 +110,19 @@ export default function CompactGraphTools() {
           {activeTool === "questions" && (
             <SectionScores
               navOutsidePanel
-              panelClassName="widgets-panel q-scores compact-tools-widget-panel"
+              panelClassName={`widgets-panel q-scores ${styles.compactToolsWidgetPanel}`}
               paused={widgetAutoplayPaused}
               onPausedChange={setWidgetAutoplayPaused}
             />
           )}
         </div>
 
-        <div className="compact-tools-tabs" role="tablist" aria-label="Graph tools">
+        <div className={styles.compactToolsTabs} role="tablist" aria-label="Graph tools">
           {(Object.keys(TOOL_LABELS) as CompactTool[]).map((tool) => (
             <button
               key={tool}
               type="button"
-              className={`ui-toggle-option compact-tools-tab${activeTool === tool ? " is-active" : ""}`}
+              className={`ui-toggle-option ${styles.compactToolsTab}${activeTool === tool ? " is-active" : ""}`}
               role="tab"
               aria-selected={activeTool === tool}
               onClick={() => { setActiveTool(tool); }}

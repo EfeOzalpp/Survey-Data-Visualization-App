@@ -1,9 +1,3 @@
-.role-step__heading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 button.more-info-trigger {
   display: inline-flex;
   flex-direction: row;

@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { memo, useState } from "react";
 
 import ColorToggle from "./theme-toggle";
+import BackIcon from "../../assets/svg/back/BackIcon";
 import GraphPicker from "../../graph-components/graph-picker/graph-picker";
 import { getSessionItem } from "../../app/session";
 import { useIdentity } from "../../app/state/identity-context";
@@ -138,16 +139,27 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
         <ColorToggle />
 
         {showObserverButton && (
-          <button
-            className={cx("observe-results", observerMode && "active")}
-            onClick={toggleObserverMode}
-            aria-pressed={observerMode || hasCompletedSurvey}
-            aria-label={observerMode || hasCompletedSurvey ? "Back" : "Explore Results"}
-            data-label={observerLabel}
-          >
-            <span className="observe-results__ghost" aria-hidden="true">{observerLabel}</span>
-            <span className="observe-results__inner">{observerLabel}</span>
-          </button>
+          observerLabel === "Back" ? (
+            <button
+              type="button"
+              className="svg-lg back-nav-button"
+              onClick={toggleObserverMode}
+              aria-label="Back"
+            >
+              <BackIcon />
+            </button>
+          ) : (
+            <button
+              className={cx("observe-results", observerMode && "active")}
+              onClick={toggleObserverMode}
+              aria-pressed={observerMode || hasCompletedSurvey}
+              aria-label="Explore Results"
+              data-label={observerLabel}
+            >
+              <span className="observe-results__ghost" aria-hidden="true">{observerLabel}</span>
+              <span className="observe-results__inner">{observerLabel}</span>
+            </button>
+          )
         )}
 
         {showSavedCityButton && (

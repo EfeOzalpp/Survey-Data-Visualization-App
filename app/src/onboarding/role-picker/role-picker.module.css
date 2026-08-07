@@ -1,0 +1,74 @@
+/* RolePicker-only styling (CSS module, co-located with
+   onboarding/role-picker/ - both index.tsx and role-step.tsx import this
+   same module). The onboarding step-chrome classes (.survey/.survey-step/
+   .survey-section/.button-wrap/.error-container/.welcome-text) are shared
+   across every onboarding step (see styles/onboarding-info.css) and stay
+   global for that reason - .role-select specifically is also read via a
+   literal Playwright locator in render-test/rerenderBenchmark.ts, so it
+   must stay unhashed regardless. */
+
+:global(.survey.survey-step.role-select) {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+:global(.survey.survey-step.role-select) > .onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  background: var(--ui-bg-surface-50);
+}
+:global(.survey.survey-step.role-select) .onboarding {
+  padding: calc(var(--space-lg) * 4) calc(var(--space-md)) calc(var(--space-lg) * 4);
+}
+
+.radioOptions { display: flex; flex-direction: column; gap: calc(var(--space-sm) * 1.5); margin-top: var(--space-md); pointer-events: auto; }
+.inputPartInside.radioOption, .inputPartInside.radioOption * { cursor: pointer; }
+.inputPartInside.radioOption {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px solid var(--ui-border);
+  background: var(--inactive-accent-color);
+  border-radius: var(--btn-radius);
+  padding: var(--button-padding);
+  transition: background-color 120ms ease, transform 50ms ease;
+}
+.inputPartInside.radioOption:hover { background: var(--inactive-accent-color-hover); }
+.inputPartInside.radioOption.selected { background: var(--active-accent-color); }
+.inputPartInside.radioOption:not(.radioOptionInset) { margin-bottom: calc(var(--space-md) - var(--space-sm)); }
+.roleOptionLabel { flex: 1; margin: 0; text-align: center; font-size: 1.05rem; font-weight: 420; letter-spacing: 0.02rem; }
+.roleTag { display: flex; }
+.roleTagCenter { justify-content: center; }
+.roleTagCenter .roleLabel { padding-left: 0; }
+.roleLabel { color: var(--ui-text-secondary); font-size: var(--type-label-size); line-height: var(--type-tight-line); }
+.roleGroupOptions { display: flex; flex-direction: column; gap: var(--space-sm); }
+.roleCheckIcon, .roleIndicatorSpacer { width: 1.2em !important; height: 1.2em !important; }
+.roleCheckIcon [fill] { fill: var(--btn-primary-icon); color: var(--btn-primary-icon); }
+/* Base rule consolidated in from styles/info.css, which previously held
+   just this - .role-step__heading is exclusively role-step.tsx's own,
+   there's no reason for its styling to live in two files. */
+.roleStepHeading { display: flex; flex-direction: column; align-items: center; }
+
+@media (max-width: 767px) {
+  :global(.survey-section:has(.survey.survey-step.role-select)) { height: 100%; }
+  :global(.survey.survey-step.role-select) .onboarding { min-width: 360px; max-width: 360px; }
+  .roleIndicatorSpacer { width: 1.1rem !important; height: 1.1rem !important; min-width: 1.1rem; min-height: 1.1rem; }
+  .radioGroup { width: 260px; }
+  .roleStepHeading { padding: 0 0.8rem; }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .roleIndicatorSpacer { height: 16px !important; width: 16px !important; }
+  .roleStepHeading { padding: 0 1rem; }
+}
+
+@media (min-width: 768px) {
+  :global(.survey-section:has(.survey.survey-step.role-select)) { height: 100%; }
+  :global(.survey.survey-step.role-select) .onboarding { width: min(92vw, 580px); }
+  .radioGroup { min-width: 280px; max-width: 280px; }
+}

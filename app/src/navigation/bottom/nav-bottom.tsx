@@ -4,7 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
 import { useWindowAspectRatio } from "../../lib/hooks/useWindowAspectRatio";
 import { useWindowWidth } from "../../lib/hooks/useWindowWidth";
-import { isDesktopWidth, isMobileWidth } from "../../lib/responsive/breakpoints";
+import { isDesktopWidth, isMobileWidth, isTabletWidth } from "../../lib/responsive/breakpoints";
 import { graphToolsOffsetPx } from "../../lib/responsive/graph-tools-offset";
 import ModeToggle from "./mode-toggle";
 import LogsButton from "./logs-button";
@@ -39,7 +39,9 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
   );
   const windowWidth = useWindowWidth();
   const aspectRatio = useWindowAspectRatio();
-  const useCompactGraphNav = isMobileWidth(windowWidth);
+  // Compact nav now covers tablet too (iPad-vertical migration) - only
+  // desktop width still gets the separated Logs/Widgets/ModeToggle layout.
+  const useCompactGraphNav = isMobileWidth(windowWidth) || isTabletWidth(windowWidth);
   const showSeparatedGraphTools = vizVisible && !useCompactGraphNav;
   const visibleLogsOpen = showSeparatedGraphTools && logsOpen;
   const visibleWidgetsOpen = showSeparatedGraphTools && widgetsOpen;
@@ -169,10 +171,7 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
         </div>
       )}
       {showSeparatedGraphTools && (
-        <div
-          className={`bottom bottom-right${introActive ? " nav-first-enter" : ""}`}
-          style={{ transform: `translateX(${String(pickerOffset)}px)`, transition: "transform 0.2s ease" }}
-        >
+        <div className={`bottom bottom-right${introActive ? " nav-first-enter" : ""}`}>
           <CityStatsButton />
         </div>
       )}

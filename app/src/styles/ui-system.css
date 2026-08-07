@@ -3,9 +3,9 @@
 h1, h2, h3, h4 { margin: 0; font-family: var(--font-title); font-optical-sizing: auto; font-variation-settings: "wdth" 112.5, "GRAD" 0; color: var(--ui-text); }
 
 h1 { font-size: var(--type-h1-size); line-height: var(--type-h-line); font-weight: 500; letter-spacing: 0.04em; }
-h2 { font-size: var(--type-h2-size); line-height: var(--type-h2-line); font-weight: 400; letter-spacing: 0.03rem; color: var(--ui-title); }
-h3 { font-size: var(--type-h3-size); line-height: var(--type-h3-line); font-weight: 400; letter-spacing: 0.07rem; }
-h4 { font-size: var(--type-h4-size); line-height: var(--type-h4-line); font-weight: 420; letter-spacing: 0.02rem; }
+h2 { font-size: var(--type-h2-size); line-height: var(--type-h2-line); font-weight: 400; letter-spacing: 0.06rem; color: var(--ui-title); }
+h3 { font-size: var(--type-h3-size); line-height: var(--type-h3-line); font-weight: 400; letter-spacing: 0.06rem; }
+h4 { font-size: var(--type-h4-size); line-height: var(--type-h4-line); font-weight: 420; letter-spacing: 0.06rem; }
 
 p, li, label, input, select, textarea { font-family: var(--font-body); font-size: var(--type-p-size); line-height: var(--type-body-line); font-weight: var(--font-ui-weight); color: var(--ui-text); }
 p.gam-copy, p.gam-copy span, h4.gam-subline { color: var(--ui-gamification) !important; }
@@ -394,21 +394,30 @@ button.city-button:hover .city-button__inner,
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--btn-tertiary-text);
 }
 .system-color { margin-right: calc(-1 * var(--space-md)); }
 .system-color:hover  { background: var(--transparent-btn); }
+/* .system-color's negative margin-right was tuned against the old
+   text-pill "observe-results" button - reset it here so the back icon
+   button (much slimmer, no internal padding to compensate) doesn't end up
+   overlapping it; the flex gap on .right is --space-sm, so this margin-left
+   brings the two up to a full --space-md gap. */
+.system-color:has(+ .back-nav-button) { margin-right: 0; }
+.back-nav-button { margin-left: var(--space-sm); }
+.back-nav-button:hover { background: var(--transparent-btn); }
+.svg-lg svg.ui-icon { width: 1.6em !important; height: 1.6em !important; }
 
 /* -- Responsive overrides ------------------------------------------- */
 
 button.begin-button { width: fit-content; box-sizing: border-box; margin: 0 0.4rem; }
 
-@media (max-width: 767px)                      { .svg-lg { max-height: 40px; max-width: 40px; min-height: 40px; min-width: 40px; } }
-@media (min-width: 768px) and (max-width: 1024px) { .svg-lg { max-height: 52px; max-width: 52px; min-height: 52px; min-width: 52px; } }
-@media (min-width: 1025px)                     { .svg-lg { max-height: 48px; max-width: 48px; min-height: 48px; min-width: 48px; } }
 
 /* -- Focus visible - WCAG 2.4.7 / 2.4.11 --------------------------- */
 

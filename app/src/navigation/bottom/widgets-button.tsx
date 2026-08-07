@@ -1,12 +1,13 @@
 import { Profiler, Suspense, lazy, useCallback, useRef, useState } from "react";
 import "../../styles/widgets.css";
+import styles from "./widgets.module.css";
 import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import { useSurveyDataStore } from "../../app/state/survey-data-store";
 import { GraphDataProvider } from "../../graph-runtime/GraphDataContext";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import { Popover } from "../../app/ui/Popover";
-import SectionScores from "../../graph-components/widgets/section-scores";
+import SectionScores from "../../graph-components/widgets/byquestion";
 
 const BarGraph = lazy(() => import("../../graph-components/widgets/bargraph/index"));
 type WidgetView = "bar" | "questions";
@@ -33,12 +34,12 @@ export default function WidgetsButton({
   useFocusTrap({ enabled: open, containerRef: dialogRef, returnFocusRef: triggerRef });
 
   return (
-    <div className="widgets-wrap">
+    <div className={styles.widgetsWrap}>
       <Popover
         open={open}
         onOpenChange={handleOpenChange}
         placement="top-start"
-        shellClassName="widgets-popover-shell"
+        shellClassName={styles.widgetsPopoverShell}
         dismissOnOutsideClick={false}
         trigger={
           <button
@@ -55,14 +56,14 @@ export default function WidgetsButton({
           </button>
         }
       >
-        <div ref={dialogRef} className="widgets-popover">
+        <div ref={dialogRef} className={styles.widgetsPopover}>
           {activeWidgetView === "bar" && (
             <GraphDataProvider data={allFilteredRows}>
               <Suspense fallback={null}>
                 <Profiler id="BarGraph:nav-bottom" onRender={profilerOnRender}>
                   <BarGraph
                     navOutsidePanel
-                    panelClassName="widgets-view widgets-panel bar-graph"
+                    panelClassName={`${styles.widgetsView} widgets-panel bar-graph`}
                     paused={widgetAutoplayPaused}
                     onPausedChange={setWidgetAutoplayPaused}
                   />
@@ -73,15 +74,15 @@ export default function WidgetsButton({
           {activeWidgetView === "questions" && (
             <SectionScores
               navOutsidePanel
-              panelClassName="widgets-view widgets-panel q-scores"
+              panelClassName={`${styles.widgetsView} widgets-panel q-scores`}
               paused={widgetAutoplayPaused}
               onPausedChange={setWidgetAutoplayPaused}
             />
           )}
-          <div className="widgets-tabs" role="tablist" aria-label="Widgets">
+          <div className={styles.widgetsTabs} role="tablist" aria-label="Widgets">
             <button
               type="button"
-              className={`ui-toggle-option widgets-tab${activeWidgetView === "bar" ? " is-active" : ""}`}
+              className={`ui-toggle-option ${styles.widgetsTab}${activeWidgetView === "bar" ? " is-active" : ""}`}
               role="tab"
               aria-selected={activeWidgetView === "bar"}
               onClick={() => { setActiveWidgetView("bar"); }}
@@ -90,7 +91,7 @@ export default function WidgetsButton({
             </button>
             <button
               type="button"
-              className={`ui-toggle-option widgets-tab${activeWidgetView === "questions" ? " is-active" : ""}`}
+              className={`ui-toggle-option ${styles.widgetsTab}${activeWidgetView === "questions" ? " is-active" : ""}`}
               role="tab"
               aria-selected={activeWidgetView === "questions"}
               onClick={() => { setActiveWidgetView("questions"); }}
@@ -98,10 +99,10 @@ export default function WidgetsButton({
               By question
             </button>
           </div>
-          <div className="widgets-footer">
+          <div className={styles.widgetsFooter}>
             <button
               type="button"
-              className="widgets-close-strip"
+              className={styles.widgetsCloseStrip}
               aria-label="Close widgets"
               onClick={() => { handleOpenChange(false); }}
             >

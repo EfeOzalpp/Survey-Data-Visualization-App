@@ -136,8 +136,6 @@
 }
 
 @media (max-width: 767px) {
-  .logs-footer { justify-content: flex-end; padding: 0.3rem 0;}
-
  .compact-tools-modal .widgets-panel.bar-graph .bar-graph-container {
     min-height: 320px;
     height: min(46svh, 340px);
@@ -150,9 +148,15 @@
 
 }
 
+/* Reused across both mobile and tablet - CompactGraphTools (which hosts
+   this footer at both widths now) needs it right-aligned, not spread out
+   the way the desktop-only separated Logs popover wants it. */
+@media (max-width: 1024px) {
+  .logs-footer { justify-content: flex-end; padding: 0.3rem 0; }
+}
+
 @media (min-width: 768px) and (max-width: 1024px) {
   .logs-table-wrap { min-height: min(58svh, 520px); max-height: min(58svh, 520px); }
-  .ui-popover-shell.logs-popover-shell { width: calc(55vw - 1.8rem); }
 
   .logs-th--section { width: 25%; }
   .logs-th--qs {width: 35%;  }

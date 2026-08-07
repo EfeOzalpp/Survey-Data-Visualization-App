@@ -1,4 +1,5 @@
 import { useMemo, useRef } from "react";
+import styles from "./role-picker.module.css";
 import CheckIcon from "../../assets/svg/check/CheckIcon";
 
 export type RoleValue = "visitor" | "student" | "staff";
@@ -11,10 +12,10 @@ const MASSART_ROLE_OPTIONS: { val: Exclude<RoleValue, "visitor">; label: string 
 function SelectionIndicator({ selected }: { selected: boolean }) {
   if (selected) {
     return (
-      <CheckIcon className="role-check-icon" />
+      <CheckIcon className={styles.roleCheckIcon} />
     );
   }
-  return <span className="role-indicator-spacer" />;
+  return <span className={styles.roleIndicatorSpacer} />;
 }
 
 export default function RolePicker({
@@ -72,33 +73,32 @@ export default function RolePicker({
   };
 
   return (
-    <div className="radio-group">
+    <div className={styles.radioGroup}>
       <div
         role="radiogroup"
-        className="radio-options"
+        className={styles.radioOptions}
         aria-labelledby="role-picker-label"
         aria-describedby={errorId}
       >
 
         {/* Visitor */}
-        <div className="role-tag role-tag--center"><span className="role-label" id="role-picker-label">Choose Your Role</span></div>
+        <div className={`${styles.roleTag} ${styles.roleTagCenter}`}><span className={styles.roleLabel} id="role-picker-label">Choose Your Role</span></div>
         <div
           ref={(node) => { optionRefs.current.visitor = node; }}
           role="radio"
           aria-checked={value === "visitor"}
           tabIndex={value === "visitor" ? 0 : -1}
-          className={`input-part-inside radio-option${value === "visitor" ? " selected" : ""}`}
+          className={`${styles.inputPartInside} ${styles.radioOption}${value === "visitor" ? ` ${styles.selected}` : ""}`}
           onClick={() => { onChange("visitor"); }}
           onKeyDown={handleKeyDown("visitor")}
         >
           <SelectionIndicator selected={value === "visitor"} />
-          <h4>Explorer...</h4>
-          <span className="role-indicator-spacer" />
+          <p className={styles.roleOptionLabel}>Explorer...</p>
+          <span className={styles.roleIndicatorSpacer} />
         </div>
 
-        {/* MassArt roles share one visual island with a center divider. */}
-        <div className="role-separator"></div>
-        <div className="role-group-options">
+        {/* MassArt roles share one visual island. */}
+        <div className={styles.roleGroupOptions}>
           {MASSART_ROLE_OPTIONS.map((opt) => {
             const checked = value === opt.val;
             return (
@@ -108,13 +108,13 @@ export default function RolePicker({
                 role="radio"
                 aria-checked={checked}
                 tabIndex={checked ? 0 : -1}
-                className={`input-part-inside radio-option radio-option--inset${checked ? " selected" : ""}`}
+                className={`${styles.inputPartInside} ${styles.radioOption} ${styles.radioOptionInset}${checked ? ` ${styles.selected}` : ""}`}
                 onClick={() => { onChange(opt.val); }}
                 onKeyDown={handleKeyDown(opt.val)}
               >
                 <SelectionIndicator selected={checked} />
-                <h4>{opt.label}</h4>
-                <span className="role-indicator-spacer" />
+                <p className={styles.roleOptionLabel}>{opt.label}</p>
+                <span className={styles.roleIndicatorSpacer} />
               </div>
             );
           })}
