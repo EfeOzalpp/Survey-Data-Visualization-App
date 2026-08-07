@@ -13,22 +13,28 @@
   --type-p-size: 1rem;
 
   --type-h-line: 1.3;
-  --type-h2-line: 1.4;
-  --type-h3-line: 1.52;
-  --type-body-line: 1.4;
+  --type-h2-line: 1.52;
+  --type-h3-line: 1.56;
+  --type-body-line: 1.45;
   --type-h4-line: 1.6;  
   --type-tight-line: 1.5;
 
   /* Main background surfaces */
-  --ui-bg-page: #f8f3ef;
+  --ui-bg-page: #ede8e5;
   /* Graph */
   --graph-bg: #f8f3ef;
+
+  /* user-flow scene-fade gradient (onboarding-info.css) */
+  --user-flow-fade-1: #ffffff;
+  --user-flow-fade-2: #ffffff;
+  --user-flow-fade-3: #ffffff;
 
   /* Main UI surface colors */
   --ui-bg-surface: #f8fafc;
   --ui-bg-surface-glass: rgba(248, 250, 252, 0.7);
   --ui-bg-surface-hover: rgb(235, 235, 235);
   --ui-bg-surface-selected: rgba(186, 227, 156, 0.6);
+  --ui-bg-surface-50: color-mix(in srgb, var(--ui-bg-surface) 50%, transparent);
 
   /* Text input surfaces */
   --ui-bg-text-input: #fffaf6;
@@ -83,12 +89,17 @@
   /* Secondary button */
   --btn-secondary-bg: #bf9dce;
   --btn-secondary-text: #000000;
-  --btn-secondary-hover-bg: rgb(166, 135, 182);
+  --btn-secondary-hover-bg: #a687b6;
+ /* secondary button secondary hover style */
+  --btn-secondary-ui-bg: #bf83db;
 
   /* Tertiary button */
-  --btn-tertiary-bg: transparent;
+  --btn-tertiary-bg: #e7e4e0;
   --btn-tertiary-text: var(--ui-text);
-  --btn-tertiary-hover-bg: rgba(31, 41, 55, 0.08);
+  --btn-tertiary-hover-bg: #d5d0ce;
+
+  /* light-mode dark-mode */
+  --transparent-btn:#1f293714;
 
   /* Hint theme */
   --hint-bg: #f8fafc;
@@ -121,11 +132,17 @@
   /* Graph */
   --graph-bg:#222329;
 
+  /* user-flow scene-fade gradient (onboarding-info.css) */
+  --user-flow-fade-1: #5c764c;
+  --user-flow-fade-2: #b9c7de;
+  --user-flow-fade-3: #bd9466;
+
   /* Main UI surface colors */
   --ui-bg-surface: #4b4845;
   --ui-bg-surface-glass: rgba(44, 44, 44, 0.7);
   --ui-bg-surface-hover: rgb(88, 86, 84);
   --ui-bg-surface-selected: rgba(109, 151, 108, 0.85);
+  --ui-bg-surface-50: color-mix(in srgb, var(--ui-bg-surface) 50%, transparent);
 
   /* Text input surfaces */
   --ui-bg-text-input: #3c3733;
@@ -173,11 +190,16 @@
   --btn-secondary-bg: #845f87;
   --btn-secondary-text: #ffffff;
   --btn-secondary-hover-bg: #83678e;
+  /* secondary button secondary hover style */
+  --btn-secondary-ui-bg: #875a99;
 
   /* Tertiary button */
-  --btn-tertiary-bg: transparent;
+  --btn-tertiary-bg: #676562;
   --btn-tertiary-text: var(--ui-text);
-  --btn-tertiary-hover-bg: rgba(255, 255, 255, 0.08);
+  --btn-tertiary-hover-bg: #797873;
+
+  /* light-mode dark-mode */
+  --transparent-btn: #ffffff14;
 
   /* Hint theme */
   --hint-bg: #2c2c2c;
@@ -208,14 +230,14 @@
     --btn-secondary-padding-hover: 0.47rem 0.82rem;
     --btn-secondary-padding-reserve-block: 0.55rem;
     --btn-secondary-padding-reserve-inline: 0.82rem;
-    --input-padding: 0.72rem 0.85rem;
-    --input-padding-hover: 0.68rem 0.95rem;
+    --button-padding: 0.72rem 0.85rem;
+    --button-padding-hover: 0.68rem 0.95rem;
 
     /* avoiding the apple auto focus on small text */
     --type-small-size: 1rem;
     --type-label-size: 1rem;
     --type-h1-size: clamp(2.6rem, 1.6rem + 2.4vw, 4.8rem);
-    --type-h2-size: clamp(1.3rem, 1.1rem + 1vw, 1.6rem);
+    --type-h2-size: clamp(1.5rem, 1.3rem + 1.4vw, 2rem);
   }
   :root[data-theme="dark"] {
     --ui-questionnaire-title: linear-gradient(150deg, rgb(240, 240, 240), rgba(255, 255, 255, 0.71));
@@ -233,8 +255,8 @@
     --btn-secondary-padding-hover: 0.7rem 1.15rem;
     --btn-secondary-padding-reserve-block: 0.75rem;
     --btn-secondary-padding-reserve-inline: 1.15rem;
-    --input-padding: 0.9rem 1rem;
-    --input-padding-hover: 0.75rem 1rem;
+    --button-padding: 0.9rem 1rem;
+    --button-padding-hover: 0.75rem 1rem;
 
     /* moved here for font size on larger devices */
     --type-small-size: 0.94rem;
@@ -247,10 +269,6 @@
   }
 }
 
-  .svg-lg svg.ui-icon {
-    width: 1.6rem !important;
-    height: 1.6rem !important;
-  }
   .ui-close {
     width: 1rem !important;
     height: 1rem !important;
@@ -297,14 +315,12 @@ body,
 
 html {
   background: var(--ui-bg-page);
-  scrollbar-gutter: stable;
   scrollbar-color: var(--scroll-bar) transparent;
   scrollbar-width: thin;
 }
 
 html.questionnaire-scroll-lock {
   overflow: hidden;
-  scrollbar-gutter: auto;
 }
 
 body {

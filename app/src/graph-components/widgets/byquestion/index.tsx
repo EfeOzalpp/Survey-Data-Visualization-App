@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useSurveyDataStore } from "../../../app/state/survey-data-store";
 import HintBanner from "../../../app/ui/HintBanner";
-import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../../gp-data";
+import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../../graph-picker/gp-data";
 import { BUTTON_QUESTIONS } from "../../../onboarding/questionnaire/button-input/button-questions";
-import WidgetSectionNav from "./widget-section-nav";
+import WidgetSectionNav from "../widget-section-nav";
 import { recordOwnRender } from "../../../render-test/renderProfilerStats";
 
 interface LocalSectionState {
@@ -22,15 +22,7 @@ interface SectionScoresProps {
 
 const Q_KEYS = ["q1", "q2", "q3", "q4", "q5"] as const;
 const AUTOPLAY_MS = 5000;
-const TOUCH_PREVIEW_INDEX = 0;
-
-function shouldPreviewTouchRow() {
-  return (
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(hover: none), (pointer: coarse)").matches
-  );
-}
+const INITIAL_PREVIEW_INDEX = 0;
 
 export default function SectionScores({
   navOutsidePanel = false,
@@ -44,9 +36,7 @@ export default function SectionScores({
   );
   const { ALL_LABELS, MAIN_OPTS, STUDENT_OPTS, STAFF_OPTS, counts } = useGraphPickerData(section);
   const [internalPaused, setInternalPaused] = useState(true);
-  const [tooltipIndex, setTooltipIndex] = useState<number | null>(() =>
-    shouldPreviewTouchRow() ? TOUCH_PREVIEW_INDEX : null
-  );
+  const [tooltipIndex, setTooltipIndex] = useState<number | null>(INITIAL_PREVIEW_INDEX);
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,20 +47,6 @@ export default function SectionScores({
     };
     document.addEventListener("pointerdown", handler);
     return () => { document.removeEventListener("pointerdown", handler); };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
-
-    const query = window.matchMedia("(hover: none), (pointer: coarse)");
-    const syncTouchPreview = () => {
-      if (query.matches) setTooltipIndex((current) => current ?? TOUCH_PREVIEW_INDEX);
-    };
-
-    query.addEventListener("change", syncTouchPreview);
-    return () => {
-      query.removeEventListener("change", syncTouchPreview);
-    };
   }, []);
 
   const [localSectionState, setLocalSectionState] = useState<LocalSectionState>({

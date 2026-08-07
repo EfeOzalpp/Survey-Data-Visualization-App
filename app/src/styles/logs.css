@@ -2,25 +2,42 @@
 
 .logs-button { display: inline-flex; align-items: center; justify-content: center; gap: 0; flex-direction: row; }
 
-.logs-wrap { position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; pointer-events: all; }
+.logs-wrap { display: inline-flex; flex-direction: column; align-items: flex-start; pointer-events: all; }
 
-.logs-popover-shell { display: grid; position: absolute; left: 0; bottom: 0; z-index: 2; grid-template-rows: 0fr; opacity: 0; pointer-events: none; transition: grid-template-rows 180ms cubic-bezier(.22,.61,.36,1), opacity 120ms ease; }
+.ui-popover-shell.logs-popover-shell {
+  left: 0;
+  bottom: 0;
+  top: auto;
+  margin-bottom: 0;
+}
 
-.logs-popover-shell.is-open { grid-template-rows: 1fr; opacity: 1; pointer-events: auto; z-index: 205; }
-
-.logs-popover-clip { min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
-
-.logs-popover { width: 100%; background: var(--ui-bg-surface); border: 1px solid var(--ui-border); border-radius: var(--radius-lg); overflow: hidden; pointer-events: all; box-shadow: 0 18px 42px var(--ui-drop-shadow); display: flex; flex-direction: column; }
+.logs-popover { width: 100%; background: var(--ui-bg-surface); overflow: hidden; pointer-events: all; display: flex; flex-direction: column; }
 
 .logs-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding: 0.9rem 1rem 0.75rem; flex-shrink: 0; }
 
-.logs-title { font-size: var(--type-p-size); color: var(--ui-text); font-weight: var(--fw-bold); }
+.logs-title { margin: 0; font-size: var(--type-p-size); color: var(--ui-text); font-weight: var(--fw-bold); }
 
-.logs-header-tools { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.65rem; flex-shrink: 0; }
+.logs-header-tools { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--space-md); flex-shrink: 0; }
 
 .logs-entry-count { white-space: nowrap; }
 
-.logs-filter-trigger { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--ui-border); border-radius: var(--radius-md); background: var(--ui-bg-surface); color: var(--ui-text-muted); cursor: pointer; transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease; }
+.logs-filter-trigger { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid transparent; border-radius: var(--radius-md); background: var(--ui-bg-surface); color: var(--ui-text-muted); cursor: pointer; transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease; }
+
+.logs-filter-trigger:focus-visible { border-color: var(--ui-border); }
+
+/* Holds the hover treatment while the sort menu it opens stays open, so it
+   doesn't revert to idle the instant the pointer/tap leaves it. */
+.logs-filter-trigger.is-active { background: var(--ui-bg-surface-hover); color: var(--ui-text); }
+
+.logs-sort-menu { display: flex; flex-direction: column; gap: var(--space-sm); padding: 0.6rem 0; min-width: 160px; }
+
+.logs-sort-menu__label { padding-left: 1.2rem; font-size: var(--type-label-size); line-height: var(--type-tight-line); color: var(--ui-text-secondary); }
+
+.logs-sort-menu__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+
+.logs-sort-menu__option { width: 100%; text-align: left; padding: 0.45rem 0.6rem 0.45rem 1.2rem; border: none; background: transparent; color: var(--ui-text); font-size: var(--type-p-size); font-family: inherit; cursor: pointer; transition: background 0.12s ease, color 0.12s ease; }
+
+.logs-sort-menu__option.is-active { background: var(--ui-bg-surface-hover); font-weight: var(--fw-bold); }
 
 .logs-filter-trigger .ui-icon { width: 16px; height: 16px; stroke: currentColor; }
 
@@ -52,7 +69,7 @@
 
 .logs-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 100%; }
 
-.logs-th { position: sticky; top: 0; background: var(--ui-bg-surface); background-clip: padding-box; color: var(--ui-text-secondary); font-size: var(--type-label-size); font-weight: var(--fw-bold); text-align: right; padding: 0.55rem 0.75rem; white-space: nowrap; z-index: 3; box-shadow: 0 1px 0 var(--ui-border), 0 6px 14px color-mix(in srgb, var(--ui-bg-surface) 92%, transparent); transform: translateZ(0); }
+.logs-th { position: sticky; top: -1px; background: var(--ui-bg-surface); background-clip: padding-box; color: var(--ui-text-secondary); font-size: var(--type-label-size); font-weight: var(--fw-bold); text-align: right; padding: 0.55rem 0.75rem; white-space: nowrap; z-index: 3; box-shadow: 0 1px 0 var(--ui-border), 0 6px 14px color-mix(in srgb, var(--ui-bg-surface) 92%, transparent); transform: translateZ(0); }
 
 .logs-th--section { text-align: left; }
 .logs-th--qs { text-align: left; }
@@ -61,7 +78,12 @@
 
 .logs-td { font-size: var(--type-label-size); color: var(--ui-text); text-align: right; padding: 0.7rem 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.logs-td--section { text-align: left; color: var(--ui-text-secondary); }
+.logs-td--section {
+  text-align: left;
+  color: var(--ui-text-secondary);
+  white-space: normal;
+  line-height: var(--type-tight-line);
+}
 .logs-td--qs { text-align: left; color: var(--ui-text-muted); letter-spacing: 0.01em; }
 .logs-td--avg { font-weight: var(--fw-bold); text-align: left; }
 .logs-td--rank { color: var(--ui-text-muted); text-align: left; }
@@ -82,7 +104,7 @@
 
 .logs-page-sep { color: var(--ui-text-muted); margin: 0; }
 
-.logs-page-input { box-sizing: border-box; width: 58px; height: 36px; padding: 0 0.4rem; margin-left: var(--space-md); background: var(--ui-bg-text-input); border: 1px solid var(--ui-border); border-radius: var(--radius-md); color: var(--ui-text); font-size: var(--type-label-size); line-height: var(--type-tight-line); font-family: inherit; text-align: center; outline: none; transition: border-color 0.12s ease, background 0.12s ease; appearance: textfield; }
+.logs-page-input { box-sizing: border-box; width: 58px; height: 32px; padding: 0 0.4rem; margin-left: var(--space-md); background: var(--ui-bg-text-input); border: 1px solid var(--ui-border); border-radius: var(--radius-md); color: var(--ui-text); font-size: var(--type-label-size); line-height: var(--type-tight-line); font-family: inherit; text-align: center; outline: none; transition: border-color 0.12s ease, background 0.12s ease; appearance: textfield; }
 
 .logs-page-input::-webkit-outer-spin-button,
 .logs-page-input::-webkit-inner-spin-button { -webkit-appearance: none; }
@@ -105,6 +127,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .logs-filter-trigger:hover { background: var(--ui-bg-surface-hover); color: var(--ui-text); }
+  .logs-sort-menu__option:hover { background: var(--ui-bg-surface-hover); }
   .logs-filter-field:hover { background: var(--ui-bg-text-input-hover); }
   .logs-row:hover { background: var(--ui-bg-surface-hover); }
   .logs-row--empty:hover { background: transparent; }
@@ -113,37 +136,40 @@
 }
 
 @media (max-width: 767px) {
-  .logs-footer { justify-content: flex-end; padding: 0.6rem 0;}
-  .compact-tools-modal .widgets-panel.bar-graph { 
-    padding: 0.9rem 1rem 0.9rem;
-  }
  .compact-tools-modal .widgets-panel.bar-graph .bar-graph-container {
     min-height: 320px;
     height: min(46svh, 340px);
     max-height: 360px;
   }
-  .logs-th--section { width: 30%; }
+  .logs-th--section { width: 25%; }
   .logs-th--qs {width: 40%;  }
-  .logs-th--avg { width: 15%; }
+  .logs-th--avg { width: 20%; }
   .logs-th--rank { width: 15%; }
+
+}
+
+/* Reused across both mobile and tablet - CompactGraphTools (which hosts
+   this footer at both widths now) needs it right-aligned, not spread out
+   the way the desktop-only separated Logs popover wants it. */
+@media (max-width: 1024px) {
+  .logs-footer { justify-content: flex-end; padding: 0.3rem 0; }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .logs-table-wrap { min-height: min(58svh, 520px); max-height: min(58svh, 520px); }
-  .logs-popover-shell { width: calc(55vw - 1.8rem); }
 
-  .logs-th--section { width: 30%; }
-  .logs-th--qs {width: 40%;  }
-  .logs-th--avg { width: 15%; }
-  .logs-th--rank { width: 15%; }
+  .logs-th--section { width: 25%; }
+  .logs-th--qs {width: 35%;  }
+  .logs-th--avg { width: 16%; }
+  .logs-th--rank { width: 12%; }
 }
 
 @media (min-width: 1025px) {
   .logs-table-wrap { min-height: calc(100svh - 12.8rem); max-height: calc(100svh - 12.8rem); }
-  .logs-popover-shell { width: min(460px, calc(100vw - 3.2rem)); }
+  .ui-popover-shell.logs-popover-shell { width: min(460px, calc(100vw - 3.2rem)); }
 
-  .logs-th--section { width: 28%; }
-  .logs-th--qs {width: 36%;  }
-  .logs-th--avg { width: 15%; }
+  .logs-th--section { width: 25%; }
+  .logs-th--qs {width: 40%;  }
+  .logs-th--avg { width: 20%; }
   .logs-th--rank { width: 15%; }
 }

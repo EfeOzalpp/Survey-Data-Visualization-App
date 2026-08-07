@@ -19,8 +19,8 @@ export function computeInitialZoomTarget(params: {
   const curved = Math.pow(t, 0.4);
 
   // Mobile stays noticeably closer throughout - tighter near + far bounds.
-  const near = isSmallScreen ? 80 : isTabletLike ? 105 : 125;
-  const far  = isSmallScreen ? 270 : isTabletLike ? 355 : 430;
+  const near = isSmallScreen ? 65 : isTabletLike ? 85 : 100;
+  const far  = isSmallScreen ? 220 : isTabletLike ? 290 : 350;
 
   const target = near + curved * (far - near);
   return Math.max(minRadius, Math.min(maxRadius, target));

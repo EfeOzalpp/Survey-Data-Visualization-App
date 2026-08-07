@@ -1,13 +1,14 @@
-// src/navigation/graph-picker.tsx
+// src/graph-components/graph-picker/graph-picker.tsx
 import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
-import "../styles/graph-picker.css";
+import styles from "./graph-picker.module.css";
+import { ListboxShell } from "../../app/ui/ListboxShell";
 
 import {
   useGraphPickerData,
   CHOOSE_STUDENT, CHOOSE_STAFF, GO_BACK,
   titleFromId,
 } from "./gp-data";
-import ExpandIcon from "../assets/svg/expand/ExpandIcon";
+import ExpandIcon from "../../assets/svg/expand/ExpandIcon";
 
 export default function GraphPicker({
   value = "all",
@@ -143,113 +144,102 @@ export default function GraphPicker({
   const listboxId = "listbox";
 
   return (
-    <div ref={wrapperRef} className="picker">
-      <div
-        ref={buttonRef}
-        role="combobox"
-        aria-haspopup="listbox"
-        aria-owns={listboxId}
-        aria-expanded={open}
-        aria-controls={listboxId}
-        aria-activedescendant={VISIBLE_OPTS[safeActiveIndex] ? `opt-${VISIBLE_OPTS[safeActiveIndex].id}` : undefined}
-        className={`trigger ${open ? "is-open" : ""}`}
-        onClick={() => { if (open) closePicker(); else setOpen(true); }}
-        onKeyDown={onTriggerKeyDown}
-        tabIndex={0}
-      >
-        <span className="trigger-label">
+    <ListboxShell
+      open={open}
+      wrapperRef={wrapperRef}
+      wrapperClassName={styles.picker}
+      triggerRef={buttonRef}
+      triggerContent={
+        <span className={styles.triggerLabel}>
           <h4>{triggerCoreLabel}</h4>
         </span>
-        <span className="trigger-chevron" aria-hidden>
-          <ExpandIcon expanded={open} className="section-chevron-svg ui-icon" />
-        </span>
-      </div>
+      }
+      chevronIcon={<ExpandIcon expanded={open} className="trigger-chevron-icon ui-icon" />}
+      triggerProps={{
+        role: "combobox",
+        "aria-haspopup": "listbox",
+        "aria-owns": listboxId,
+        "aria-expanded": open,
+        "aria-controls": listboxId,
+        "aria-activedescendant": VISIBLE_OPTS[safeActiveIndex] ? `opt-${VISIBLE_OPTS[safeActiveIndex].id}` : undefined,
+        onClick: () => { if (open) closePicker(); else setOpen(true); },
+        onKeyDown: onTriggerKeyDown,
+        tabIndex: 0,
+      }}
+      listboxRef={listRef}
+      listboxId={listboxId}
+      placement={placement === "down" ? "down" : "up"}
+      onListboxKeyDown={onListKeyDown}
+    >
+      {VISIBLE_OPTS.map((opt, idx) => {
+        const active = idx === safeActiveIndex;
+        const isBack = opt.id === GO_BACK;
+        const isChooser = opt.id === CHOOSE_STUDENT || opt.id === CHOOSE_STAFF;
+        const isStudentChooser = opt.id === CHOOSE_STUDENT;
+        const isStaffChooser = opt.id === CHOOSE_STAFF;
+        const showCount = !(isBack || isChooser);
+        const n = counts[opt.id] ?? 0;
+        const isPersonal = yourIdsSet.has(opt.id);
+        const countLabel = `${String(n)} ${n === 1 ? "person" : "people"}`;
 
-      <div
-        className={`listbox-shell ${placement === "down" ? "drop-down" : "drop-up"}${open ? " is-open" : ""}`}
-        aria-hidden={!open}
-      >
-        <div className="listbox-clip">
+        return (
           <div
-            ref={listRef}
-            id={listboxId}
-            role="listbox"
-            className="listbox"
-            tabIndex={-1}
-            onKeyDown={onListKeyDown}
+            id={`opt-${opt.id}`}
+            key={opt.id}
+            role="option"
+            aria-selected={value === opt.id}
+            className={`option${active ? " is-active" : ""}${value === opt.id ? " is-selected" : ""}${isStudentChooser ? ` ${styles.optionStudentChooser}` : ""}${isStaffChooser ? ` ${styles.optionStaffChooser}` : ""}${isBack ? ` ${styles.optionBack}` : ""}`}
+            onMouseEnter={() => { setActiveIndex(idx); }}
+            onMouseDown={(e) => { e.preventDefault(); }}
+            onClick={() => { chooseIndex(idx); }}
           >
-            {VISIBLE_OPTS.map((opt, idx) => {
-              const active = idx === safeActiveIndex;
-              const isBack = opt.id === GO_BACK;
-              const isChooser = opt.id === CHOOSE_STUDENT || opt.id === CHOOSE_STAFF;
-              const isStudentChooser = opt.id === CHOOSE_STUDENT;
-              const isStaffChooser = opt.id === CHOOSE_STAFF;
-              const showCount = !(isBack || isChooser);
-              const n = counts[opt.id] ?? 0;
-              const isPersonal = yourIdsSet.has(opt.id);
-              const countLabel = `${String(n)} ${n === 1 ? "person" : "people"}`;
-
-              return (
-                <div
-                  id={`opt-${opt.id}`}
-                  key={opt.id}
-                  role="option"
-                  aria-selected={value === opt.id}
-                  className={`option${active ? " is-active" : ""}${value === opt.id ? " is-selected" : ""}${isStudentChooser ? " option--student-chooser" : ""}${isStaffChooser ? " option--staff-chooser" : ""}${isBack ? " option--back" : ""}`}
-                  onMouseEnter={() => { setActiveIndex(idx); }}
-                  onMouseDown={(e) => { e.preventDefault(); }}
-                  onClick={() => { chooseIndex(idx); }}
-                >
-                  {isBack ? (
-                    <>
-                      <span className="back-icon" aria-hidden>
-                        <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M15 18L9 12L15 6" />
-                        </svg>
+            {isBack ? (
+              <>
+                <span className={styles.backIcon} aria-hidden>
+                  <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 18L9 12L15 6" />
+                  </svg>
+                </span>
+                <span className="label">Back</span>
+              </>
+            ) : isChooser ? (
+              <>
+                <span className={styles.labelWrap}>
+                  <span className="label">{opt.label}</span>
+                  {(() => {
+                    const sectionSet = opt.id === CHOOSE_STUDENT ? studentIdSet : staffIdSet;
+                    if (!sectionSet.has(value)) return null;
+                    return (
+                      <span className={styles.selectedChild}>
+                        {ALL_LABELS.get(value) ?? titleFromId(value)}
                       </span>
-                      <span className="label">Back</span>
-                    </>
-                  ) : isChooser ? (
-                    <>
-                      <span className="label-wrap">
-                        <span className="label">{opt.label}</span>
-                        {(() => {
-                          const sectionSet = opt.id === CHOOSE_STUDENT ? studentIdSet : staffIdSet;
-                          if (!sectionSet.has(value)) return null;
-                          return (
-                            <span className="selected-child">
-                              {ALL_LABELS.get(value) ?? titleFromId(value)}
-                            </span>
-                          );
-                        })()}
-                      </span>
-                      <span className="chooser-icon" aria-hidden>
-                        <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M9 18L15 12L9 6" />
-                        </svg>
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="label option-label">
-                        {ALL_LABELS.get(opt.id) ?? titleFromId(opt.id)}
-                      </span>
-                      <span className="picker-labels">
-                        {isPersonal && <span className="ui-label picker-you">you</span>}
-                        {showCount && (
-                          <span className="ui-label picker-count" aria-label={countLabel} title={countLabel}>
-                            {n}
-                          </span>
-                        )}
-                      </span>
-                    </>
+                    );
+                  })()}
+                </span>
+                <span className={styles.chooserIcon} aria-hidden>
+                  <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18L15 12L9 6" />
+                  </svg>
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="label option-label">
+                  {ALL_LABELS.get(opt.id) ?? titleFromId(opt.id)}
+                </span>
+                <span className={styles.pickerLabels}>
+                  {isPersonal && <span className={`ui-label ${styles.pickerYou}`}>you</span>}
+                  {showCount && (
+                    <span className={`ui-label ${styles.pickerCount}`} aria-label={countLabel} title={countLabel}>
+                      {n}
+                    </span>
                   )}
-                </div>
-              );
-            })}
+                </span>
+              </>
+            )}
           </div>
-        </div>
-      </div>
-    </div>
+        );
+      })}
+    </ListboxShell>
   );
 }

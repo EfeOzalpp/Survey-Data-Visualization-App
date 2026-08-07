@@ -1,4 +1,5 @@
 // src/onboarding/role-picker/role-step.tsx
+import styles from "./role-picker.module.css";
 import RolePicker from ".";
 import type { RoleValue } from ".";
 
@@ -22,10 +23,10 @@ export default function RoleStep({ value, onChange, onNext, error }: RoleStepPro
 
   return (
     <section className="survey survey-step role-select">
-        <div className="onboarding">
-          <div className="role-step__heading">
+        <div className={styles.onboarding}>
+          <div className={styles.roleStepHeading}>
             <h2 className="welcome-text">
-              A Sustainability Survey Where Choices Shape the Scene.
+              Generating Stylized Cities from Collective Choices
             </h2>
           </div>
 

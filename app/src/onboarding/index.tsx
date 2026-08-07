@@ -5,7 +5,7 @@ import { profilerOnRender, recordOwnRender } from '../render-test/renderProfiler
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";
 import "../styles/onboarding-info.css";
-import "../styles/section-questionnaire.css";
+import "../styles/questionnaire.css";
 
 import { ROLE_SECTIONS } from "./section-picker/sections";
 import type { RoleSection, SectionItem, SectionOption } from "./section-picker/sections";
@@ -25,7 +25,7 @@ import { getSessionItem } from "../app/session";
 // separate boundary below since it only mounts after a user interaction,
 // safely past the hydration window.
 import RoleStep from "./role-picker/role-step";
-import CanvasInfo from "./information/canvas-info";
+import CanvasInfo from "./canvas-info";
 const SectionPickerIntro = React.lazy(() => import("./section-picker"));
 
 function Survey({

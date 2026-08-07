@@ -102,7 +102,16 @@ const SEA_TUNING = {
       colWidthK:  0.85,
       cornerK:    0.12,
     },
-    grassBlend: { colorBlend: [0.20, 0.34] as NumberRange, satRange: [0.00, 0.16] as NumberRange, brightRange: [0.35, 0.90] as NumberRange },
+    grassBlend: {
+      // Blend strength toward gradientRGB (red at u=0, green at u=1). Raised
+      // the high end so the cup/bowl mixes in visibly more green at u=1.
+      colorBlend: [0.20, 0.52] as NumberRange,
+      satRange: [0.00, 0.16] as NumberRange,
+      brightRange: [0.35, 0.90] as NumberRange,
+      // Exponent applied to u for colorBlend: u^gamma with gamma < 1
+      // front-loads the green mix so it's pronounced well before u hits 1.
+      towardOneGamma: 0.5,
+    },
     alphaMul:   1.0,
     pieceRadiusPx:    undefined as number | undefined,
     baseOverlapPx:    undefined as number | undefined,
@@ -508,7 +517,8 @@ export function drawSea(p: ShapeCanvas, _x: number, _y: number, _r: number, opts
     const rightX = cx + L0 + W0 - colW;
 
     const gb = T.bowl.grassBlend;
-    const blendK = clamp01(resolveRangeValue(gb.colorBlend, u));
+    const uCupGreen = Math.pow(u, gb.towardOneGamma);
+    const blendK = clamp01(resolveRangeValue(gb.colorBlend, uCupGreen));
     const [satLo, satHi] = gb.satRange;
     const [briLo, briHi] = gb.brightRange;
 

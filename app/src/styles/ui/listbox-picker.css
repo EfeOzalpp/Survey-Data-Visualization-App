@@ -1,0 +1,150 @@
+/* Shared trigger + listbox + option chrome used by both GraphPicker
+   (graph-components/graph-picker/) and the onboarding SectionPicker
+   (onboarding/section-picker/) */
+
+.trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--inactive-accent-color);
+  border: none;
+  border-radius: var(--btn-radius);
+  color: var(--ui-text);
+  font-family: var(--font-body);
+  font-size: var(--type-p-size);
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: visible;
+}
+.trigger:hover { background: var(--inactive-accent-color-hover); }
+.trigger.is-open {
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background: var(--ui-bg-surface);
+  border: 1px solid var(--ui-border);
+}
+.trigger:focus-visible {
+  box-shadow: 0 0 0 2px var(--ui-border-strong);
+}
+
+.trigger-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.trigger-chevron .ui-icon { opacity: 0.95; color: var(--ui-trigger-chevron-fill); }
+.trigger-chevron-icon.ui-icon { opacity: 0.95; transform: scale(1.1, 0.95); }
+.trigger-chevron-icon.ui-icon [stroke] { stroke: var(--ui-trigger-chevron-fill); }
+
+.listbox-shell {
+  display: grid;
+  width: 100%;
+  background: var(--ui-bg-surface);
+  border: 1px solid var(--ui-border);
+  border-top: none;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+  transition: grid-template-rows 180ms cubic-bezier(.22,.61,.36,1), opacity 120ms ease;
+}
+.listbox-shell.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.listbox-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.listbox {
+  width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 0.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-bar) transparent;
+}
+.listbox::-webkit-scrollbar { width: 6px; }
+.listbox::-webkit-scrollbar-track {
+  background: var(--ui-border);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  background-clip: padding-box;
+}
+.listbox::-webkit-scrollbar-thumb {
+  background: var(--scroll-bar);
+  border-radius: 4px;
+}
+.listbox::-webkit-scrollbar-thumb:hover { background: var(--ui-text-secondary); }
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 1rem;
+  transition: background 0.1s ease;
+  color: var(--ui-text);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.option.is-active { background: var(--ui-bg-surface-hover); }
+.option.is-selected { background: var(--ui-bg-surface-selected); }
+
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--ui-text);
+}
+.option-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listbox .option { padding-left: 1.2rem; }
+
+@media (max-width: 767px) {
+  .option { padding: 0.8rem; }
+}
+
+/* Shared responsive sizing mechanism for the outer wrapper both GraphPicker
+   (.picker) and the onboarding SectionPicker (.section-picker) render via
+   ListboxShell - both grow on hover and again once open, using the same
+   three-state shape and the same hover transition timing. picker-shell is
+   the class ListboxShell always adds to that wrapper for exactly this - the
+   actual pixel widths per breakpoint stay local to each consumer, set via
+   these custom properties on their own wrapper class, not here. */
+.picker-shell {
+  max-width: var(--picker-rest-w);
+  min-width: var(--picker-rest-w);
+}
+.picker-shell:hover {
+  max-width: var(--picker-hover-w, var(--picker-rest-w));
+  min-width: var(--picker-hover-w, var(--picker-rest-w));
+  transition: 50ms ease-in;
+}
+.picker-shell:has(.trigger.is-open) {
+  max-width: var(--picker-open-w);
+  min-width: var(--picker-open-w);
+}

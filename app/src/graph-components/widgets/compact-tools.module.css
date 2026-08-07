@@ -1,0 +1,82 @@
+/* CompactGraphTools-only styling (mobile+tablet modal). Shared bar-graph/
+   q-scores/logs styling and the Modal :has() overrides stay in
+   styles/widgets.css - those belong to BarGraph/SectionScores/LogsPanel and
+   to the shared Modal primitive, not to this component. */
+
+.compactToolsButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nav-control-h);
+  height: var(--nav-control-h);
+  flex: 0 0 auto;
+  margin-left: var(--space-md);
+  padding: 0;
+  border: none;
+  border-radius: var(--btn-radius);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  pointer-events: auto;
+  transition: background 0.12s ease;
+}
+
+.compactToolsButton:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .compactToolsButton:hover { background: var(--btn-secondary-hover-bg); }
+}
+
+.compactToolsIcon {
+  width: 22px;
+  height: 22px;
+}
+
+@media (min-width: 768px) {
+  .compactToolsIcon { width: 26px; height: 26px; }
+}
+
+.compactToolsTabs {
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  border-top: 1px solid var(--ui-border);
+  background: var(--ui-bg-surface);
+  scrollbar-width: none;
+  padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+}
+
+.compactToolsTabs::-webkit-scrollbar { display: none; }
+
+.compactToolsTab { white-space: nowrap; }
+
+.compactToolsModal {
+  position: relative;
+  min-height: 0;
+}
+
+.compactToolsModal :global(.logs-popover) { border: none; border-radius: 0; box-shadow: none; }
+.compactToolsModal :global(.logs-table-wrap) { min-height: 260px; max-height: min(56svh, 480px); }
+.compactToolsModal :global(.widgets-panel.bar-graph) { padding: 0.5rem 0.8rem 0.8rem; }
+.compactToolsModal :global(.widgets-panel.bar-graph) :global(.bar-graph-container) { min-height: 280px; height: min(44svh, 360px); max-height: 360px; }
+.compactToolsModal :global(.widgets-panel.bar-graph) :global(.bar-graph-empty) { min-height: 280px; }
+.compactToolsModal :global(.widgets-panel.bar-graph) :global(.bar-graph-fill) { max-width: 88px; }
+.compactToolsModal :global(.widgets-panel.bar-graph) :global(.percentage-section) { width: 88px; }
+
+.compactToolsWidgetPanel { min-height: 0; }
+
+.compactToolsClose {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.9rem;
+  z-index: 2;
+}
+
+.compactToolsClose :global(.ui-close) { width: 16px; height: 16px; }
+.compactToolsContent { padding-top: 2.5rem; }
+
+@media (max-width: 768px) {
+  .compactToolsModal :global(.widgets-panel.bar-graph) :global(.bar-graph-fill) { max-width: 72px; }
+}

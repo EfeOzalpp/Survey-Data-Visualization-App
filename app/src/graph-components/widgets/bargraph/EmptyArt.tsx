@@ -1,5 +1,5 @@
 // -------------------------------------------------------------
-// navigation/bottom/widgets/bargraph/EmptyArt.tsx
+// graph-components/widgets/bargraph/EmptyArt.tsx
 // Simple decorative empty-state SVG
 // -------------------------------------------------------------
 

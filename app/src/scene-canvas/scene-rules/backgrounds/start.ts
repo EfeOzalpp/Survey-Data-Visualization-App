@@ -20,9 +20,7 @@ const START_BACKGROUND: BackgroundSpec = {
       { rgba: "rgba(82, 184, 103, 0.97)", liveBlend: [0.02, 0.08] },
       { rgba: "rgba(112, 189, 116, 0.97)" },
       { k: 0.96, rgba: "rgba(120, 156, 102, 1)" },
-      { k: 0.98, rgba: "rgba(120, 156, 102, 1)" },
-      { k: 0.98, rgba: "rgb(248, 240, 234)" },
-      { rgba: "rgb(248, 240, 234)" },
+      { rgba: "rgba(120, 156, 102, 1)" }
     ] as const,
   },
 } as const;
@@ -48,9 +46,7 @@ const START_BACKGROUND_DARK: BackgroundSpec = {
       { k: "visualHorizon", rgba: "rgb(157, 255, 239)", rightRgba: "rgb(237, 222, 137)", liveBlend: [0.06, 0.12], blendFromPrevious: false },
       { rgba: "rgb(147, 236, 210)", rightRgba: "rgb(220, 210, 155)", liveBlend: [0.08, 0.10] },
       { rgba: "rgb(138, 215, 176)", rightRgba: "rgb(210, 196, 160)", liveBlend: [0.08, 0.12] },
-      { k: 0.98, rgba: "rgb(125, 201, 148)", rightRgba: "rgb(205, 185, 158)", liveBlend: [0.08, 0.10] },
-      { k: 0.98, rgba: "#191a1b", rightRgba: "#272830" },
-      { rgba: "#151516", rightRgba: "#272830" },
+      { rgba: "rgb(125, 201, 148)", rightRgba: "rgb(205, 185, 158)", liveBlend: [0.08, 0.10] }
     ] as const,
   },
   stars: {

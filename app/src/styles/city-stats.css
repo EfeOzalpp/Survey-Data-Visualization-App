@@ -1,0 +1,110 @@
+/* City stats - standalone nav item + full dialog (not a widgets tab) */
+
+.city-stats-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nav-control-h);
+  height: var(--nav-control-h);
+  flex: 0 0 auto;
+  margin-left: var(--space-md);
+  padding: 0;
+  border: none;
+  border-radius: var(--btn-radius);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.12s ease;
+}
+
+.city-stats-trigger:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .city-stats-trigger:hover { background: var(--btn-secondary-hover-bg); }
+}
+
+.city-stats-trigger .ui-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+@media (min-width: 768px) {
+  .city-stats-trigger .ui-icon { width: 26px; height: 26px; }
+}
+
+/* Root/overlay/shell positioning + transitions live in the shared Modal
+   (styles/ui/modal.css) via .ui-modal-*. Only dialog-specific sizing stays here. */
+.city-stats-dialog {
+  min-height: 460px;
+  max-height: 460px;
+}
+
+.city-stats-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: 1rem 1rem 0.8rem 1.2rem;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.city-stats-dialog-title {
+  margin: 0;
+  font-size: var(--type-h4-size);
+  line-height: var(--type-h4-line);
+}
+
+.city-stats-dialog-close {
+  flex: 0 0 auto;
+}
+
+.city-stats-dialog-close .ui-close {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.city-stats-dialog-body {
+  flex: 1 1 auto;
+  min-height: 280px;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.city-stats-dialog-placeholder {
+  margin: 0;
+  color: var(--ui-text-secondary);
+  font-size: var(--type-h4-size);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  /* Compounded with .ui-modal-shell (not just .city-stats-dialog-shell
+     alone) so this reliably beats modal.css's base `width: 100%` on
+     specificity - both are otherwise single-class selectors (0,1,0), tied,
+     which left the outcome dependent on stylesheet load order. */
+  .ui-modal-shell.city-stats-dialog-shell {
+    width: min(460px, calc(100vw - 4rem));
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .city-stats-dialog {
+    min-height: min(56svh, 560px);
+    max-height: min(56svh, 560px);
+  }
+}
+
+@media (min-width: 1025px) {
+  .city-stats-dialog {
+    min-height: min(60svh, 600px);
+    max-height: min(60svh, 600px);
+  }
+}
+

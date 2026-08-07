@@ -48,6 +48,8 @@ Without quantization and material caching:
 | Sprite         | 84 KB        | 987 KB        |
 | CanvasTexture  | 44.8 KB      | 878 KB        |
 
+Total retained size: 3227 KB
+
 With quantization and material caching:
 
 | Constructor     | Shallow Size | Retained Size |
@@ -55,6 +57,8 @@ With quantization and material caching:
 | SpriteMaterial | 206 KB       | 976 KB        |
 | Sprite         | 84 KB        | 944 KB        |
 | CanvasTexture  | 18.1 KB      | 350 KB        |
+
+Total retained size: 2270 KB
 
 Measured reduction:
 

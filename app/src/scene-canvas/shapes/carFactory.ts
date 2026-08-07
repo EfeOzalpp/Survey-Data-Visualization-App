@@ -58,6 +58,7 @@ interface CarFactoryOptions extends ShapeDrawOptions<CarFactoryPalette> {
 }
 
 interface CarFactoryTuning {
+  towardOneGamma: number;
   blendK: NumberRange;
   grass: {
     colorBlend: NumberRange;
@@ -133,6 +134,11 @@ interface CarFactoryTuning {
 
 // Tunables.
 const CF: CarFactoryTuning = {
+  // Exponent applied to u for structural params (body/chimney scale, panel
+  // coverage): u^gamma with gamma < 1 front-loads the ramp so the factory
+  // looks close to "maxed out" well before u actually reaches 1.
+  towardOneGamma: 0.5,
+
   // General (non-grass) gradient blend strength.
   blendK: [0.3, 0.02],
 
@@ -300,6 +306,10 @@ export function drawCarFactory(
   const isSprite = !!sprite.fitToFootprint || !!sprite.spriteMode;
 
   const u   = clamp01(style.liveAvg ?? 0.5);
+  // Structural params (body/chimney scale, panel coverage) read this instead of
+  // raw `u` so the factory reads as visibly "maxed out" well before u hits 1,
+  // rather than tracking u linearly the whole way there.
+  const uToward1 = Math.pow(u, CF.towardOneGamma);
   const a   = finiteNumber(style.alpha, 235);
   const ex  = finiteNumber(style.exposure, 1);
   const ct  = finiteNumber(style.contrast, 1);
@@ -420,8 +430,8 @@ export function drawCarFactory(
   );
 
   // liveAvg-lerped clamps - robust for decreasing ranges
-  const bodyScaleX = clampLerped(CF.bodyScaleXRange, u);
-  const chimScaleY = clampLerped(CF.chimScaleYRange, u);
+  const bodyScaleX = clampLerped(CF.bodyScaleXRange, uToward1);
+  const chimScaleY = clampLerped(CF.chimScaleYRange, uToward1);
 
   // body anchor flips by side - left-anchored if component is on the left
   const bodyAnchorX = sideLeft ? bodyX : (bodyX + factoryW);
@@ -748,7 +758,7 @@ export function drawCarFactory(
 
   // 9) SOLAR PANELS - scale anchored to the roof (bottom-center), tilt flips with side
   {
-    const sPanels = clamp01(u); // 0 -> hidden, 1 -> full
+    const sPanels = clamp01(uToward1); // 0 -> hidden, 1 -> full
     if (sPanels > 0.001) {
       const panelTint0 = applySrgbExposureContrast(pal.solarPanel, ex, ct);
       const count = CF.panels.count;

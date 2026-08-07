@@ -1,0 +1,94 @@
+/* WidgetsButton-only styling (desktop-only popover). Shared bar-graph/
+   q-scores/widget-section-nav styling and .widgets-button's own base rule
+   stay in styles/widgets.css - .widgets-button is reached directly by
+   navigation.css's pointer-events hook, and bar-graph/q-scores belong to
+   BarGraph/SectionScores, not to this component. */
+
+.widgetsWrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+  pointer-events: all;
+  transition: margin-left 0.2s ease;
+}
+
+.widgetsPopoverShell:global(.ui-popover-shell) {
+  left: 0;
+  bottom: 0;
+  top: auto;
+  margin-bottom: 0;
+  z-index: 2;
+  width: min(320px, calc(100vw - 3.2rem));
+}
+
+.widgetsPopover {
+  width: 100%;
+  background: var(--ui-bg-surface);
+  overflow: hidden;
+  pointer-events: all;
+  display: flex;
+  flex-direction: column;
+}
+
+.widgetsView { min-height: 0; }
+
+.widgetsTabs {
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  border-top: 1px solid var(--ui-border);
+  background: var(--ui-bg-surface);
+  padding: 0.7rem 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-bar) transparent;
+}
+
+.widgetsTabs::-webkit-scrollbar { height: 6px; }
+.widgetsTabs::-webkit-scrollbar-track { background: transparent; }
+.widgetsTabs::-webkit-scrollbar-thumb { background: var(--scroll-bar); border-radius: 4px; }
+.widgetsTabs::-webkit-scrollbar-thumb:hover { background: var(--ui-text-secondary); }
+
+.widgetsTab { white-space: nowrap; }
+
+.widgetsFooter {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--ui-border);
+  flex-shrink: 0;
+  background: var(--ui-bg-surface);
+}
+
+.widgetsCloseStrip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 0.75rem 1rem 0.75rem 1.2rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ui-text);
+  font-size: var(--type-label-size);
+  cursor: pointer;
+  transition: background 0.12s ease;
+  flex-shrink: 0;
+}
+
+.widgetsCloseStrip :global(.ui-close) { width: 16px; height: 16px; flex: 0 0 auto; }
+
+@media (hover: hover) and (pointer: fine) {
+  .widgetsCloseStrip:hover { background: var(--ui-bg-surface-hover); }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .widgetsPopoverShell:global(.ui-popover-shell) :global(.ui-popover) { margin-left: -1px; }
+  .widgetsWrap { margin-left: -0.2rem; }
+  .widgetsPopoverShell:global(.ui-popover-shell) { width: calc(45vw - 1.8rem); }
+}
+
+@media (min-width: 1025px) {
+  .widgetsPopoverShell:global(.ui-popover-shell) :global(.ui-popover) { margin-left: -1px; }
+  .widgetsWrap { margin-left: -0.2rem; }
+  .widgetsPopoverShell:global(.ui-popover-shell) { width: min(330px, calc(100vw - 6.4rem)); }
+}

@@ -89,7 +89,11 @@ const AppInner: React.FC = () => {
                 setInfoOpen(true);
               }}
             >
-              Watch how it works
+              {/* span, not p - <button> only accepts phrasing content, a <p>
+                  here would be invalid nesting (same reason the icon used to
+                  be its own nested button before this was one clickable
+                  element - see git history on this block). */}
+              <span className="more-info-trigger__label">Watch how it works</span>
               <span className="more-info-trigger__duration">(60 sec)</span>
               <span className="more-info-trigger__icon-box" aria-hidden="true">
                 <PlayIcon className="ui-icon more-info-trigger__icon" />

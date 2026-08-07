@@ -189,7 +189,7 @@ export function DuplicateSurveyBanner() {
       <>
         You've already taken the survey.
         <br />
-        View now button at top will let you in.
+        Explore results button at top will let you in.
       </>
     </HintBanner>
   );

@@ -9,8 +9,27 @@ import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
 
 const SpotlightEntry = React.lazy(() => import("../../canvas-instances/SpotlightEntry"));
 
-const SPOTLIGHT_LOAD_DELAY_MS = 1500;
+// Fallback cap only - on an idle browser this fires almost immediately via
+// requestIdleCallback instead of always eating the full flat delay (same
+// local-helper pattern as app-effects.tsx's scheduleIdle / index.tsx's
+// scheduleStartupWork - each file keeps its own since the timeouts differ).
+const SPOTLIGHT_LOAD_TIMEOUT_MS = 800;
 const SPOTLIGHT_INTERSECTION_THRESHOLD = 0.1;
+
+interface IdleWindow {
+  requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+  cancelIdleCallback?: (handle: number) => void;
+}
+
+function scheduleIdle(callback: () => void, timeout: number) {
+  const idleWindow = window as unknown as IdleWindow;
+  if (typeof idleWindow.requestIdleCallback === "function") {
+    const handle = idleWindow.requestIdleCallback(callback, { timeout });
+    return () => { idleWindow.cancelIdleCallback?.(handle); };
+  }
+  const id = window.setTimeout(callback, timeout);
+  return () => { window.clearTimeout(id); };
+}
 
 export default function CanvasInfo() {
   const {
@@ -58,22 +77,22 @@ export default function CanvasInfo() {
           setInView(visible);
         });
       },
-      { threshold: SPOTLIGHT_INTERSECTION_THRESHOLD }
+      // rootMargin extends the trigger zone well past the real viewport, so
+      // this fires - and the lazy import + load-delay timer below start -
+      // while the frame is still off-screen, not only once it's already
+      // visible. By the time the user actually scrolls to it, it's ready.
+      { threshold: SPOTLIGHT_INTERSECTION_THRESHOLD, rootMargin: "800px 0px" }
     );
     observer.observe(el);
     return () => { observer.disconnect(); };
   }, []);
 
   useEffect(() => {
-    const id = window.setTimeout(() => {
+    return scheduleIdle(() => {
       startTransition(() => {
         setLoadDelayComplete(true);
       });
-    }, SPOTLIGHT_LOAD_DELAY_MS);
-
-    return () => {
-      window.clearTimeout(id);
-    };
+    }, SPOTLIGHT_LOAD_TIMEOUT_MS);
   }, []);
 
   useEffect(() => {
@@ -82,7 +101,7 @@ export default function CanvasInfo() {
 
     const id = window.setInterval(() => {
       nextSpotlight();
-    }, 3000);
+    }, 4500);
 
     return () => {
       window.clearInterval(id);
@@ -102,7 +121,6 @@ export default function CanvasInfo() {
           )}
           <div className="ui-icon-nav canvas-info__slider-controls" aria-label="Scene Canvas preview controls">
             <div className="canvas-info__liveavg-control">
-              <div className="canvas-info__liveavg-track" aria-hidden="true" />
               <input
                 className="canvas-info__liveavg-slider"
                 type="range"
@@ -141,10 +159,10 @@ export default function CanvasInfo() {
 
       <section className="canvas-info__information">
         <div className="canvas-info-div">
-          <h3 className="canvas-info__eyebrow">Deeper Dive into This Scene Canvas</h3>
+          <h3 className="canvas-info__eyebrow">Built With a Custom Graphics Renderer</h3>
           <ul className="canvas-info__copy">
-            <li>Butterfly Effect's city is powered by a custom Canvas2D renderer.</li>
-            <li>I'm building Canvas Engine, a more complete renderer for interactive visual tools.</li>
+            <li>Butterfly Effect's city runs on a custom scene system, built on top of the Canvas2D API.</li>
+            <li>It's the predecessor of Canvas Engine, a more complete renderer for interactive visual tools I'm building.</li>
             <li>Let's collaborate on GitHub. You can also reach out at efe.ozalp@canvas-engine.com.</li>
           </ul>
           <div className="canvas-info__actions">

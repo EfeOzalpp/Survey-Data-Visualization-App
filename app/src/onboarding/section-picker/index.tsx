@@ -1,5 +1,8 @@
 // src/onboarding/section-picker/index.tsx
 import { useMemo, useRef, useState, useEffect, useCallback, useId } from 'react';
+import type { KeyboardEvent } from 'react';
+import styles from './section-picker.module.css';
+import { ListboxShell } from '../../app/ui/ListboxShell';
 import type { SectionHeader, SectionItem, SectionOption } from './sections';
 
 interface NormalizedSectionOption extends SectionOption {
@@ -68,7 +71,10 @@ export default function SectionPickerIntro({
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const listRef = useRef<HTMLDivElement | null>(null);
+  // ListboxShell's listboxRef prop expects RefObject<HTMLDivElement>
+  // (matching what useRef<HTMLDivElement>(null) infers) - not the wider
+  // RefObject<HTMLDivElement | null> an explicit `| null` type arg produces.
+  const listRef = useRef<HTMLDivElement>(null);
   const listboxId = 'section-listbox';
   const openedByPointer = useRef(false);
   const outsideTouchRef = useRef<{
@@ -247,32 +253,45 @@ export default function SectionPickerIntro({
   const placeholderText = placeholderOverride ?? (current ? current.label : 'MassArt Dept...');
   const describedBy = [helpId, error ? errorId : undefined].filter((id): id is string => Boolean(id)).join(' ');
 
+  const onListKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      moveActive(1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      moveActive(-1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      setActiveIndex(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      setActiveIndex(Math.max(0, renderedFocusable.length - 1));
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      chooseIndex(safeActiveIndex);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closePicker();
+    }
+  };
+
   return (
     <section className="survey survey-step section-select" ref={wrapperRef}>
-      <div className="continue">
-        <h3 className="section-title" id={titleId}>{titleOverride ?? 'Select Your Department'}</h3>
+      <div className={styles.continue}>
+        <h3 className={styles.sectionTitle} id={titleId}>{titleOverride ?? 'Select Your Department'}</h3>
         <p id={helpId} style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
           Type to filter departments, then use arrow keys to move through the list and Enter to select.
         </p>
 
-      <div className="section-picker">
-        <div
-          className={`section-combobox ${open ? 'is-open' : ''}`}
-          onMouseDown={() => {
-            openedByPointer.current = true;
-          }}
-          onTouchStart={() => {
-            openedByPointer.current = true;
-          }}
-          onClick={() => {
-            openPicker();
-          }}
-        >
+      <ListboxShell
+        open={open}
+        wrapperClassName={styles.sectionPicker}
+        triggerContent={
           <input
             ref={inputRef}
             id="section-combobox-input"
             type="text"
-            className="section-input"
+            className={styles.sectionInput}
             role="combobox"
             aria-labelledby={titleId}
             aria-haspopup="listbox"
@@ -322,99 +341,77 @@ export default function SectionPickerIntro({
             autoComplete="off"
             spellCheck={false}
           />
-          <span className="section-chevron" aria-hidden>
-            <svg className="section-chevron-svg ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <polyline points="6 9 12 15 18 9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        </div>
+        }
+        chevronIcon={
+          <svg className="trigger-chevron-icon ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="6 9 12 15 18 9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        }
+        triggerProps={{
+          onMouseDown: () => {
+            openedByPointer.current = true;
+          },
+          onTouchStart: () => {
+            openedByPointer.current = true;
+          },
+          onClick: () => {
+            openPicker();
+          },
+        }}
+        listboxRef={listRef}
+        listboxId={listboxId}
+        onListboxKeyDown={onListKeyDown}
+      >
+        {displayedList.length === 0 && (
+          <div className={styles.sectionEmpty} role="option" aria-disabled="true" aria-selected="false">
+            No matches
+          </div>
+        )}
 
-        <div
-          className={`section-listbox-shell drop-down${open ? ' is-open' : ''}`}
-          aria-hidden={!open}
-        >
-          <div className="section-listbox-clip">
+        {displayedList.map((item, idx) => {
+          if (isSectionHeader(item)) {
+            return (
+              <span
+                key={`hdr-${item.id}`}
+                className={styles.sectionGroupHeader}
+                role="presentation"
+                aria-hidden="true"
+              >
+                {item.label}
+              </span>
+            );
+          }
+          const selected = value === item.value;
+          const isActive = renderedFocusable[safeActiveIndex]?.__renderIndex === idx;
+          return (
             <div
-              ref={listRef}
-              id={listboxId}
-              role="listbox"
-              className="section-listbox drop-down"
-              tabIndex={-1}
-              onKeyDown={(e) => {
-                if (e.key === 'ArrowDown') {
-                  e.preventDefault();
-                  moveActive(1);
-                } else if (e.key === 'ArrowUp') {
-                  e.preventDefault();
-                  moveActive(-1);
-                } else if (e.key === 'Home') {
-                  e.preventDefault();
-                  setActiveIndex(0);
-                } else if (e.key === 'End') {
-                  e.preventDefault();
-                  setActiveIndex(Math.max(0, renderedFocusable.length - 1));
-                } else if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  chooseIndex(safeActiveIndex);
-                } else if (e.key === 'Escape') {
-                  e.preventDefault();
-                  closePicker();
+              id={`opt-${item.value}`}
+              key={item.value}
+              role="option"
+              aria-selected={selected}
+              className={'option' + (isActive ? ' is-active' : '') + (selected ? ' is-selected' : '')}
+              onMouseEnter={() => {
+                const focusIdx = renderedFocusable.findIndex((option) => option.__renderIndex === idx);
+                if (focusIdx !== -1 && focusIdx !== safeActiveIndex) {
+                  setActiveIndex(focusIdx);
                 }
               }}
+              onMouseDown={(e) => { e.preventDefault(); }}
+              onClick={() => {
+                const focusIdx = renderedFocusable.findIndex((option) => option.__renderIndex === idx);
+                if (focusIdx >= 0) chooseIndex(focusIdx);
+              }}
             >
-              {displayedList.length === 0 && (
-                <div className="section-empty" role="option" aria-disabled="true" aria-selected="false">
-                  No matches
-                </div>
-              )}
-
-              {displayedList.map((item, idx) => {
-                if (isSectionHeader(item)) {
-                  return (
-                    <span
-                      key={`hdr-${item.id}`}
-                      className="section-group-header"
-                      role="presentation"
-                      aria-hidden="true"
-                    >
-                      {item.label}
-                    </span>
-                  );
-                }
-                const selected = value === item.value;
-                const isActive = renderedFocusable[safeActiveIndex]?.__renderIndex === idx;
-                return (
-                  <div
-                    id={`opt-${item.value}`}
-                    key={item.value}
-                    role="option"
-                    aria-selected={selected}
-                    className={'section-option' + (isActive ? ' is-active' : '') + (selected ? ' is-selected' : '')}
-                    onMouseEnter={() => {
-                      const focusIdx = renderedFocusable.findIndex((option) => option.__renderIndex === idx);
-                      if (focusIdx !== -1 && focusIdx !== safeActiveIndex) {
-                        setActiveIndex(focusIdx);
-                      }
-                    }}
-                    onMouseDown={(e) => { e.preventDefault(); }}
-                    onClick={() => {
-                      const focusIdx = renderedFocusable.findIndex((option) => option.__renderIndex === idx);
-                      if (focusIdx >= 0) chooseIndex(focusIdx);
-                    }}
-                  >
-                    <span className="section-label">{item.label}</span>
-                  </div>
-                );
-              })}
+              <span className="label option-label">{item.label}</span>
             </div>
-          </div>
-        </div>
-      </div>
+          );
+        })}
+      </ListboxShell>
 
       {error && (
         <div className="error-container" id={errorId} role="alert" aria-live="polite">
           <p>{error}</p>
-          {!/section/i.test(error) && <p className="email-tag">Mail: eozalp@massart.edu</p>}
+          {!/section/i.test(error) && <p className={styles.emailTag}>Mail: eozalp@massart.edu</p>}
         </div>
       )}
 

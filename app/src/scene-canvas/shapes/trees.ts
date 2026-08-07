@@ -81,6 +81,9 @@ interface TreesTuning {
     brightnessRange: NumberRange;
     satOscAmp: NumberRange;
     satOscSpeed: NumberRange;
+    canopyHeightRange: NumberRange;
+    canopyWidthRange: NumberRange;
+    canopyGrowthGamma: number;
   };
   clusterScaleClamp: NumberRange;
 }
@@ -135,10 +138,18 @@ const TREES: TreesTuning = {
   },
 
   foliage: {
-    colorBlend: [0.26, 0.40],
+    // Blend strength toward gradientRGB (red at u=0, green at u=1). Raised the
+    // low end so bad scores read as visibly more red, not just less green.
+    colorBlend: [0.44, 0.40],
     brightnessRange: [0.54, 0.66],
     satOscAmp: [0.08, 0.16],
     satOscSpeed: [0.18, 0.35],
+    // Canopy height/width multiplier driven by u: shrinks toward 0 (bad
+    // scores read as scrawnier), modest growth toward 1. Gamma < 1 front-loads
+    // the curve so both ends are pronounced without needing large end values.
+    canopyHeightRange: [0.85, 1.0],
+    canopyWidthRange: [0.85, 1.0],
+    canopyGrowthGamma: 0.5,
   },
 
   clusterScaleClamp: [0.92, 1.08],
@@ -330,6 +341,9 @@ export function drawTrees(
   const ct = finiteNumber(style.contrast, 1);
   const u  = clamp01(style.liveAvg ?? 0.5);
   const liveBlend = clamp01(typeof style.blend === 'number' ? style.blend : 1);
+  const uCanopyGrowth = Math.pow(u, TREES.foliage.canopyGrowthGamma);
+  const canopyHeightScale = resolveRangeValue(TREES.foliage.canopyHeightRange, uCanopyGrowth);
+  const canopyWidthScale = resolveRangeValue(TREES.foliage.canopyWidthRange, uCanopyGrowth);
   const renderPass = pass.renderPass ?? "color";
   const maskColor = pass.maskColor;
   const requestedMaskAlpha =
@@ -497,8 +511,8 @@ export function drawTrees(
 
     if (typePick < 0.5) {
       /* POPLAR */
-      const fw = (TREES.poplar.baseWk[0] + (TREES.poplar.baseWk[1] - TREES.poplar.baseWk[0]) * rx) * w * 0.95 * sClamp;
-      const fh = (TREES.poplar.baseHk[0] + (TREES.poplar.baseHk[1] - TREES.poplar.baseHk[0]) * rx) * h * scaleBias * sClamp;
+      const fw = (TREES.poplar.baseWk[0] + (TREES.poplar.baseWk[1] - TREES.poplar.baseWk[0]) * rx) * w * 0.95 * sClamp * canopyWidthScale;
+      const fh = (TREES.poplar.baseHk[0] + (TREES.poplar.baseHk[1] - TREES.poplar.baseHk[0]) * rx) * h * scaleBias * sClamp * canopyHeightScale;
       const tw = Math.max(1, Math.round(w * (TREES.poplar.trunkWk[0] + (TREES.poplar.trunkWk[1] - TREES.poplar.trunkWk[0]) * rx) * sClamp * trunkWidthScale));
       const th = Math.max(2, Math.round(h * (TREES.poplar.trunkHk[0] + (TREES.poplar.trunkHk[1] - TREES.poplar.trunkHk[0]) * rx) * sClamp));
       const treeLight = sampleDirectionalLightRect(
@@ -558,10 +572,10 @@ export function drawTrees(
 
       const baseHalfW = (TREES.conifer.baseHalfWk[0] +
         (TREES.conifer.baseHalfWk[1] - TREES.conifer.baseHalfWk[0]) * rx) *
-        (w * 0.5) * TREES.conifer.overlapWidthBoost * sClamp;
+        (w * 0.5) * TREES.conifer.overlapWidthBoost * sClamp * canopyWidthScale;
 
       const levelH = (TREES.conifer.levelHk[0] +
-        (TREES.conifer.levelHk[1] - TREES.conifer.levelHk[0]) * rFromKey(k, 'levelH')) * cell * 1.0 * scaleBias * sClamp;
+        (TREES.conifer.levelHk[1] - TREES.conifer.levelHk[0]) * rFromKey(k, 'levelH')) * cell * 1.0 * scaleBias * sClamp * canopyHeightScale;
 
       const mRoot = applyShapeMods({
         p, x: baseX, y: baseY + heightBoost, r: levelH * levels, opts: { timeMs: lifecycle.timeMs },

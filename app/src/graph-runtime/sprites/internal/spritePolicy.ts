@@ -36,8 +36,16 @@ const REMAP: number[] = [0, 0, 1, 1, 2, 3, 4, 6, 6, 6];
 function adjustedBucketId(id: number) {
   return REMAP[Math.max(0, Math.min(9, id))] ?? 0;
 }
+// REMAP only ever produces 6 distinct ids (0,1,2,3,4,6 — 5 is skipped, 7/8/9
+// collapse into 6), so treating them as if spread across the full 0-9 span
+// (dividing by SPRITE_TINT_BUCKETS) caps the top bucket's avg at 0.65 no
+// matter how good the real score is. Rank them among the ids REMAP can
+// actually produce instead, so the top bucket still reaches close to 1.
+const DISTINCT_ADJUSTED_IDS = Array.from(new Set(REMAP)).sort((a, b) => a - b);
 function bucketMidpoint(id: number) {
-  return (id + 0.5) / SPRITE_TINT_BUCKETS;
+  const rank = DISTINCT_ADJUSTED_IDS.indexOf(id);
+  const rankSafe = rank === -1 ? 0 : rank;
+  return (rankSafe + 0.5) / DISTINCT_ADJUSTED_IDS.length;
 }
 
 export function quantizeAvgWithDownshift(avg: number) {

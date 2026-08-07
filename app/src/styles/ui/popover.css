@@ -1,0 +1,88 @@
+/* Generic anchored floating panel: used to build menus, pickers, etc.
+   Always mounted (not conditionally rendered) so open/close can animate via
+   opacity + transform - a slide toward/away from whichever edge the panel
+   is anchored to, not a layout-affecting property, so it doesn't depend on
+   clipping overflow to look right (an earlier grid-row-collapse version of
+   this did, which is what caused an auto-width popover to collapse to a
+   sliver - see git history on this file). */
+
+.ui-popover-anchor {
+  position: relative;
+  display: inline-block;
+}
+
+.ui-popover-shell {
+  --ui-popover-slide-offset: 8px;
+  position: absolute;
+  z-index: 215;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 160ms ease, transform 180ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 180ms;
+}
+
+.ui-popover-shell.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.ui-popover {
+  background: var(--ui-bg-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 42px var(--ui-drop-shadow);
+  /* Consumers like .logs-popover/.widgets-popover are the same box size and
+     have their own opaque background (needed for their mobile path, where
+     they render without this wrapper at all) but no border-radius of their
+     own - without clipping here, that square, opaque child paints right
+     over this rounded corner instead of being cut to match it. */
+  overflow: hidden;
+}
+
+/* Each placement pairs its anchor position with a default slide direction -
+   top* placements rise from the trigger, bottom* placements drop from
+   above, left/right analogous on the X axis. Centered placements (no
+   -start/-end suffix) also carry their own centering transform; the closed
+   and .is-open rules list the same transform functions in the same order
+   so the browser interpolates between them correctly. */
+.ui-popover-shell--bottom { top: 100%; left: 50%; margin-top: var(--space-sm); transform: translateX(-50%) translateY(calc(-1 * var(--ui-popover-slide-offset))); }
+.ui-popover-shell--bottom.is-open { transform: translateX(-50%) translateY(0); }
+.ui-popover-shell--bottom-start { top: 100%; left: 0; margin-top: var(--space-sm); transform: translateY(calc(-1 * var(--ui-popover-slide-offset))); }
+.ui-popover-shell--bottom-start.is-open { transform: translateY(0); }
+.ui-popover-shell--bottom-end { top: 100%; right: 0; margin-top: var(--space-sm); transform: translateY(calc(-1 * var(--ui-popover-slide-offset))); }
+.ui-popover-shell--bottom-end.is-open { transform: translateY(0); }
+
+.ui-popover-shell--top { bottom: 100%; left: 50%; margin-bottom: var(--space-sm); transform: translateX(-50%) translateY(var(--ui-popover-slide-offset)); }
+.ui-popover-shell--top.is-open { transform: translateX(-50%) translateY(0); }
+.ui-popover-shell--top-start { bottom: 100%; left: 0; margin-bottom: var(--space-sm); transform: translateY(var(--ui-popover-slide-offset)); }
+.ui-popover-shell--top-start.is-open { transform: translateY(0); }
+.ui-popover-shell--top-end { bottom: 100%; right: 0; margin-bottom: var(--space-sm); transform: translateY(var(--ui-popover-slide-offset)); }
+.ui-popover-shell--top-end.is-open { transform: translateY(0); }
+
+.ui-popover-shell--left { right: 100%; top: 50%; margin-right: var(--space-sm); transform: translateY(-50%) translateX(var(--ui-popover-slide-offset)); }
+.ui-popover-shell--left.is-open { transform: translateY(-50%) translateX(0); }
+.ui-popover-shell--right { left: 100%; top: 50%; margin-left: var(--space-sm); transform: translateY(-50%) translateX(calc(-1 * var(--ui-popover-slide-offset))); }
+.ui-popover-shell--right.is-open { transform: translateY(-50%) translateX(0); }
+
+/* Explicit slide-direction override (Popover's `slideFrom` prop). Combined
+   selector so it reliably outguns the single-class placement default above
+   regardless of stylesheet order. Only handles the plain axis swap, not
+   also preserving a centered placement's own translateX/Y(-50%) - no
+   current consumer combines slideFrom with a centered (non -start/-end)
+   placement; add that combination here if one ever needs to. */
+.ui-popover-shell.ui-popover-shell--slide-top { transform: translateY(var(--ui-popover-slide-offset)); }
+.ui-popover-shell.ui-popover-shell--slide-top.is-open { transform: translateY(0); }
+.ui-popover-shell.ui-popover-shell--slide-bottom { transform: translateY(calc(-1 * var(--ui-popover-slide-offset))); }
+.ui-popover-shell.ui-popover-shell--slide-bottom.is-open { transform: translateY(0); }
+.ui-popover-shell.ui-popover-shell--slide-left { transform: translateX(var(--ui-popover-slide-offset)); }
+.ui-popover-shell.ui-popover-shell--slide-left.is-open { transform: translateX(0); }
+.ui-popover-shell.ui-popover-shell--slide-right { transform: translateX(calc(-1 * var(--ui-popover-slide-offset))); }
+.ui-popover-shell.ui-popover-shell--slide-right.is-open { transform: translateX(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-popover-shell {
+    transition: none;
+  }
+}

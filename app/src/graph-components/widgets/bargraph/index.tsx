@@ -1,18 +1,19 @@
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { usePreferences } from "../../../../app/state/preferences-context";
-import { recordOwnRender } from "../../../../render-test/renderProfilerStats";
-import { useUiStore } from "../../../../app/state/ui-store";
-import { useIdentity } from "../../../../app/state/identity-context";
+import { usePreferences } from "../../../app/state/preferences-context";
+import { recordOwnRender } from "../../../render-test/renderProfilerStats";
+import { useUiStore } from "../../../app/state/ui-store";
+import { useIdentity } from "../../../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";
-import { useSurveyDataStore } from "../../../../app/state/survey-data-store";
-import { useRelativeScores } from "../../../../lib/hooks/useRelativeScore";
-import { avgWeightOf } from "../../../../lib/utils/score";
-import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData, titleFromId } from "../../../gp-data";
+import { useSurveyDataStore } from "../../../app/state/survey-data-store";
+import { useRelativeScores } from "../../../lib/hooks/useRelativeScore";
+import { avgWeightOf } from "../../../lib/utils/score";
+import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData, titleFromId } from "../../graph-picker/gp-data";
 import WidgetSectionNav from "../widget-section-nav";
+import HintBanner from "../../../app/ui/HintBanner";
 
 import EmptyStateArt from "./EmptyArt";
 
@@ -77,6 +78,19 @@ function markerFractionInBucket(rank: number, categories: Categories) {
   };
 }
 
+// Red is the bottom of the score range, green the top, so cumulative counts
+// translate directly into each bucket's percentile band.
+function percentileBoundsForColor(color: BarColor, categories: Categories, total: number): [number, number] {
+  if (total <= 0) return [0, 0];
+  const redEnd = (categories.red / total) * 100;
+  const yellowEnd = redEnd + (categories.yellow / total) * 100;
+  switch (color) {
+    case 'red': return [0, redEnd];
+    case 'yellow': return [redEnd, yellowEnd];
+    case 'green': return [yellowEnd, 100];
+  }
+}
+
 function BarGraph({
   navOutsidePanel = false,
   panelClassName,
@@ -101,6 +115,18 @@ function BarGraph({
   const [animationState, setAnimationState] = useState(false);
   const [animateBars, setAnimateBars] = useState(false);
   const [internalPaused, setInternalPaused] = useState(true);
+  const [hoveredBarColor, setHoveredBarColor] = useState<BarColor | null>(null);
+  const barsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: PointerEvent) => {
+      if (barsRef.current && !barsRef.current.contains(e.target as Node)) {
+        setHoveredBarColor(null);
+      }
+    };
+    document.addEventListener("pointerdown", handler);
+    return () => { document.removeEventListener("pointerdown", handler); };
+  }, []);
   const [localSectionState, setLocalSectionState] = useState({
     sourceSection: section,
     sourceSelectionVersion: sectionSelectionVersion,
@@ -347,10 +373,13 @@ function BarGraph({
 
   const graphBody = (
     <>
-      <div className="bar-graph-container">
+      <div className="bar-graph-container" ref={barsRef}>
         {orderedColors.map((color) => {
           const count = categories[color];
           const heightPercentage = count > 0 ? (count / totalCount) * 100 : 0;
+          const countLabel = count === 0 ? '-' : count === 1 ? '1 Person' : `${String(count)} People`;
+          const [pctFrom, pctTo] = percentileBoundsForColor(color, categories, totalCount);
+          const percentileLabel = `${ordinalSuffix(Math.round(pctFrom))}–${ordinalSuffix(Math.round(pctTo))} percentile`;
 
           const markerHeightPercentage =
             rankMarker?.color === color
@@ -365,12 +394,47 @@ function BarGraph({
             <div
               className="bar-graph-bar"
               key={color}
+              role="button"
+              tabIndex={0}
+              aria-label={countLabel}
+              aria-pressed={hoveredBarColor === color}
+              onPointerEnter={(e) => {
+                if (e.pointerType !== "touch") setHoveredBarColor(color);
+              }}
+              onPointerLeave={(e) => {
+                if (e.pointerType !== "touch") setHoveredBarColor(null);
+              }}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                if (e.pointerType === "touch") setHoveredBarColor(color);
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setHoveredBarColor(color);
+              }}
+              onKeyDown={(e) => {
+                if (e.key !== "Enter" && e.key !== " ") return;
+                e.preventDefault();
+                setHoveredBarColor(color);
+              }}
             >
-              <span className="bar-graph-label">
-                <p>{count === 0 ? '-' : count === 1 ? '1 Person' : `${String(count)} People`}</p>
-              </span>
+              <div className="bar-graph-label-wrap">
+                <span className="bar-graph-label">
+                  <p>{countLabel}</p>
+                </span>
+                <div className="bar-graph-tip">
+                  <HintBanner
+                    visible={hoveredBarColor === color}
+                    className="bar-graph-hint"
+                    copyClassName="bar-graph-hint-copy"
+                  >
+                    {percentileLabel}
+                  </HintBanner>
+                </div>
+              </div>
 
               <div className="bar-graph-divider">
+
                 {showMarkerInThisBar && animationState && animateBars && (
                   <div
                     className="percentage-section"

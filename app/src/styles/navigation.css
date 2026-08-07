@@ -54,8 +54,12 @@
 .city-canvas-host { position: absolute; inset: 0; width: 100%; height: 100%; }
 
 .bottom { position: fixed; pointer-events: none; display: flex; flex-direction: row; align-items: center; }
-.bottom-center { left: 50%; transform: translateX(-50%); z-index: 201; }
-.bottom-left { z-index: 204; }
+/* Stacking order left > center > right - .bottom-right keeps its original
+   205 (and .is-behind-city-canvas its 202, still one below .city-overlay's
+   203) so neither's relationship to the city overlay changes; left/center
+   are the ones bumped above it. */
+.bottom-center { left: 50%; transform: translateX(-50%); z-index: 206; }
+.bottom-left { z-index: 207; }
 .bottom-right { z-index: 205; justify-content: flex-end; }
 .bottom-right.is-behind-city-canvas { z-index: 202; pointer-events: none; }
 .bottom-mobile-right { left: 50%; transform: translateX(-50%); z-index: 201; }
@@ -127,7 +131,7 @@
   .bottom-right { right: 1.2rem; }
   .bottom { bottom: 1rem; }
   .svg-lg { height: var(--nav-control-h); }
-  .mode-toggle-switch { height: 40px; }
+  .mode-toggle-switch { height: var(--nav-control-h); }
   .city-button:hover { transform: translateY(3%); }
 }
 
@@ -163,9 +167,10 @@
 /* 768 and above */
 @media (min-width: 768px) {
   
-  .navigation { padding: 1rem 2.4rem; }
+  .navigation { padding: 1rem 1.6rem; }
 
-  .mode-toggle-switch { height: 48px; }
+  :root { --nav-control-h: 48px; }
+  .mode-toggle-switch { height: var(--nav-control-h); }
 
   .right { height: 36px; }
 

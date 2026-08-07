@@ -1,4 +1,4 @@
-import PlayPauseIcon from "../../../assets/svg/play/PlayPauseIcon";
+import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
 
 interface WidgetSectionNavProps {
   title: string;

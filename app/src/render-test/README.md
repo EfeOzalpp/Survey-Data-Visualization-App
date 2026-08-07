@@ -9,11 +9,25 @@ branch against `with-profiler` (a pre-release before the Zustand + `React.memo` 
 |---|---|---|
 | Zustand alone | subtree commits | **−21%** |
 | `React.memo` alone | own-renders (function actually executes) | **−17%** |
-| Combined | main-thread render time | **−12%** |
 
-- **Subtree commits** count any render inside a component's tree, including descendants — this is what Zustand moves (fewer components get told to re-render at all). Nearly blind to memoization, since a memoized child's sibling re-rendering still trips the same counter.
-- **Own-renders** count only when a component's own function body executes — this is what `React.memo` moves. Zustand's effect on this number is smaller and secondary.
-- **Combined (−12%)** is the one metric that legitimately adds both effects into a single number, measured in one consistent unit (ms, via the outermost `AppInner` Profiler boundary) instead of mixing two different kinds of counts.
+- **Subtree commits** count any render inside a component's tree, including descendants. Zustand reduces number of components that are re-rendered. Memoization on the other hand isn't tracked by subtree commits, since a memoized child's sibling re-rendering still trips the same counter.
+- **Own-renders** count only when a component's own function body executes. This is what `React.memo` moves. Zustand's effect on this number is smaller and secondary.
+- **Combined** is the one metric that legitimately adds both effects into a single number, measured in one consistent unit (ms, summed across every `<Profiler>` subtree across all 6 benchmark sections) instead of mixing two different kinds of counts.
+
+### Re-renders
+
+Only the components explicitly wrapped in `<Profiler>`.** were measured. This is because these components shared state. 
+
+`AppInner`, `Navigation`, `NavBottom`, `NavRight`, `Logo`, `ModeToggle`, `Survey`,
+`CanvasInfo`, `CanvasEntry`, `QuestionnaireEntry`, `CityOverlay`, `ButtonQuestionnaireFlow`,
+`BarGraph:nav-bottom`, `BarGraph:compact-tools`, `DotGraph`, `DotGraphCanvasHost`.
+
+Anything rendering outside one of these boundaries (individual icons, deeper children inside
+`BarGraph`/`DotGraph` that aren't separately wrapped, etc.) isn't counted at all, in either
+version. The figures below are the sum of render time *inside these 16 boundaries only*, across the scripted walkthrough.
+
+Measured using `refs/tags/with-profiler` checked out read-only in an isolated `git worktree`, running the actual `rerenderBenchmark.ts` script against both, `VITE_USE_MOCK_DATA=true`, headless, same scripted
+6-section walkthrough both times.
 
 `with-profiler` vs current branch, subtree commits, 3-run average:
 
@@ -39,13 +53,4 @@ npx tsx src/render-test/rerenderBenchmark.ts --metric=subtree
 npx tsx src/render-test/rerenderBenchmark.ts --metric=own
 ```
 
-`VITE_USE_MOCK_DATA=true` is required — the benchmark's scripted walkthrough submits a
-real survey response, and mock mode keeps that from touching any real database.
-
-## Still needs tending
-
-- "Pre-survey graph view toggle" is +5% instead of improving. Traced to an asymmetry
-  where closing the graph view causes one extra `Survey` render that opening doesn't.
-  A redundant effect was found and removed in `onboarding/index.tsx` (confirmed dead
-  code via testing, not the actual cause), but the real source of the asymmetry is
-  still unidentified.
+`VITE_USE_MOCK_DATA=true` is required. The benchmark's scripted walkthrough submits a real survey response, and mock mode keeps that from touching any real database.

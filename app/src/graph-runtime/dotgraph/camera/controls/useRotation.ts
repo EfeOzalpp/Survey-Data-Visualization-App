@@ -17,7 +17,12 @@ const _projScreen = new Matrix4();
 const ROT_RELEASE_TAU = 0.38;
 const ROT_IDLE_RELEASE_TAU = 0.18;
 const ROT_STOP_EPSILON = 0.001;
-const TOUCH_SENSITIVITY_RELEASE_CURVE = 0.55;
+// t^k (k<1) is concave-down: it recovers to near-full speed almost immediately
+// on zooming out and only drops near max zoom-in, i.e. the slowdown kicks in
+// late. 1-(1-t)^k is the mirror (concave-up) shape: it drops fast as soon as
+// you start zooming in and flattens out near max zoom-in, where it's already
+// at the floor - so the slowdown is felt earlier for the same floor value.
+const TOUCH_ZOOM_SLOWDOWN_EARLY_ONSET = 0.5;
 
 const mapResponsiveDelta = (delta: number, deadzone: number) => {
   const magnitude = Math.abs(delta);
@@ -64,11 +69,11 @@ const getDragTuning = ({
   isTabletLike: boolean;
   closestDist: number;
 }) => {
-  const zoomRatio = Math.pow(getZoomRatio(radius, minRadius, maxRadius), 0.85);
   // Desktop sensitivity scales with how close the nearest dot is to the camera.
   // Near dot -> low sensitivity (precision); far dots -> full speed.
   const distRatio = clamp01(closestDist / maxRadius);
-  const zoomReleaseRatio = Math.pow(zoomRatio, TOUCH_SENSITIVITY_RELEASE_CURVE);
+  const zoomOutRatio = getZoomRatio(radius, minRadius, maxRadius);
+  const zoomReleaseRatio = 1 - Math.pow(1 - zoomOutRatio, TOUCH_ZOOM_SLOWDOWN_EARLY_ONSET);
   const sensitivityRatio = isTouch ? Math.max(distRatio, zoomReleaseRatio) : distRatio;
 
   return {
