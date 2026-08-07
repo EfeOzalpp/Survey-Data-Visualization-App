@@ -31,6 +31,7 @@ export function runPrimary() {
   const workers = new Map<number, Worker>();
   const pendingStats = new Map<string, PendingStatsAggregation>();
   let scaledUp = false;
+  let shuttingDown = false;
 
   function finishStatsAggregation(requestId: string) {
     const entry = pendingStats.get(requestId);
@@ -100,8 +101,38 @@ export function runPrimary() {
     });
     worker.on("exit", () => {
       workers.delete(worker.id);
+      if (shuttingDown && workers.size === 0) process.exit(0);
     });
   }
+
+  // Docker only sends SIGTERM to this process (PID 1) - it does not reach
+  // the forked workers on its own. Without forwarding it, this process would
+  // die immediately (no handler = default terminate), and the container
+  // runtime tears down every process still in it the moment PID 1 exits,
+  // killing workers mid-response (e.g. a static asset half-downloaded) and
+  // surfacing as ERR_CONTENT_LENGTH_MISMATCH in the browser. Forwarding it
+  // lets each worker close its own server and finish in-flight requests
+  // first (see the matching handler in server/index.ts).
+  function shutdown() {
+    if (shuttingDown) return;
+    shuttingDown = true;
+
+    if (workers.size === 0) {
+      process.exit(0);
+      return;
+    }
+
+    for (const worker of workers.values()) {
+      worker.process.kill("SIGTERM");
+    }
+
+    // Backstop in case a worker never reports exit - exit a bit before
+    // Docker's own stop_grace_period would SIGKILL this process anyway.
+    setTimeout(() => { process.exit(0); }, 8000).unref();
+  }
+
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 
   forkWorker();
 }

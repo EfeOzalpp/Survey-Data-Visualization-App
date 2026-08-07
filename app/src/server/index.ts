@@ -79,4 +79,22 @@ if (CLUSTER_MODE && cluster.isPrimary) {
 
     throw error;
   });
+
+  // Without this, the default behavior on SIGTERM (no handler = terminate
+  // immediately) cuts off whatever's mid-response when a deploy replaces
+  // this process - e.g. a static asset half-downloaded, which shows up in
+  // the browser as ERR_CONTENT_LENGTH_MISMATCH. server.close() stops taking
+  // new connections but lets in-flight ones finish before exiting.
+  let shuttingDown = false;
+  function shutdown() {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    server.close(() => { process.exit(0); });
+    // Long-lived connections (the SSE stream) won't close on their own -
+    // don't hold the process open past Docker's own stop_grace_period
+    // waiting for them.
+    setTimeout(() => { process.exit(0); }, 6000).unref();
+  }
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 }
