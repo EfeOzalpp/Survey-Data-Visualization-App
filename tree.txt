@@ -416,10 +416,12 @@ butterfly-effect/
 |   |   |       \-- theme-toggle.tsx
 |   |   |-- onboarding/
 |   |   |   |-- canvas-info/
+|   |   |   |   |-- canvas-info.module.css
 |   |   |   |   \-- index.tsx
 |   |   |   |-- index.tsx
 |   |   |   |-- onboarding-info/
 |   |   |   |   |-- index.tsx
+|   |   |   |   |-- onboarding-info.module.css
 |   |   |   |   \-- slides.ts
 |   |   |   |-- questionnaire/
 |   |   |   |   |-- button-input/
@@ -760,9 +762,8 @@ butterfly-effect/
 |   |   |   |-- fonts.css
 |   |   |   |-- gamification.css
 |   |   |   |-- global-styles.css
-|   |   |   |-- info.css
 |   |   |   |-- navigation.css
-|   |   |   |-- onboarding-info.css
+|   |   |   |-- onboarding.css
 |   |   |   |-- questionnaire.css
 |   |   |   |-- tokens/
 |   |   |   |   |-- color.css
