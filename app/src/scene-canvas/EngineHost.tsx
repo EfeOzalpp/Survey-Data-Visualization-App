@@ -14,6 +14,34 @@ import { getHostDef, HOST_DEFS, type CanvasBounds, type HostId } from "./multi-c
 import { useCanvasPointerHit } from "./hooks/useCanvasPointerHit";
 import type { EngineFieldItem } from "./runtime/engine/field";
 
+const VIEWPORT_ANIMATION_ROOT_MARGIN = "100px";
+
+function useHostInViewport(mount: string, pauseWhenOffscreen: boolean) {
+  // Begin active so every host can paint its initial frame. IntersectionObserver
+  // then moves offscreen hosts into mounted-static mode after the first commit.
+  const [inViewport, setInViewport] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!pauseWhenOffscreen) return;
+    if (typeof IntersectionObserver === "undefined") return;
+
+    const mountElement = document.querySelector(mount);
+    if (!(mountElement instanceof HTMLElement)) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInViewport(entry.isIntersecting);
+      },
+      { rootMargin: VIEWPORT_ANIMATION_ROOT_MARGIN, threshold: 0 }
+    );
+
+    observer.observe(mountElement);
+    return () => { observer.disconnect(); };
+  }, [mount, pauseWhenOffscreen]);
+
+  return !pauseWhenOffscreen || inViewport;
+}
+
 export function EngineHost({
   id,
   open = true,
@@ -48,6 +76,11 @@ export function EngineHost({
     return hostDef.canvasDimensions;
   }, [hostDef]);
 
+  const animationActive = useHostInViewport(
+    hostDef.mount,
+    hostDef.pauseWhenOffscreen ?? false
+  );
+
   React.useEffect(() => {
     if (!open) return;
     for (const mount of stopOnOpenMounts) {
@@ -67,6 +100,7 @@ export function EngineHost({
     zIndex: hostDef.zIndex,
     bounds: resolvedBounds,
     fpsCap: hostDef.fpsCap,
+    animationActive,
   });
 
   const viewportKey = useViewportKey(120);

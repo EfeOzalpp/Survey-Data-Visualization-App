@@ -18,6 +18,7 @@ interface EngineOpts {
   zIndex?: number;
   bounds?: CanvasBounds;
   fpsCap?: number;
+  animationActive?: boolean;
 }
 
 function safeCall(fn: (() => void) | null | undefined, label?: string) {
@@ -60,6 +61,7 @@ export function useCanvasEngine(opts: EngineOpts = {}) {
     zIndex = 2,
     bounds,
     fpsCap,
+    animationActive = true,
   } = opts;
 
   const controlsRef = useRef<CanvasEngineControls | null>(null);
@@ -108,6 +110,12 @@ export function useCanvasEngine(opts: EngineOpts = {}) {
       controlsRef.current?.setVisible(visible);
     });
   }, [visible]);
+
+  useEffect(() => {
+    safeCall(() => {
+      controlsRef.current?.setAnimationActive(animationActive);
+    });
+  }, [animationActive]);
 
   return {
     ready: readyRef,

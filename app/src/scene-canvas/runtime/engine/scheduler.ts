@@ -10,11 +10,20 @@ interface FrameEntry {
   priority: number;
   fpsCap?: number;
   lastTickMs: number;
+  active: boolean;
+  frameRequested: boolean;
 }
 
 export interface RegisterFrameOpts {
   priority?: number; // higher draws earlier (you can invert if you want)
   fpsCap?: number;   // optional, e.g. 30
+  active?: boolean;
+}
+
+export interface EngineFrameRegistration {
+  setActive: (active: boolean) => void;
+  requestFrame: () => void;
+  unregister: () => void;
 }
 
 const entries = new Map<string, FrameEntry>();
@@ -31,11 +40,19 @@ function sortEntries() {
 
 function ensureRunning() {
   if (rafId != null) return;
+  if (typeof document !== "undefined" && document.hidden) return;
   rafId = requestAnimationFrame(frame);
 }
 
+function hasRunnableEntries() {
+  for (const entry of entries.values()) {
+    if (entry.active || entry.frameRequested) return true;
+  }
+  return false;
+}
+
 function stopIfIdle() {
-  if (entries.size > 0) return;
+  if (hasRunnableEntries()) return;
   if (rafId != null) {
     cancelAnimationFrame(rafId);
     rafId = null;
@@ -45,26 +62,28 @@ function stopIfIdle() {
 // Pause all ticks when the tab is hidden - resume automatically on visibility.
 if (typeof document !== "undefined") {
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && rafId == null && entries.size > 0) {
+    if (!document.hidden && rafId == null && hasRunnableEntries()) {
       ensureRunning();
     }
   });
 }
 
 function frame(now: number) {
-  // Skip rendering while tab is hidden but keep the loop alive so it
-  // resumes immediately when the user returns.
+  rafId = null;
+
+  // The visibility listener restarts runnable entries when the tab returns.
   if (typeof document !== "undefined" && document.hidden) {
-    rafId = requestAnimationFrame(frame);
     return;
   }
-
-  rafId = requestAnimationFrame(frame);
 
   const list = sortEntries();
 
   for (const e of list) {
-    if (e.fpsCap && e.fpsCap > 0) {
+    const requestedFrame = e.frameRequested;
+    if (!e.active && !requestedFrame) continue;
+    e.frameRequested = false;
+
+    if (!requestedFrame && e.fpsCap && e.fpsCap > 0) {
       const minDt = 1000 / e.fpsCap;
       if (now - e.lastTickMs < minDt) continue;
     }
@@ -78,28 +97,52 @@ function frame(now: number) {
     }
   }
 
-  // If everything was unregistered during ticks, shut down.
-  stopIfIdle();
+  if (hasRunnableEntries()) ensureRunning();
 }
 
 export function registerEngineFrame(
   id: string,
   tick: EngineTick,
   opts: RegisterFrameOpts = {}
-) {
+): EngineFrameRegistration {
   const priority = typeof opts.priority === "number" && Number.isFinite(opts.priority) ? opts.priority : 0;
   const fpsCap = typeof opts.fpsCap === "number" && Number.isFinite(opts.fpsCap) ? opts.fpsCap : undefined;
 
-  entries.set(id, {
+  const entry: FrameEntry = {
     id,
     tick,
     priority,
     fpsCap,
     lastTickMs: 0,
-  });
+    active: opts.active ?? true,
+    frameRequested: false,
+  };
+
+  entries.set(id, entry);
 
   sortedCache = null;
-  ensureRunning();
+  if (entry.active) ensureRunning();
+
+  return {
+    setActive(active) {
+      if (entries.get(id) !== entry || entry.active === active) return;
+      entry.active = active;
+      entry.lastTickMs = 0;
+      if (active) ensureRunning();
+      else stopIfIdle();
+    },
+    requestFrame() {
+      if (entries.get(id) !== entry) return;
+      entry.frameRequested = true;
+      ensureRunning();
+    },
+    unregister() {
+      if (entries.get(id) !== entry) return;
+      entries.delete(id);
+      sortedCache = null;
+      stopIfIdle();
+    },
+  };
 }
 
 export function unregisterEngineFrame(id: string) {
