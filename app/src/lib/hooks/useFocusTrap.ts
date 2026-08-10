@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from "react";
+import { VIEWPORT_BREAKPOINTS } from "../responsive/breakpoints";
 
 const FOCUSABLE_SELECTOR =
   'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -8,6 +9,7 @@ interface FocusTrapOptions {
   containerRef: RefObject<HTMLElement | null>;
   returnFocusRef?: RefObject<HTMLElement | null>;
   focusOnOpen?: boolean;
+  focusContainerOnTouch?: boolean;
 }
 
 export function useFocusTrap({
@@ -15,6 +17,7 @@ export function useFocusTrap({
   containerRef,
   returnFocusRef,
   focusOnOpen = true,
+  focusContainerOnTouch = false,
 }: FocusTrapOptions): void {
   useEffect(() => {
     if (!enabled) return;
@@ -27,7 +30,18 @@ export function useFocusTrap({
       (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     const getFocusable = () => Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
 
-    if (focusOnOpen) getFocusable()[0]?.focus();
+    if (focusOnOpen) {
+      const compactTouchViewport = window.matchMedia(
+        `(max-width: ${String(VIEWPORT_BREAKPOINTS.tabletMax)}px) and (any-pointer: coarse)`
+      ).matches;
+      const openedFromKeyboard = returnTo?.matches(":focus-visible") ?? false;
+
+      if (focusContainerOnTouch && compactTouchViewport && !openedFromKeyboard) {
+        container.focus({ preventScroll: true });
+      } else {
+        getFocusable()[0]?.focus();
+      }
+    }
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
@@ -52,5 +66,5 @@ export function useFocusTrap({
       document.removeEventListener("keydown", onKeyDown);
       returnTo?.focus();
     };
-  }, [containerRef, enabled, focusOnOpen, returnFocusRef]);
+  }, [containerRef, enabled, focusContainerOnTouch, focusOnOpen, returnFocusRef]);
 }

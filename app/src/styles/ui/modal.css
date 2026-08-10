@@ -66,6 +66,8 @@
   box-shadow: 0 -18px 42px var(--ui-drop-shadow);
 }
 
+.ui-modal-card:focus { outline: none; }
+
 @media (max-width: 767px) {
   .ui-modal-root,
   .ui-modal-shell {
