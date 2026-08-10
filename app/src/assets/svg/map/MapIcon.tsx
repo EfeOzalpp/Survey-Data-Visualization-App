@@ -7,7 +7,7 @@ interface MapIconProps {
   className?: string;
 }
 
-export default function MapIcon({ className = "ui-icon" }: MapIconProps) {
+export default function MapIcon({ className = "ui-icon svg-sm" }: MapIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

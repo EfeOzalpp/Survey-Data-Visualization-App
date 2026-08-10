@@ -44,7 +44,7 @@ export default function HintBanner({
           aria-label={closeLabel}
           onClick={() => { onDismiss(); }}
         >
-          <CloseIcon className="ui-close" />
+          <CloseIcon className="ui-close svg-sm" />
         </button>
       ) : null}
     </div>

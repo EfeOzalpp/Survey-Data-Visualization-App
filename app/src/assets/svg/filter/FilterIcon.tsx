@@ -7,7 +7,7 @@ interface FilterIconProps {
   className?: string;
 }
 
-export default function FilterIcon({ className = "ui-icon" }: FilterIconProps) {
+export default function FilterIcon({ className = "ui-icon svg-sm" }: FilterIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

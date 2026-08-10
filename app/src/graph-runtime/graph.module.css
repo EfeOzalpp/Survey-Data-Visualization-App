@@ -1,0 +1,10 @@
+.wrapper {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  min-height: 100svh;
+  background: var(--graph-bg);
+  opacity: 1;
+  pointer-events: all;
+}

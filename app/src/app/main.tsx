@@ -25,9 +25,14 @@ import {
   SurveyDataStatusBanner,
 } from "./app-effects";
 import ErrorBoundary from "./error-boundary";
+import graphStyles from "../graph-runtime/graph.module.css";
 
 import "../styles/fonts.css";
+import "../styles/tokens/typography.css";
+import "../styles/tokens/color.css";
+import "../styles/tokens/spacing-sizing.css";
 import "../styles/global-styles.css";
+import "../styles/ui/button.css";
 import "../styles/ui-system.css";
 
 const QuestionnaireEntry = React.lazy(() => import("../canvas-instances/QuestionnaireEntry"));
@@ -89,14 +94,17 @@ const AppInner: React.FC = () => {
                 setInfoOpen(true);
               }}
             >
-              {/* span, not p - <button> only accepts phrasing content, a <p>
-                  here would be invalid nesting (same reason the icon used to
-                  be its own nested button before this was one clickable
-                  element - see git history on this block). */}
-              <span className="more-info-trigger__label">Watch how it works</span>
+              {/* Only the icon is styled as a button (the arrow chip below,
+                  secondary-colored - see .more-info-trigger__icon-box in
+                  info.css) - the label/duration text stays plain, not
+                  part of any button-pill chrome. Still one <button> for
+                  the whole clickable area though - see git history for why
+                  the icon isn't its own nested button (invalid a11y nesting).
+                  span, not p - <button> only accepts phrasing content. */}
+              <span className="more-info-trigger__label">See how it works</span>
               <span className="more-info-trigger__duration">(60 sec)</span>
               <span className="more-info-trigger__icon-box" aria-hidden="true">
-                <PlayIcon className="ui-icon more-info-trigger__icon" />
+                <PlayIcon />
               </span>
             </button>
           </div>
@@ -137,7 +145,7 @@ const AppInner: React.FC = () => {
 
       {vizVisible && (
         <ClientOnly>
-          <div className="graph-wrapper visible">
+          <div className={graphStyles.wrapper}>
             <ErrorBoundary name="DataVisualization">
               <DataVisualization />
             </ErrorBoundary>

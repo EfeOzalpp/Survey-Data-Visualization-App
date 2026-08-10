@@ -9,7 +9,7 @@ interface ThemeIconProps {
   className?: string;
 }
 
-export default function ThemeIcon({ mode, className = "ui-icon" }: ThemeIconProps) {
+export default function ThemeIcon({ mode, className = "ui-icon svg-md" }: ThemeIconProps) {
   const markup = useMemo(() => {
     const svg = mode === "dark" ? darkModeSvg : lightModeSvg;
     // Only one ThemeIcon is ever mounted at a time, so `mode` alone is a

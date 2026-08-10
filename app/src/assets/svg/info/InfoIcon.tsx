@@ -7,7 +7,7 @@ interface InfoIconProps {
   className?: string;
 }
 
-export default function InfoIcon({ className = "ui-icon" }: InfoIconProps) {
+export default function InfoIcon({ className = "ui-icon svg-sm" }: InfoIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {
