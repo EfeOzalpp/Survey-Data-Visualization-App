@@ -15,7 +15,7 @@ import { recordOwnRender } from "../../render-test/renderProfilerStats";
 function ToggleCheckIcon() {
   return (
     <span className="mode-toggle-check">
-      <CheckIcon className="switch-check-icon" />
+      <CheckIcon className="switch-check-icon svg-sm" />
     </span>
   );
 }

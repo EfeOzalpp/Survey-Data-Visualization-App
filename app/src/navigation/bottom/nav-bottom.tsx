@@ -12,7 +12,7 @@ import WidgetsButton from "./widgets-button";
 import MyCityButton from "./my-city-button";
 import CityStatsButton from "./city-stats-button";
 import QuestionnaireNav from "./questionnaire-nav";
-import CompactGraphTools from "../../graph-components/widgets/compact-graph-tools";
+import CompactToolsButton from "./compact-tools-button";
 
 function NavBottom({ introActive = false }: { introActive?: boolean }) {
   recordOwnRender("NavBottom");
@@ -128,7 +128,7 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
 
   return (
     <>
-      <div className={`bottom bottom-left${introActive ? " nav-first-enter" : ""}`}>
+      <div className={`nav-bottom bottom-left${introActive ? " nav-first-enter" : ""}`}>
         <MyCityButton />
         {showSeparatedGraphTools && (
           <div ref={logsWrapRef}>
@@ -144,7 +144,7 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
       {vizVisible && (
         <div
           ref={modeToggleRef}
-          className={`bottom ${useCompactGraphNav ? "bottom-mobile-right" : "bottom-center"}`}
+          className={`nav-bottom ${useCompactGraphNav ? "bottom-mobile-right" : "bottom-center"}`}
           style={
             useCompactGraphNav
               ? undefined
@@ -156,7 +156,7 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
           </Profiler>
           {useCompactGraphNav && (
             <>
-              <CompactGraphTools />
+              <CompactToolsButton />
               <CityStatsButton />
             </>
           )}
@@ -164,14 +164,14 @@ function NavBottom({ introActive = false }: { introActive?: boolean }) {
       )}
       {questionnaireOpen && !vizVisible && questionnaireTotal > 0 && (
         <div
-          className={`bottom bottom-right${cityPanelOpen ? " is-behind-city-canvas" : ""}${introActive ? " nav-first-enter" : ""}`}
+          className={`nav-bottom bottom-right${cityPanelOpen ? " is-behind-city-canvas" : ""}${introActive ? " nav-first-enter" : ""}`}
           style={{ transform: `translateX(${String(pickerOffset)}px)`, transition: "transform 0.2s ease" }}
         >
           <QuestionnaireNav />
         </div>
       )}
       {showSeparatedGraphTools && (
-        <div className={`bottom bottom-right${introActive ? " nav-first-enter" : ""}`}>
+        <div className={`nav-bottom bottom-right${introActive ? " nav-first-enter" : ""}`}>
           <CityStatsButton />
         </div>
       )}

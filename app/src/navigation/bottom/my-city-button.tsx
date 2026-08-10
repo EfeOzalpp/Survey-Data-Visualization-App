@@ -1,5 +1,6 @@
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
+import { Button } from "../../app/ui/Button";
 
 export default function MyCityButton() {
   const { cityPanelOpen, questionnaireOpen, setCityPanelOpen } = useUiStore(
@@ -13,16 +14,14 @@ export default function MyCityButton() {
   if (!cityPanelOpen && !questionnaireOpen) return null;
 
   return (
-    <button
-      type="button"
-      className="city-button city-close-btn"
-      data-label={cityPanelOpen ? "Back" : "My city"}
+    <Button
+      variant="secondary"
+      baseClassName="city-button"
+      modifierClassName="city-close-btn"
       onClick={() => { setCityPanelOpen(!cityPanelOpen); }}
       aria-label={cityPanelOpen ? "Back to questionnaire" : "Open city view"}
     >
-      <span className="city-button__inner">
-        <span>{cityPanelOpen ? "Back" : "My city"}</span>
-      </span>
-    </button>
+      {cityPanelOpen ? "Back" : "My city"}
+    </Button>
   );
 }

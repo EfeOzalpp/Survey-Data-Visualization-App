@@ -8,76 +8,70 @@
   --nav-control-h: 40px;
 }
 
-.navigation { position: absolute; inset: 0 0 auto 0; width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: space-between; pointer-events: none; z-index: 202; }
+.navigation { position: absolute; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; pointer-events: none; z-index: 202; }
 
 
-.graph-picker { position: absolute; left: 50vw; transform: translateX(calc(-50% + var(--picker-offset, 0px))); pointer-events: all; }
+.navigation > .graph-picker { position: absolute; left: calc(50vw + var(--picker-offset, 0px)); transform: translateX(-50%); pointer-events: all; transition: left 0.2s ease; }
 
 .navigation.is-landing-centered { justify-content: center; }
 
-.left, .right, .graph-picker { display: flex; }
+.navigation > .left, .navigation > .right, .navigation > .graph-picker { display: flex; }
 
-.left { align-items: center; z-index: 15; }
-.right { align-items: center; gap: var(--space-sm); }
-.right > * { flex-shrink: 0; }
+.navigation > .left { align-items: center; width: var(--logo-wrap-w); height: var(--logo-wrap-h); z-index: 15; }
+.navigation > .right { align-items: center; gap: var(--space-sm); height: 36px; }
+.navigation > .right > * { flex-shrink: 0; }
 
 /* Left logo area */
-.logo-divider { position: relative; display: inline-flex; align-items: center; justify-content: center; width: var(--logo-wrap-w); height: var(--logo-wrap-h); padding: 0; background: transparent; border: none; cursor: pointer; pointer-events: all; }
+.logo-divider { display: inline-flex; align-items: center; justify-content: center; width: var(--logo-wrap-w); height: var(--logo-wrap-h); padding: 0; background: transparent; border: none; }
 
 .logo-divider:focus-visible { outline: 2px solid var(--ui-border-strong); outline-offset: 4px; border-radius: 12px; }
 
-.logo-text { display: inline-flex; align-items: center; justify-content: center; color: var(--ui-text); font-family: var(--font-title); font-size: clamp(1.45rem, 2vw, 1.85rem); font-weight: 700; line-height: 1; letter-spacing: -0.06em; text-transform: lowercase; }
+.logo-text { display: inline-flex; align-items: center; justify-content: center; min-width: var(--logo-w); min-height: var(--logo-h); color: var(--ui-text); font-family: var(--font-title); font-size: clamp(1.45rem, 2vw, 1.85rem); font-weight: 700; line-height: 1; letter-spacing: -0.06em; text-transform: lowercase; }
 
-.observe-results, .svg-lg { pointer-events: all; }
-.observe-results, .svg-lg { cursor: pointer; }
+.observe-results { margin-left: var(--space-sm); }
 .system-color.is-dark { opacity: 0.95; }
 
-/* Bottom mode toggle - lives inside .bottom */
-.mode-toggle-wrap { display: flex; align-items: center; pointer-events: all; user-select: none; }
+/* Bottom mode toggle - lives inside .nav-bottom */
+.mode-toggle-wrap { display: flex; align-items: center; user-select: none; }
 
-.mode-toggle-switch { display: flex; align-items: stretch; outline: none; }
+.mode-toggle-switch { display: flex; align-items: stretch; height: var(--nav-control-h); }
 
-.mode-toggle-label { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm); padding: 0 0.9rem; text-align: center; color: var(--ui-text); font-size: var(--type-h4-size); line-height: var(--type-tight-line); font-family: var(--font-title); font-optical-sizing: auto; font-variation-settings: "wdth" 112.5, "GRAD" 0; background: var(--inactive-accent-color); border-radius: var(--btn-radius); border: none; cursor: pointer; pointer-events: all; transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease; }
+.mode-toggle-label { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm); padding: 0 0.9rem; text-align: center; color: var(--ui-text); font-size: var(--type-h4-size); line-height: var(--type-tight-line); font-family: var(--font-title); font-optical-sizing: auto; font-variation-settings: "wdth" 112.5, "GRAD" 0; background: var(--inactive-accent-color); border-radius: var(--btn-radius); border: none; transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease; }
 .mode-toggle-label:first-child { border-radius: var(--btn-radius) calc(var(--btn-radius) * 0.3) calc(var(--btn-radius) * 0.3) var(--btn-radius); }
 .mode-toggle-label:last-child { border-radius: calc(var(--btn-radius) * 0.3) var(--btn-radius) var(--btn-radius) calc(var(--btn-radius) * 0.3); }
 .mode-toggle-label.active { background: var(--active-accent-color); }
 .mode-toggle-label:not(.active):hover { background: var(--inactive-accent-color-hover); }
 .mode-toggle-label.active:hover { background: var(--active-accent-color-hover); transform: scale(var(--btn-hover-scale-lg)); }
+.mode-toggle-label:focus-visible { outline: 2px solid var(--ui-border-strong); outline-offset: 2px; }
 
 .mode-toggle-check { display: flex; align-items: center; flex-shrink: 0; }
 
-/* City overlay/button */
-.city-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: transform 220ms cubic-bezier(.2,.8,.2,1); }
+/* City overlay/button - display/color/background/cursor now come from
+   .btn-secondary in styles/ui/button.css (city-button was migrated to the
+   shared Button component); this is only the hover-bounce flourish that's
+   genuinely unique to it. */
+.city-button { transition: transform 220ms cubic-bezier(.2,.8,.2,1); }
 .city-button:hover { transform: translateY(3%); }
-.city-overlay { position: fixed; inset: 0; z-index: 203; pointer-events: all; transform: translateY(-100%); transition: transform 220ms ease; }
+.city-overlay { position: fixed; inset: 0; z-index: 203; transform: translateY(-100%); transition: transform 220ms ease; }
 .city-overlay.open { transform: translateY(0); }
-.city-canvas-host { position: absolute; inset: 0; width: 100%; height: 100%; }
+.city-canvas-host { position: absolute; inset: 0; }
 
-.bottom { position: fixed; pointer-events: none; display: flex; flex-direction: row; align-items: center; }
+.nav-bottom { --nav-bottom-offset: 1rem; position: fixed; bottom: var(--nav-bottom-offset); pointer-events: none; display: flex; align-items: center; }
 /* Stacking order left > center > right - .bottom-right keeps its original
    205 (and .is-behind-city-canvas its 202, still one below .city-overlay's
    203) so neither's relationship to the city overlay changes; left/center
    are the ones bumped above it. */
-.bottom-center { left: 50%; transform: translateX(-50%); z-index: 206; }
-.bottom-left { z-index: 207; }
-.bottom-right { z-index: 205; justify-content: flex-end; }
-.bottom-right.is-behind-city-canvas { z-index: 202; pointer-events: none; }
-.bottom-mobile-right { left: 50%; transform: translateX(-50%); z-index: 201; }
-.bottom-right { right: 1.8rem; }
+.nav-bottom.bottom-center { left: 50%; transform: translateX(-50%); z-index: 206; }
+.nav-bottom.bottom-left { z-index: 207; }
+.nav-bottom.bottom-right { right: 1.8rem; z-index: 205; justify-content: flex-end; }
+.nav-bottom.bottom-right.is-behind-city-canvas { z-index: 202; pointer-events: none; }
+.nav-bottom.bottom-mobile-right { left: 50%; gap: var(--space-md); transform: translateX(-50%); z-index: 201; }
 
 /* questionnaire navigation */
-.questionnaire-nav-stack { display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; }
+.questionnaire-nav-stack { display: flex; flex-direction: column; align-items: center; gap: var(--space-md); pointer-events: none; }
 .q-step-indicator { color: var(--ui-text-secondary); font-size: var(--type-h4-size); line-height: var(--type-h4-line); }
 .questionnaire-nav-progress { margin: 0; text-align: right; text-shadow: 0 1px 10px rgba(255,255,255,0.7), 0 0 20px rgba(255,255,255,0.45); }
 :root[data-theme="dark"] .questionnaire-nav-progress { text-shadow: 0 1px 10px rgba(0,0,0,0.85), 0 0 22px rgba(0,0,0,0.6); }
-.questionnaire-nav-stack .questionnaire { pointer-events: auto; cursor: pointer; }
-.questionnaire-nav-stack .questionnaire::before,
-.questionnaire-nav-stack .questionnaire__ghost,
-.questionnaire-nav-stack .questionnaire__inner { pointer-events: none; }
-.questionnaire-nav-stack .questionnaire.is-disabled .questionnaire__inner,
-.questionnaire-nav-stack .questionnaire[aria-disabled="true"] .questionnaire__inner { cursor: default; }
-.questionnaire-nav-stack .questionnaire.is-disabled,
-.questionnaire-nav-stack .questionnaire[aria-disabled="true"] { cursor: default; }
 .questionnaire-nav-action { position: relative; pointer-events: none; }
 .questionnaire-nav-hint {
   position: absolute;
@@ -99,7 +93,6 @@
   pointer-events: none;
   transform: translateY(-50%) translateX(8px) scale(0.98);
 }
-.questionnaire-nav-hint,
 .questionnaire-nav-hint * { pointer-events: none; }
 @media (prefers-reduced-motion: no-preference) {
   .questionnaire-nav-hint { transition: opacity 180ms ease, transform 220ms cubic-bezier(.22,.61,.36,1); }
@@ -107,60 +100,24 @@
 .questionnaire-nav-hint span { color: var(--hint-text) !important; font-size: var(--type-label-size); line-height: var(--type-tight-line); text-align: center; }
 .questionnaire-nav-hint.is-visible { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
 
-.city-close-btn, .logs-button, .widgets-button { pointer-events: all; }
-
 /* Theme wiring: city */
-.city-button, .city-overlay, .city-canvas-host { color: var(--ui-text); }
-.city-overlay { background: var(--ui-bg-surface); border: 0; }
-.city-button { background: var(--ui-bg-surface); }
+.city-overlay { color: var(--ui-text); background: var(--ui-bg-surface); }
 
 /* Mobile */
 @media (max-width: 767px) {
   .navigation { padding: 1rem 1.2rem; }
 
-  .right { height: 36px; }
-
-  .logo-divider { width: var(--logo-wrap-w); height: var(--logo-wrap-h); }
-
-  .logo-text { min-width: var(--logo-w); min-height: var(--logo-h); }
-
-  .observe-results { margin-left: var(--space-sm); }
-
-  .left { height: var(--logo-wrap-h); width: var(--logo-wrap-w); }
-  .bottom-left { left: 1.2rem; gap: 2px;}
-  .bottom-right { right: 1.2rem; }
-  .bottom { bottom: 1rem; }
-  .svg-lg { height: var(--nav-control-h); }
-  .mode-toggle-switch { height: var(--nav-control-h); }
-  .city-button:hover { transform: translateY(3%); }
+  .nav-bottom.bottom-left { left: 1.2rem; gap: 2px;}
+  .nav-bottom.bottom-right { right: 1.2rem; }
 }
 
 /* Tablet */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .navigation { padding: 1rem 2.4rem; }
-
-  .right { height: 36px; }
-
-  .logo-divider { width: var(--logo-wrap-w); height: var(--logo-wrap-h); }
-
-  .logo-text { min-width: var(--logo-w); min-height: var(--logo-h); }
-
-  .observe-results { margin-left: var(--space-sm); }
-
-  .left { height: var(--logo-wrap-h); width: var(--logo-wrap-w); }
-  .bottom-right { right: 2.4rem; }
-  .bottom { bottom: 1.6rem; }
-
-  .svg-lg { height: var(--nav-control-h); }
-  .city-button:hover { transform: translateY(3%); }
-}
-/* targeting tablets */
-@media (min-width: 768px) and (max-width: 1024px) and (pointer: coarse) {
-  .bottom { bottom: 1.6rem !important; }
+  .nav-bottom.bottom-right { right: 2.4rem; }
+  .nav-bottom { --nav-bottom-offset: 1.6rem; }
 }
 /* Desktop */
 @media (min-width: 1025px) {
-  .bottom { bottom: 1rem; }
   .navigation { gap: 0.3rem; }
 }
 
@@ -170,19 +127,13 @@
   .navigation { padding: 1rem 1.6rem; }
 
   :root { --nav-control-h: 48px; }
-  .mode-toggle-switch { height: var(--nav-control-h); }
+  .nav-bottom.bottom-left { left: 1.8rem; }
+}
 
-  .right { height: 36px; }
-
-  .logo-divider { width: var(--logo-wrap-w); height: var(--logo-wrap-h); }
-
-  .logo-text { min-width: var(--logo-w); min-height: var(--logo-h); }
-
-  .observe-results { margin-left: var(--space-sm); }
-
-  .left { height: var(--logo-wrap-h); width: var(--logo-wrap-w); }
-  .bottom-left { left: 1.8rem; }
-
-  .svg-lg { height: var(--nav-control-h); }
-  .city-button:hover { transform: translateY(3%); }
+/* Lift touch-tablet navigation above its normal viewport-band baseline.
+   any-pointer keeps this active when an iPad also has a mouse/trackpad. */
+@media (min-width: 768px) and (max-width: 1366px) and (any-pointer: coarse) {
+  .nav-bottom {
+    bottom: calc(var(--nav-bottom-offset) + 1.6rem + env(safe-area-inset-bottom, 0px));
+  }
 }

@@ -3,6 +3,7 @@ import { memo, useState } from "react";
 
 import ColorToggle from "./theme-toggle";
 import BackIcon from "../../assets/svg/back/BackIcon";
+import { Button } from "../../app/ui/Button";
 import GraphPicker from "../../graph-components/graph-picker/graph-picker";
 import { getSessionItem } from "../../app/session";
 import { useIdentity } from "../../app/state/identity-context";
@@ -85,7 +86,6 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
     !vizVisible;
   const pickerStyle: PickerOffsetStyle = {
     "--picker-offset": `${String(pickerOffset)}px`,
-    transition: "transform 0.2s ease",
   };
 
   const openSavedCity = () => {
@@ -149,31 +149,27 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
               <BackIcon />
             </button>
           ) : (
-            <button
-              className={cx("observe-results", observerMode && "active")}
+            <Button
+              variant="secondary"
+              baseClassName="observe-results"
               onClick={toggleObserverMode}
               aria-pressed={observerMode || hasCompletedSurvey}
               aria-label="Explore Results"
-              data-label={observerLabel}
             >
-              <span className="observe-results__ghost" aria-hidden="true">{observerLabel}</span>
-              <span className="observe-results__inner">{observerLabel}</span>
-            </button>
+              {observerLabel}
+            </Button>
           )
         )}
 
         {showSavedCityButton && (
-          <button
-            type="button"
-            className="city-button city-top-button"
-            data-label={cityPanelOpen ? "Back" : "My city"}
+          <Button
+            variant="secondary"
+            baseClassName="city-button"
             onClick={openSavedCity}
             aria-label={cityPanelOpen ? "Back to home" : "Open my city"}
           >
-            <span className="city-button__inner">
-              <span>{cityPanelOpen ? "Back" : "My city"}</span>
-            </span>
-          </button>
+            {cityPanelOpen ? "Back" : "My city"}
+          </Button>
         )}
       </div>
       {showPicker && (
