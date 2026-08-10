@@ -17,6 +17,7 @@ const SpotlightEntry = React.lazy(() => import("../../canvas-instances/Spotlight
 // scheduleStartupWork - each file keeps its own since the timeouts differ).
 const SPOTLIGHT_LOAD_TIMEOUT_MS = 800;
 const SPOTLIGHT_INTERSECTION_THRESHOLD = 0.1;
+const SPOTLIGHT_SLIDE_DURATION_MS = 7000;
 
 interface IdleWindow {
   requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
@@ -103,7 +104,7 @@ export default function CanvasInfo() {
 
     const id = window.setInterval(() => {
       nextSpotlight();
-    }, 4500);
+    }, SPOTLIGHT_SLIDE_DURATION_MS);
 
     return () => {
       window.clearInterval(id);
