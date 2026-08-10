@@ -4,7 +4,7 @@
 .personalized-root.is-visible { opacity: 1; }
 
 .toggle { display: inline-flex; align-items: center; justify-content: center; }
-.toggle-icon { position: relative; width: 18px; height: 18px; line-height: 0; }
+.toggle-icon { position: relative; display: flex; line-height: 0; }
 .toggle-icon svg { position: absolute; inset: 0; transition: transform 0.15s ease-out, opacity 0.15s ease-out; }
 .toggle-icon.is-closed .icon-plus { opacity: 1; transform: scale(1) rotate(0deg); }
 .toggle-icon.is-closed .icon-minus { opacity: 0; transform: scale(0.85) rotate(-90deg); }
@@ -286,7 +286,7 @@
   flex-shrink: 0;
 }
 .personal-close-btn:hover { background: var(--ui-bg-surface-hover); }
-.personal-close-btn .ui-close { width: 16px; height: 16px; flex: 0 0 auto; }
+.personal-close-btn .ui-close { flex: 0 0 auto; }
 
 /* additional */
 /* Color cascades down from root - inner elements inherit */
@@ -306,5 +306,7 @@
 .toggle-button.toggle:hover {
   background: var(--btn-secondary-hover-bg);
 }
+
+.stats-loading-word { display: inline-block; padding: 0.1rem 0.25rem; color: inherit; }
 
 .gam-subline { padding-bottom: calc(var(--radius-lg) + var(--radius-md));}

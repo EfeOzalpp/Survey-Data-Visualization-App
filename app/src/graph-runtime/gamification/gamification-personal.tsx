@@ -9,6 +9,7 @@ import { getSessionItem } from "../../app/session";
 import { useOptionalPreferences } from "../../app/state/preferences-context";
 import { useUiStore } from "../../app/state/ui-store";
 import HintBanner from "../../app/ui/HintBanner";
+import { Button } from "../../app/ui/Button";
 import { useTransientFlag } from "../../lib/hooks/useTransientFlag";
 import { saveSoloMessage } from "../../client-api/response-api/saveSoloMessage";
 import { recordOwnRender } from "../../render-test/renderProfilerStats";
@@ -353,7 +354,7 @@ export default function GamificationPersonalized({
           onClick={(e) => { e.stopPropagation(); setOpen(true); }}
           style={{ pointerEvents: 'auto' }}
         >
-          <span className="toggle-icon is-closed" aria-hidden>
+          <span className="toggle-icon is-closed svg-sm" aria-hidden>
             <svg className="icon-plus ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <line x1="12" y1="5"  x2="12" y2="19" strokeWidth="2.5" />
               <line x1="5"  y1="12" x2="19" y2="12" strokeWidth="2.5" />
@@ -374,7 +375,7 @@ export default function GamificationPersonalized({
             aria-label="Close personalized panel"
             onClick={(e) => { e.stopPropagation(); setOpen(false); }}
           >
-            <CloseIcon className="ui-close" />
+            <CloseIcon className="ui-close svg-sm" />
           </button>
           <div className={`gam-panel${mode === 'relative' ? ' is-team' : ''}`}>
             {mode === 'relative' ? (
@@ -421,14 +422,14 @@ export default function GamificationPersonalized({
                 />
                 <div className="solo-message-actions">
                   <span className="solo-message-count">{160 - messageDraft.length}</span>
-                  <button
+                  <Button
+                    baseClassName="solo-message-save"
                     type="submit"
-                    className="solo-message-save"
                     disabled={saveMessageDisabled}
+                    reserveContent="Saving"
                   >
-                    <span className="solo-message-save__ghost" aria-hidden="true">Saving</span>
-                    <span className="solo-message-save__inner">{saveLabel}</span>
-                  </button>
+                    {saveLabel}
+                  </Button>
                 </div>
                 {messageError ? <p className="solo-message-state is-error" role="alert">{messageError}</p> : null}
               </form>

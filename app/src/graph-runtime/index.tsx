@@ -2,8 +2,6 @@
 // Graph page: loads DotGraph only; auxiliary panels live in navigation widgets
 import React, { Suspense, useMemo } from 'react';
 
-import "../styles/graph.css";
-
 const Graph = React.lazy(() =>
   import(/* webpackChunkName: "graph" */ "./dotgraph/data-boundary")
 );
