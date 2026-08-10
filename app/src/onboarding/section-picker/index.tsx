@@ -3,6 +3,7 @@ import { useMemo, useRef, useState, useEffect, useCallback, useId } from 'react'
 import type { KeyboardEvent } from 'react';
 import styles from './section-picker.module.css';
 import { ListboxShell } from '../../app/ui/ListboxShell';
+import { Button } from '../../app/ui/Button';
 import type { SectionHeader, SectionItem, SectionOption } from './sections';
 
 interface NormalizedSectionOption extends SectionOption {
@@ -69,7 +70,7 @@ export default function SectionPickerIntro({
   const [search, setSearch] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   // ListboxShell's listboxRef prop expects RefObject<HTMLDivElement>
   // (matching what useRef<HTMLDivElement>(null) infers) - not the wider
@@ -167,13 +168,13 @@ export default function SectionPickerIntro({
     if (!open) return;
 
     const onDocMouseDown = (e: MouseEvent) => {
-      if (!wrapperRef.current?.contains(e.target as Node)) closePicker();
+      if (!pickerRef.current?.contains(e.target as Node)) closePicker();
     };
 
     const onDocTouchStart = (e: TouchEvent) => {
       const touch = e.changedTouches.item(0);
       if (!touch) return;
-      const isInside = !!wrapperRef.current?.contains(e.target as Node);
+      const isInside = !!pickerRef.current?.contains(e.target as Node);
       outsideTouchRef.current = {
         active: !isInside,
         moved: false,
@@ -276,7 +277,7 @@ export default function SectionPickerIntro({
   };
 
   return (
-    <section className="survey survey-step section-select" ref={wrapperRef}>
+    <section className="survey survey-step section-select">
       <div className={styles.continue}>
         <h3 className={styles.sectionTitle} id={titleId}>{titleOverride ?? 'Select Your Department'}</h3>
         <p id={helpId} style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
@@ -285,6 +286,7 @@ export default function SectionPickerIntro({
 
       <ListboxShell
         open={open}
+        wrapperRef={pickerRef}
         wrapperClassName={styles.sectionPicker}
         triggerContent={
           <input
@@ -343,7 +345,7 @@ export default function SectionPickerIntro({
           />
         }
         chevronIcon={
-          <svg className="trigger-chevron-icon ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <svg className="trigger-chevron-icon ui-icon svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <polyline points="6 9 12 15 18 9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         }
@@ -355,7 +357,8 @@ export default function SectionPickerIntro({
             openedByPointer.current = true;
           },
           onClick: () => {
-            openPicker();
+            if (open) closePicker();
+            else openPicker();
           },
         }}
         listboxRef={listRef}
@@ -415,14 +418,11 @@ export default function SectionPickerIntro({
         </div>
       )}
 
-      <div className="button-wrap"><button type="button" className="section-continue-button" onClick={onBegin} aria-describedby={describedBy || undefined}>
-        <span className="section-continue-button__ghost" aria-hidden="true">
-          <span>Continue</span>
-        </span>
-        <span className="section-continue-button__inner">
-          <span>Continue</span>
-        </span>
-      </button></div>
+      <div className="button-wrap">
+        <Button baseClassName="section-continue-button" onClick={onBegin} aria-describedby={describedBy || undefined}>
+          Continue
+        </Button>
+      </div>
       </div>
     </section>
   );

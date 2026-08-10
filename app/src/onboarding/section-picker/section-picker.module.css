@@ -20,8 +20,9 @@
   gap: var(--space-md);
   padding: 0;
 }
-.sectionInput { width: 100%; min-width: 0; max-width: 100%; cursor: pointer; background: transparent; border: none; outline: none; padding: var(--button-padding); padding-right: calc(28px + 10px + 1rem); color: var(--ui-text); }
+.sectionInput { width: 100%; min-width: 0; max-width: 100%; cursor: pointer; background: transparent; border: none; outline: none; padding: var(--button-padding); padding-right: calc(28px + 10px + 1rem); color: var(--ui-text); font-weight: var(--fw-bold); }
 .sectionInput::placeholder { color: var(--ui-text-muted); }
+.sectionPicker :global(.trigger-chevron-icon.ui-icon) { transform: none; }
 .sectionPicker :global(.trigger.is-open .trigger-chevron) { transform: translateY(-50%) rotate(180deg); }
 .sectionPicker :global(.listbox-shell) { position: static; margin-top: 0; z-index: 20; }
 .sectionGroupHeader { display: block; position: sticky; top: 0; z-index: 1; background: var(--ui-bg-surface); font-size: var(--type-small-size); color: var(--ui-text-secondary); margin: 0; text-align: center; border-bottom: 1px solid var(--ui-border); }

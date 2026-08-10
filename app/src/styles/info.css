@@ -1,64 +1,7 @@
-button.more-info-trigger {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.more-info-trigger:hover .more-info-trigger__icon-box {
-  background: var(--btn-secondary-hover-bg);
-}
-
-.more-info-trigger:focus-visible {
-  outline: 2px solid var(--ui-border-strong);
-  outline-offset: 3px;
-  border-radius: var(--radius-md);
-}
-
-.more-info-trigger__label {
-  margin: 0;
-  color: var(--ui-title);
-  font-family: var(--font-body);
-  font-size: var(--type-p-size);
-  font-weight: var(--font-ui-weight);
-  line-height: var(--type-body-line);
-  vertical-align: baseline;
-}
-
-.more-info-trigger__duration {
-  margin-left: 0.4em;
-  margin-right: var(--space-md);
-  font-size: 0.85em;
-  font-weight: 400;
-  color: var(--ui-title);
-  opacity: 0.7;
-}
-
-.more-info-trigger__icon-box {
-  display: inline-flex;
-  width: 1.8rem;
-  height: 1.6rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--btn-radius);
-  background: var(--btn-secondary-bg);
-  transition: background 120ms ease;
-}
-
-.more-info-trigger__icon [stroke] {
-  stroke: currentColor;
-}
-
 /* Root/overlay/shell positioning + transitions live in the shared Modal
    (styles/ui/modal.css) via .ui-modal-*. Only dialog-specific sizing stays here. */
 .info-dialog {
-  min-height: 460px;
-  max-height: 460px;
+  height: 460px;
 }
 
 .info-dialog-header {
@@ -66,7 +9,7 @@ button.more-info-trigger {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-lg);
-  padding: 1rem 1rem 0.8rem 1.2rem;
+  padding: var(--container-lg);
   border-bottom: 1px solid var(--ui-border);
 }
 
@@ -84,15 +27,6 @@ button.more-info-trigger {
   white-space: nowrap;
 }
 
-.info-dialog-close {
-  flex: 0 0 auto;
-}
-
-.info-dialog-close .ui-close {
-  width: 16px !important;
-  height: 16px !important;
-}
-
 .info-dialog-copy {
   flex: 1 1 auto;
   display: flex;
@@ -100,15 +34,13 @@ button.more-info-trigger {
   gap: var(--space-lg);
   min-height: 9rem;
   overflow: hidden;
-  padding: 1.4rem 1.2rem;
+  padding: var(--container-lg);
 }
 
 .info-dialog-copy p {
   margin: 0;
   color: var(--ui-text-secondary);
 }
-
-.info-dialog-slide { display: block; }
 
 .info-dialog-slide.has-media {
   display: grid;
@@ -157,13 +89,11 @@ button.more-info-trigger {
   align-items: center;
   gap: var(--space-md);
   width: 100%;
-  padding: 0.55rem 0.45rem calc(0.55rem + env(safe-area-inset-bottom, 0px)) 1rem;
+  padding: var(--multi-buttons-mobile);
 }
 
-.info-dialog-slider-button svg.ui-icon {
-  width: 1.6rem !important;
-  height: 1.6rem !important;
-}
+/* Icon size (svg-sm/svg-md) is set directly on the icon element - see
+   styles/tokens/spacing-sizing.css. */
 
 .info-dialog-timeline {
   display: flex;
@@ -183,7 +113,7 @@ button.more-info-trigger {
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 0.3rem;
+  gap: var(--space-sm);
   flex: 1 1 auto;
   min-width: 0;
   width: 100%;
@@ -199,14 +129,13 @@ button.info-dialog-progress-button {
   padding: 0;
   border: 0;
   background: transparent;
-  cursor: pointer;
 }
 
 .info-dialog-progress-track {
   position: relative;
   display: block;
   width: 100%;
-  height: 3px;
+  height: 4px;
   overflow: hidden;
   background: color-mix(in srgb, var(--ui-text) 24%, transparent);
 }
@@ -239,14 +168,8 @@ button.info-dialog-progress-button:focus-visible {
   border-radius: var(--radius-md);
 }
 
-.info-dialog-pause {
-  flex: 0 0 auto;
-}
-
-.info-dialog-pause svg.ui-icon {
-  width: 1.6rem !important;
-  height: 1.6rem !important;
-}
+/* Icon size (svg-sm/svg-md) is set directly on the icon element - see
+   styles/tokens/spacing-sizing.css. */
 
 @keyframes info-dialog-progress {
   from { transform: scaleX(0); }
@@ -258,7 +181,7 @@ button.info-dialog-progress-button:focus-visible {
   to { background-position: -50% 0; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .info-dialog-copy-break {
     display: none;
   }
@@ -270,14 +193,13 @@ button.info-dialog-progress-button:focus-visible {
 
 @media (min-width: 768px) {
   .info-dialog-shell {
-    width: min(600px, calc(100vw - 4rem));
+    width: min(600px, calc(100vw - var(--space-lg-4x)));
   }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .info-dialog {
-    min-height: min(60svh, 600px);
-    max-height: min(60svh, 600px);
+    height: min(60svh, 600px);
     position: relative; 
     top: var(--space-md);
   }
@@ -285,11 +207,14 @@ button.info-dialog-progress-button:focus-visible {
 
 @media (min-width: 1025px) {
   .info-dialog {
-    min-height: min(80.4svh, 680px);
-    max-height: min(80.4svh, 680px);
+    height: min(80.4svh, 680px);
     position: relative; 
     top: var(--space-md);
   }
+}
+
+@media (min-width: 1024px) {
+  .ui-icon-nav.info-dialog-slider-controls { padding: var(--multi-buttons); }
 }
 
 @media (prefers-reduced-motion: reduce) {

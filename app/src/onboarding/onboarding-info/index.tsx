@@ -2,6 +2,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
+import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
 import { usePreferences } from "../../app/state/preferences-context";
 import { useUiStore } from "../../app/state/ui-store";
 import { Modal } from "../../app/ui/Modal";
@@ -173,7 +174,7 @@ export default function InfoDialog() {
           aria-label="Close more information"
           onClick={closeDialog}
         >
-          <CloseIcon className="ui-close" />
+          <CloseIcon className="ui-close svg-sm" />
         </button>
       </header>
 
@@ -263,9 +264,7 @@ export default function InfoDialog() {
             aria-label="Previous information slide"
             onClick={() => { changeSlide(-1); }}
           >
-            <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M15 18L9 12L15 6" />
-            </svg>
+            <ChevronIcon direction="previous" className="ui-icon svg-md" />
           </button>
 
           <button
@@ -275,7 +274,7 @@ export default function InfoDialog() {
             aria-label={paused ? "Resume information slides" : "Pause information slides"}
             onClick={() => { setPaused((current) => !current); }}
           >
-            <PlayPauseIcon mode={paused ? "play" : "pause"} className="ui-icon" />
+            <PlayPauseIcon mode={paused ? "play" : "pause"} className="ui-icon svg-md" />
           </button>
 
           <button
@@ -284,9 +283,7 @@ export default function InfoDialog() {
             aria-label="Next information slide"
             onClick={() => { changeSlide(1); }}
           >
-            <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M9 18L15 12L9 6" />
-            </svg>
+            <ChevronIcon direction="next" className="ui-icon svg-md" />
           </button>
         </div>
       </div>

@@ -5,6 +5,7 @@ import React, { Suspense, startTransition, useEffect, useRef, useState } from "r
 import { useShallow } from "zustand/react/shallow";
 import LinkIcon from "../../assets/svg/link/LinkIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
+import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
 import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
 
 const SpotlightEntry = React.lazy(() => import("../../canvas-instances/SpotlightEntry"));
@@ -135,9 +136,7 @@ export default function CanvasInfo() {
               />
             </div>
             <button type="button" className="ui-icon-nav-button canvas-info__slider-button" aria-label="Previous preview" onClick={previousSpotlight}>
-              <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M15 18L9 12L15 6" />
-              </svg>
+              <ChevronIcon direction="previous" className="ui-icon svg-md" />
             </button>
             <button
               type="button"
@@ -146,12 +145,10 @@ export default function CanvasInfo() {
               aria-label={spotlight.paused ? "Resume preview" : "Pause preview"}
               onClick={toggleSpotlightPaused}
             >
-              <PlayPauseIcon mode={spotlight.paused ? "play" : "pause"} className="ui-icon" />
+              <PlayPauseIcon mode={spotlight.paused ? "play" : "pause"} className="ui-icon svg-md" />
             </button>
             <button type="button" className="ui-icon-nav-button canvas-info__slider-button" aria-label="Next preview" onClick={nextSpotlight}>
-              <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M9 18L15 12L9 6" />
-              </svg>
+              <ChevronIcon direction="next" className="ui-icon svg-md" />
             </button>
           </div>
         </div>
@@ -162,7 +159,7 @@ export default function CanvasInfo() {
           <h3 className="canvas-info__eyebrow">Built With a Custom Graphics Renderer</h3>
           <ul className="canvas-info__copy">
             <li>Butterfly Effect's city runs on a custom scene system, built on top of the Canvas2D API.</li>
-            <li>It's the predecessor of Canvas Engine, a more complete renderer for interactive visual tools I'm building.</li>
+            <li>It's the predecessor of Canvas Engine, a computer-aided, no code web graphics tool.</li>
             <li>Let's collaborate on GitHub. You can also reach out at efe.ozalp@canvas-engine.com.</li>
           </ul>
           <div className="canvas-info__actions">

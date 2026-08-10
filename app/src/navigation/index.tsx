@@ -2,7 +2,7 @@ import React, { Profiler } from "react";
 import NavLeft from "./left/nav-left";
 import NavRight from "./right/nav-right";
 import NavBottom from "./bottom/nav-bottom";
-import InfoDialog from "../onboarding/info";
+import InfoDialog from "../onboarding/onboarding-info";
 import CityStatsDialog from "../graph-components/city-stats";
 import ClientOnly from "../app/client-only";
 import { usePreferences } from "../app/state/preferences-context";
