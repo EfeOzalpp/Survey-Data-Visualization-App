@@ -1,0 +1,82 @@
+@keyframes greenFluctuation {
+  0%, 100% { background-color: rgb(var(--graph-green-lo-rgb)); }
+  50% { background-color: rgb(var(--graph-green-hi-rgb)); }
+}
+@keyframes yellowFluctuation {
+  0%, 100% { background-color: rgb(var(--graph-yellow-lo-rgb)); }
+  50% { background-color: rgb(var(--graph-yellow-hi-rgb)); }
+}
+@keyframes redFluctuation {
+  0%, 100% { background-color: rgb(var(--graph-red-lo-rgb)); }
+  50% { background-color: rgb(var(--graph-red-hi-rgb)); }
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes sectionExpand { from { height: 0%; } }
+@keyframes indicatorFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.loading { width: 100%; }
+.panel { padding: var(--container-md); }
+.container { display: flex; justify-content: center; align-items: flex-end; width: 100%; min-height: 280px; height: min(44svh, 360px); }
+.bar { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 33%; height: 100%; padding: 0 0.3rem; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.bar + .bar { border-left: 1px solid var(--ui-border); }
+.divider { position: relative; display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 100%; overflow: visible; }
+.fill { width: 100%; max-width: 88px; height: 0; border: 0.2px solid var(--graph-bar-border); border-radius: var(--radius-md); transition: height 0.1s ease; animation-duration: 3.6s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.fillPlaceholder { border-color: var(--ui-border); background: var(--ui-border); opacity: 0.68; }
+.greenAnimation { animation-name: greenFluctuation; }
+.yellowAnimation { animation-name: yellowFluctuation; }
+.redAnimation { animation-name: redFluctuation; }
+
+.labelWrap { position: relative; margin-bottom: 1rem; }
+.label { text-align: center; }
+.label p { margin: 0; font-size: var(--type-label-size); font-weight: var(--fw-bold); }
+.tip { position: absolute; top: 100%; z-index: 5; margin-top: 0.4rem; pointer-events: none; }
+.bar:nth-child(2) .tip { left: 50%; --hint-banner-hidden-transform: translateX(-50%) translateY(-6px) scale(0.88); --hint-banner-visible-transform: translateX(-50%) translateY(0); }
+.hint { width: 120px; max-width: 120px; padding: 0.5rem 0.55rem; text-align: center; }
+.hintCopy { white-space: normal; line-height: var(--type-tight-line); }
+
+.percentageSection, .percentageIndicator { position: absolute; pointer-events: none; }
+.percentageSection { right: auto; bottom: 0; left: 50%; z-index: 2; width: 88px; overflow: visible; transform: translateX(-50%); }
+.percentageLine { position: absolute; inset: 0; border-top: 1px solid color-mix(in srgb, var(--hint-text) 28%, transparent); background: linear-gradient(to bottom, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.16) 12%, rgba(255, 255, 255, 0.08) 26%, rgba(255, 255, 255, 0) 100%); box-shadow: 0 0 10px rgba(255, 255, 255, 0.06); }
+:global(:root[data-theme="dark"]) .percentageLine { border-top-color: color-mix(in srgb, var(--hint-text) 55%, transparent); background: linear-gradient(to bottom, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.28) 12%, rgba(255, 255, 255, 0.12) 26%, rgba(255, 255, 255, 0) 100%); box-shadow: 0 0 14px rgba(255, 255, 255, 0.14); }
+.percentageIndicator { top: 0; left: 50%; min-width: 86px; max-width: 112px; padding: 0.55rem 0.7rem; border: 1px solid var(--ui-border); border-radius: var(--radius-lg); background: var(--hint-bg); color: var(--hint-text); text-align: center; white-space: nowrap; transform: translate(-50%, calc(-100% - 12px)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.percentageIndicator::before, .percentageIndicator::after { position: absolute; left: 50%; content: ""; clip-path: polygon(0 0, 100% 0, 50% 100%); transform: translateX(-50%); }
+.percentageIndicator::before { bottom: -8px; width: 18px; height: 9px; background: var(--ui-border); }
+.percentageIndicator::after { bottom: -7px; width: 16px; height: 8px; background: var(--hint-bg); }
+.percentageIndicator p { margin: 0; color: var(--hint-text); }
+.percentageTitle { font-size: var(--type-label-size); line-height: var(--type-tight-line); opacity: 0.86; }
+.percentageScore { margin-top: 0.14rem; font-size: clamp(0.86rem, 1vw, 0.96rem); font-weight: 700; line-height: 1.1; }
+
+.empty { align-items: center; justify-content: center; }
+.emptyCard { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.floaty { animation: floaty 3s ease-in-out infinite; }
+.caption { margin: 0; padding: 0.5rem 0.75rem 0.25rem; color: var(--ui-text-secondary); text-align: center; opacity: 1; transition: opacity 0.3s ease; }
+.caption.hidden { opacity: 0; pointer-events: none; }
+.caption strong { color: var(--ui-text); font-weight: var(--fw-bold); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .percentageSection { animation: sectionExpand 0.5s cubic-bezier(.22,.61,.36,1) both; }
+  .percentageIndicator { animation: indicatorFadeIn 0.3s ease 0.25s both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .greenAnimation, .yellowAnimation, .redAnimation, .floaty { animation: none !important; }
+}
+@media (max-width: 767px) {
+  .container { height: min(52svh, 420px); }
+  .fill { max-width: 72px; }
+  .percentageSection { width: 72px; }
+  .bar:first-child .tip { left: 38%; --hint-banner-hidden-transform: translateX(-50%) translateY(-6px) scale(0.88); --hint-banner-visible-transform: translateX(-50%) translateY(0); }
+  .bar:last-child .tip { right: 38%; --hint-banner-hidden-transform: translateX(50%) translateY(-6px) scale(0.88); --hint-banner-visible-transform: translateX(50%) translateY(0); }
+}
+@media (min-width: 768px) {
+  .bar:first-child .tip { left: 60%; --hint-banner-hidden-transform: translateX(-50%) translateY(-6px) scale(0.88); --hint-banner-visible-transform: translateX(-50%) translateY(0); }
+  .bar:last-child .tip { right: 60%; --hint-banner-hidden-transform: translateX(50%) translateY(-6px) scale(0.88); --hint-banner-visible-transform: translateX(50%) translateY(0); }
+}
+
+@media (min-width: 1025px) {
+  .container { min-height: 360px; height: 360px; }
+  .fill { max-width: 60px; }
+  .percentageSection { width: 58px; }
+}

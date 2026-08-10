@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
-import "../../styles/logs.css";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
 import { Popover } from "../../app/ui/Popover";
+import { Button } from "../../app/ui/Button";
 import { LogsPanel } from "../../graph-components/logs";
 
 export default function LogsButton({
@@ -28,18 +28,17 @@ export default function LogsButton({
         shellClassName="logs-popover-shell"
         dismissOnOutsideClick={false}
         trigger={
-          <button
+          <Button
             ref={triggerRef}
-            type="button"
-            className="logs-button"
-            data-label="Logs"
+            variant="secondary"
+            baseClassName="logs-button"
             aria-label="Logs"
             aria-expanded={open}
             aria-haspopup="dialog"
             onClick={() => { onOpenChange(!open); }}
           >
-            <span className="logs-button__inner">Logs</span>
-          </button>
+            Logs
+          </Button>
         }
       >
         <LogsPanel panelRef={dialogRef} onClose={closeLogs} />

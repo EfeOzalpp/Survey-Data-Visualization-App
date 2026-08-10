@@ -1,4 +1,4 @@
-import type { SurveyRow } from "../../domain/survey/types";
+import type { SurveyRow } from "../../../domain/survey/types";
 import { SECTION_DISPLAY } from "./constants";
 
 export function fmt(v?: number): string {

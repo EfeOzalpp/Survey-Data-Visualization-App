@@ -1,4 +1,4 @@
-import type { SurveyRow } from "../../domain/survey/types";
+import type { SurveyRow } from "../../../domain/survey/types";
 import type { SortKey } from "./constants";
 
 export function rowSubmittedTime(row: Pick<SurveyRow, "submittedAt">): number {
