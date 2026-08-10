@@ -45,6 +45,7 @@ butterfly-effect/
 |   |   |   |   |-- useIdentityState.ts
 |   |   |   |   \-- usePreferencesState.ts
 |   |   |   \-- ui/
+|   |   |       |-- Button.tsx
 |   |   |       |-- HintBanner.tsx
 |   |   |       |-- ListboxShell.tsx
 |   |   |       |-- Modal.tsx
@@ -149,6 +150,10 @@ butterfly-effect/
 |   |   |       |-- check/
 |   |   |       |   |-- check.svg
 |   |   |       |   \-- CheckIcon.tsx
+|   |   |       |-- chevron/
+|   |   |       |   |-- chevron_next.svg
+|   |   |       |   |-- chevron_previous.svg
+|   |   |       |   \-- ChevronIcon.tsx
 |   |   |       |-- close/
 |   |   |       |   |-- close.svg
 |   |   |       |   \-- CloseIcon.tsx
@@ -207,26 +212,50 @@ butterfly-effect/
 |   |   |       \-- types.ts
 |   |   |-- graph-components/
 |   |   |   |-- city-stats/
+|   |   |   |   |-- city-stats.module.css
 |   |   |   |   \-- index.tsx
+|   |   |   |-- compact-tools/
+|   |   |   |   |-- close-button.tsx
+|   |   |   |   |-- compact-graph-tools.tsx
+|   |   |   |   |-- compact-tools.module.css
+|   |   |   |   \-- headers/
+|   |   |   |       |-- logs-header.tsx
+|   |   |   |       \-- widget-header.tsx
 |   |   |   |-- graph-picker/
 |   |   |   |   |-- gp-data.ts
 |   |   |   |   |-- graph-picker.module.css
 |   |   |   |   \-- graph-picker.tsx
 |   |   |   |-- logs/
-|   |   |   |   |-- constants.ts
-|   |   |   |   |-- format.ts
 |   |   |   |   |-- index.tsx
-|   |   |   |   |-- search.ts
-|   |   |   |   \-- sort.ts
+|   |   |   |   |-- lib/
+|   |   |   |   |   |-- constants.ts
+|   |   |   |   |   |-- format.ts
+|   |   |   |   |   |-- search.ts
+|   |   |   |   |   |-- sort.ts
+|   |   |   |   |   \-- useLogsPanel.tsx
+|   |   |   |   |-- logs-body.tsx
+|   |   |   |   |-- logs-header.tsx
+|   |   |   |   \-- logs.module.css
 |   |   |   \-- widgets/
 |   |   |       |-- bargraph/
-|   |   |       |   |-- EmptyArt.tsx
-|   |   |       |   \-- index.tsx
+|   |   |       |   |-- bg.module.css
+|   |   |       |   |-- body.tsx
+|   |   |       |   |-- emptyArt.tsx
+|   |   |       |   |-- index.tsx
+|   |   |       |   \-- lib/
+|   |   |       |       \-- useBarGraph.tsx
 |   |   |       |-- byquestion/
-|   |   |       |   \-- index.tsx
-|   |   |       |-- compact-graph-tools.tsx
-|   |   |       |-- compact-tools.module.css
-|   |   |       \-- widget-section-nav.tsx
+|   |   |       |   |-- body.tsx
+|   |   |       |   |-- bq.module.css
+|   |   |       |   |-- index.tsx
+|   |   |       |   \-- lib/
+|   |   |       |       \-- useByQuestion.tsx
+|   |   |       |-- footer/
+|   |   |       |   |-- close-footer.tsx
+|   |   |       |   |-- index.tsx
+|   |   |       |   \-- multi-button-footer.tsx
+|   |   |       |-- widgets-header.tsx
+|   |   |       \-- widgets.module.css
 |   |   |-- graph-runtime/
 |   |   |   |-- debug/
 |   |   |   |   |-- context.ts
@@ -255,6 +284,7 @@ butterfly-effect/
 |   |   |   |   |   |-- PersonalizedLayer.tsx
 |   |   |   |   |   \-- ShapesLayer.tsx
 |   |   |   |   |-- data-boundary.tsx
+|   |   |   |   |-- dotgraph.module.css
 |   |   |   |   |-- interaction/
 |   |   |   |   |   |-- hitboxDistancePolicy.ts
 |   |   |   |   |   |-- useHoverBubble.ts
@@ -288,6 +318,7 @@ butterfly-effect/
 |   |   |   |   |-- gamification-general.tsx
 |   |   |   |   |-- gamification-personal.tsx
 |   |   |   |   \-- rankLogic.ts
+|   |   |   |-- graph.module.css
 |   |   |   |-- GraphDataContext.tsx
 |   |   |   |-- graphDataContextObject.ts
 |   |   |   |-- index.tsx
@@ -367,6 +398,7 @@ butterfly-effect/
 |   |   |-- navigation/
 |   |   |   |-- bottom/
 |   |   |   |   |-- city-stats-button.tsx
+|   |   |   |   |-- compact-tools-button.tsx
 |   |   |   |   |-- logs-button.tsx
 |   |   |   |   |-- mode-toggle.tsx
 |   |   |   |   |-- my-city-button.tsx
@@ -386,7 +418,7 @@ butterfly-effect/
 |   |   |   |-- canvas-info/
 |   |   |   |   \-- index.tsx
 |   |   |   |-- index.tsx
-|   |   |   |-- info/
+|   |   |   |-- onboarding-info/
 |   |   |   |   |-- index.tsx
 |   |   |   |   \-- slides.ts
 |   |   |   |-- questionnaire/
@@ -642,6 +674,7 @@ butterfly-effect/
 |   |   |   |       \-- types.ts
 |   |   |   |-- scene-state.ts
 |   |   |   |-- shapes/
+|   |   |   |   |-- __tests__/
 |   |   |   |   |-- bus.ts
 |   |   |   |   |-- car.ts
 |   |   |   |   |-- carFactory.ts
@@ -724,23 +757,24 @@ butterfly-effect/
 |   |   |   |-- entry-server.tsx
 |   |   |   \-- streamDocument.tsx
 |   |   |-- styles/
-|   |   |   |-- city-stats.css
 |   |   |   |-- fonts.css
 |   |   |   |-- gamification.css
 |   |   |   |-- global-styles.css
-|   |   |   |-- graph.css
 |   |   |   |-- info.css
-|   |   |   |-- logs.css
 |   |   |   |-- navigation.css
 |   |   |   |-- onboarding-info.css
 |   |   |   |-- questionnaire.css
+|   |   |   |-- tokens/
+|   |   |   |   |-- color.css
+|   |   |   |   |-- spacing-sizing.css
+|   |   |   |   \-- typography.css
 |   |   |   |-- ui/
+|   |   |   |   |-- button.css
 |   |   |   |   |-- hint-banner.css
 |   |   |   |   |-- listbox-picker.css
 |   |   |   |   |-- modal.css
 |   |   |   |   \-- popover.css
-|   |   |   |-- ui-system.css
-|   |   |   \-- widgets.css
+|   |   |   \-- ui-system.css
 |   |   |-- vite-env.d.ts
 |   |   \-- workers/
 |   |       |-- particles/
@@ -753,6 +787,8 @@ butterfly-effect/
 |   |-- tsconfig.server.json
 |   |-- vite.analyze.ts
 |   \-- vite.config.ts
+|-- bash-scripts
+|-- CLAUDE.md
 |-- gifs+images/
 |   |-- desktop-graph.gif
 |   |-- desktop-onboarding.gif
