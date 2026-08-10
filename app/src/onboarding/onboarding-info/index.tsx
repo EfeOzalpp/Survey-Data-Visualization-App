@@ -6,7 +6,7 @@ import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
 import { usePreferences } from "../../app/state/preferences-context";
 import { useUiStore } from "../../app/state/ui-store";
 import { Modal } from "../../app/ui/Modal";
-import "../../styles/info.css";
+import styles from "./onboarding-info.module.css";
 import { INFO_SLIDES, readInfoSlideMedia, type InfoSlideMediaMap } from "./slides";
 
 const SLIDE_DURATION_MS = 10000;
@@ -154,14 +154,14 @@ export default function InfoDialog() {
       onOpenChange={setInfoOpen}
       ariaLabelledBy="info-dialog-title"
       ariaDescribedBy="info-dialog-copy"
-      shellClassName="info-dialog-shell"
-      cardClassName="info-dialog"
+      shellClassName={styles.shell}
+      cardClassName={styles.dialog}
       overlayLabel="Close more information"
     >
-      <header className="info-dialog-header">
+      <header className={styles.header}>
         <h3
           id="info-dialog-title"
-          className="info-dialog-title"
+          className={styles.title}
           aria-label={`Slide ${String(activeSlide + 1)} of ${String(INFO_SLIDES.length)}: ${slide.title}`}
         >
           <span>{String(activeSlide + 1).padStart(2, "0")} / {String(INFO_SLIDES.length).padStart(2, "0")}</span>
@@ -170,7 +170,7 @@ export default function InfoDialog() {
         </h3>
         <button
           type="button"
-          className="ui-icon-nav-button info-dialog-close"
+          className="ui-icon-nav-button"
           aria-label="Close more information"
           onClick={closeDialog}
         >
@@ -178,9 +178,9 @@ export default function InfoDialog() {
         </button>
       </header>
 
-      <div id="info-dialog-copy" className="info-dialog-copy">
+      <div id="info-dialog-copy" className={styles.copy}>
         <section
-          className={`info-dialog-slide${slideMedia ? " has-media" : ""}`}
+          className={`${styles.slide}${slideMedia ? ` ${styles.hasMedia}` : ""}`}
           role="group"
           aria-roledescription="slide"
           aria-label={`${String(activeSlide + 1)} of ${String(INFO_SLIDES.length)}`}
@@ -189,14 +189,14 @@ export default function InfoDialog() {
           <p>
             {slide.copy.map((line, index) => (
               <Fragment key={line}>
-                {index > 0 && <br className="info-dialog-copy-break" />}
+                {index > 0 && <br className={styles.copyBreak} />}
                 {line}
               </Fragment>
             ))}
           </p>
           {displayMedia && (
             <figure
-              className={`info-dialog-media${mediaLoaded ? "" : " is-loading"}`}
+              className={`${styles.media}${mediaLoaded ? "" : ` ${styles.isLoading}`}`}
               style={{ opacity: slideMedia ? 1 : 0 }}
             >
               <video
@@ -224,9 +224,9 @@ export default function InfoDialog() {
         </section>
       </div>
 
-      <div className="ui-icon-nav info-dialog-slider-controls" aria-label="More information slides">
-        <div className="info-dialog-timeline">
-          <div className="info-dialog-progress" role="group" aria-label="Choose an information slide">
+      <div className={`ui-icon-nav ${styles.sliderControls}`} aria-label="More information slides">
+        <div className={styles.timeline}>
+          <div className={styles.progress} role="group" aria-label="Choose an information slide">
             {INFO_SLIDES.map((item, index) => {
               const complete = index < activeSlide;
               const active = index === activeSlide;
@@ -235,15 +235,15 @@ export default function InfoDialog() {
                 <button
                   key={item.title}
                   type="button"
-                  className="info-dialog-progress-button"
+                  className={styles.progressButton}
                   aria-label={`Show slide ${String(index + 1)}: ${item.title}`}
                   aria-current={active ? "step" : undefined}
                   onClick={() => { selectSlide(index); }}
                 >
-                  <span className="info-dialog-progress-track" aria-hidden="true">
+                  <span className={styles.progressTrack} aria-hidden="true">
                     <span
                       key={active ? `${String(activeSlide)}-${String(progressCycle)}` : item.title}
-                      className={`info-dialog-progress-fill${complete ? " is-complete" : ""}${active ? " is-active" : ""}`}
+                      className={`${styles.progressFill}${complete ? ` ${styles.isComplete}` : ""}${active ? ` ${styles.isActive}` : ""}`}
                       style={active ? {
                         animationDuration: `${String(SLIDE_DURATION_MS)}ms`,
                         animationPlayState: open && !paused ? "running" : "paused",
@@ -257,10 +257,10 @@ export default function InfoDialog() {
           </div>
         </div>
 
-        <div className="info-dialog-control-cluster">
+        <div className={styles.controlCluster}>
           <button
             type="button"
-            className="ui-icon-nav-button info-dialog-slider-button"
+            className="ui-icon-nav-button"
             aria-label="Previous information slide"
             onClick={() => { changeSlide(-1); }}
           >
@@ -269,7 +269,7 @@ export default function InfoDialog() {
 
           <button
             type="button"
-            className="ui-icon-nav-button info-dialog-pause"
+            className="ui-icon-nav-button"
             aria-pressed={paused}
             aria-label={paused ? "Resume information slides" : "Pause information slides"}
             onClick={() => { setPaused((current) => !current); }}
@@ -279,7 +279,7 @@ export default function InfoDialog() {
 
           <button
             type="button"
-            className="ui-icon-nav-button info-dialog-slider-button"
+            className="ui-icon-nav-button"
             aria-label="Next information slide"
             onClick={() => { changeSlide(1); }}
           >

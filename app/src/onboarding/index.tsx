@@ -4,7 +4,7 @@ import { profilerOnRender, recordOwnRender } from '../render-test/renderProfiler
 
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";
-import "../styles/onboarding-info.css";
+import "../styles/onboarding.css";
 import "../styles/questionnaire.css";
 
 import { ROLE_SECTIONS } from "./section-picker/sections";

@@ -3,7 +3,7 @@
    chrome (also used by GraphPicker) lives in styles/ui/listbox-picker.css
    and is reached here via :global(). The onboarding step-chrome classes
    (.survey/.survey-step/.survey-section) are shared across every onboarding
-   step (see styles/onboarding-info.css, role-step.tsx, questionnaire-flow.tsx)
+   step (see styles/onboarding.css, role-step.tsx, questionnaire-flow.tsx)
    and stay global for that reason - .section-select specifically is also
    read via a literal document.querySelector in onboarding/index.tsx, and
    .section-continue-button via a literal Playwright locator in

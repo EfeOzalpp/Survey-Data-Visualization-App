@@ -8,7 +8,7 @@
   /* Graph */
   --graph-bg: #f8f3ef;
 
-  /* user-flow scene-fade gradient (onboarding-info.css) */
+  /* user-flow scene-fade gradient (onboarding.css) */
   --user-flow-fade-1: #ffffff;
   --user-flow-fade-2: #ffffff;
   --user-flow-fade-3: #ffffff;
@@ -83,7 +83,7 @@
   /* Graph */
   --graph-bg:#222329;
 
-  /* user-flow scene-fade gradient (onboarding-info.css) */
+  /* user-flow scene-fade gradient (onboarding.css) */
   --user-flow-fade-1: #5c764c;
   --user-flow-fade-2: #b9c7de;
   --user-flow-fade-3: #bd9466;

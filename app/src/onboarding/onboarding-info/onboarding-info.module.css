@@ -1,10 +1,10 @@
-/* Root/overlay/shell positioning + transitions live in the shared Modal
-   (styles/ui/modal.css) via .ui-modal-*. Only dialog-specific sizing stays here. */
-.info-dialog {
+/* Root/overlay/shell positioning and transitions live in the shared Modal.
+   Only information-dialog sizing and content styling live here. */
+.dialog {
   height: 460px;
 }
 
-.info-dialog-header {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,7 +13,7 @@
   border-bottom: 1px solid var(--ui-border);
 }
 
-.info-dialog-title {
+.title {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -22,12 +22,12 @@
   line-height: var(--type-h4-line);
 }
 
-.info-dialog-title span:first-child {
+.title span:first-child {
   flex: 0 0 auto;
   white-space: nowrap;
 }
 
-.info-dialog-copy {
+.copy {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -37,18 +37,18 @@
   padding: var(--container-lg);
 }
 
-.info-dialog-copy p {
+.copy p {
   margin: 0;
   color: var(--ui-text-secondary);
 }
 
-.info-dialog-slide.has-media {
+.slide.hasMedia {
   display: grid;
   grid-template-rows: auto auto;
   gap: var(--space-lg);
 }
 
-.info-dialog-media {
+.media {
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 2;
@@ -57,15 +57,15 @@
   background: var(--ui-bg-surface);
 }
 
-.info-dialog-media img,
-.info-dialog-media video {
+.media img,
+.media video {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.info-dialog-media.is-loading::before {
+.media.isLoading::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -76,14 +76,14 @@
     color-mix(in srgb, var(--ui-text) 6%, transparent) 75%
   );
   background-size: 200% 100%;
-  animation: info-media-shimmer 1.4s ease-in-out infinite;
+  animation: infoMediaShimmer 1.4s ease-in-out infinite;
 }
 
-.info-dialog-slide[data-slide-key="join-collective"] .info-dialog-media video {
+.slide[data-slide-key="join-collective"] .media video {
   transform: translateY(1px);
 }
 
-.ui-icon-nav.info-dialog-slider-controls {
+:global(.ui-icon-nav).sliderControls {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -92,23 +92,20 @@
   padding: var(--multi-buttons-mobile);
 }
 
-/* Icon size (svg-sm/svg-md) is set directly on the icon element - see
-   styles/tokens/spacing-sizing.css. */
-
-.info-dialog-timeline {
+.timeline {
   display: flex;
   align-items: center;
   min-width: 0;
 }
 
-.info-dialog-control-cluster {
+.controlCluster {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
   flex: 0 0 auto;
 }
 
-.info-dialog-progress {
+.progress {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
@@ -119,7 +116,7 @@
   width: 100%;
 }
 
-button.info-dialog-progress-button {
+button.progressButton {
   position: relative;
   display: flex;
   align-items: center;
@@ -131,7 +128,7 @@ button.info-dialog-progress-button {
   background: transparent;
 }
 
-.info-dialog-progress-track {
+.progressTrack {
   position: relative;
   display: block;
   width: 100%;
@@ -140,7 +137,7 @@ button.info-dialog-progress-button {
   background: color-mix(in srgb, var(--ui-text) 24%, transparent);
 }
 
-.info-dialog-progress-fill {
+.progressFill {
   position: absolute;
   inset: 0;
   background: color-mix(in srgb, var(--ui-text) 62%, transparent);
@@ -148,77 +145,74 @@ button.info-dialog-progress-button {
   transform-origin: left center;
 }
 
-.info-dialog-progress-fill.is-complete {
+.progressFill.isComplete {
   transform: scaleX(1);
 }
 
-.info-dialog-progress-fill.is-active {
-  animation-name: info-dialog-progress;
+.progressFill.isActive {
+  animation-name: infoDialogProgress;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
 
-button.info-dialog-progress-button:hover .info-dialog-progress-track {
+button.progressButton:hover .progressTrack {
   background: color-mix(in srgb, var(--ui-text) 38%, transparent);
 }
 
-button.info-dialog-progress-button:focus-visible {
+button.progressButton:focus-visible {
   outline: 2px solid var(--ui-border-strong);
   outline-offset: 1px;
   border-radius: var(--radius-md);
 }
 
-/* Icon size (svg-sm/svg-md) is set directly on the icon element - see
-   styles/tokens/spacing-sizing.css. */
-
-@keyframes info-dialog-progress {
+@keyframes infoDialogProgress {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
 
-@keyframes info-media-shimmer {
+@keyframes infoMediaShimmer {
   from { background-position: 150% 0; }
   to { background-position: -50% 0; }
 }
 
 @media (max-width: 767px) {
-  .info-dialog-copy-break {
+  .copyBreak {
     display: none;
   }
 
-  html.info-dialog-scroll-lock {
+  :global(html.info-dialog-scroll-lock) {
     overflow: hidden;
   }
 }
 
 @media (min-width: 768px) {
-  .info-dialog-shell {
+  .shell {
     width: min(600px, calc(100vw - var(--space-lg-4x)));
   }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
-  .info-dialog {
+  .dialog {
     height: min(60svh, 600px);
-    position: relative; 
+    position: relative;
     top: var(--space-md);
   }
 }
 
 @media (min-width: 1025px) {
-  .info-dialog {
+  .dialog {
     height: min(80.4svh, 680px);
-    position: relative; 
+    position: relative;
     top: var(--space-md);
   }
 }
 
 @media (min-width: 1024px) {
-  .ui-icon-nav.info-dialog-slider-controls { padding: var(--multi-buttons); }
+  :global(.ui-icon-nav).sliderControls { padding: var(--multi-buttons); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .info-dialog-media.is-loading::before {
+  .media.isLoading::before {
     animation: none;
   }
 }

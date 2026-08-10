@@ -96,7 +96,7 @@ const AppInner: React.FC = () => {
             >
               {/* Only the icon is styled as a button (the arrow chip below,
                   secondary-colored - see .more-info-trigger__icon-box in
-                  info.css) - the label/duration text stays plain, not
+                  styles/onboarding.css) - the label/duration text stays plain, not
                   part of any button-pill chrome. Still one <button> for
                   the whole clickable area though - see git history for why
                   the icon isn't its own nested button (invalid a11y nesting).
