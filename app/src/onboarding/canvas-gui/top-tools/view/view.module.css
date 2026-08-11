@@ -1,0 +1,25 @@
+.group {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.toggleStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+:global(.ui-icon-text-button).toggle {
+  color: var(--ui-text-muted);
+}
+
+:global(.ui-icon-text-button).toggleActive {
+  color: var(--ui-text);
+}
+
+.toggleActive .toggleLabel {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

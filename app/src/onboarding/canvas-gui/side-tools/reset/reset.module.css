@@ -1,0 +1,51 @@
+.popover {
+  min-width: 15rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: var(--space-lg);
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.title {
+  margin: 0;
+  color: var(--ui-text);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  line-height: var(--type-tight-line);
+}
+
+.closeButton.closeButton {
+  width: var(--tap-target-sm);
+  height: var(--tap-target-sm);
+  padding: var(--container-md);
+  border-radius: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--container-lg);
+}
+
+.message {
+  margin: 0;
+  color: var(--ui-text);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.proceedButton {
+  flex: 0 0 auto;
+}

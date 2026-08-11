@@ -1,0 +1,45 @@
+.popover {
+  --size-preview-max: 50px;
+  --range-thumb-height: 1.4rem;
+
+  padding: var(--space-md);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.preview {
+  display: flex;
+  flex: 0 0 var(--size-preview-max);
+  flex-direction: column;
+  align-items: center;
+  min-width: max-content;
+  gap: var(--space-sm);
+}
+
+.previewStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-preview-max);
+  height: var(--size-preview-max);
+}
+
+.previewCircle {
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--ui-text-muted);
+  transition: width 0.1s ease, height 0.1s ease;
+}
+
+.previewValue {
+  color: var(--ui-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  line-height: var(--type-tight-line);
+  white-space: nowrap;
+}

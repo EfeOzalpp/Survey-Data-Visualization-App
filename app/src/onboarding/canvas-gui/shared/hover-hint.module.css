@@ -1,0 +1,32 @@
+.target {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.positioner {
+  position: absolute;
+  z-index: 214;
+  pointer-events: none;
+}
+
+.positionerBottom {
+  padding-top: var(--space-sm);
+  transform: translateX(-50%);
+}
+
+.positionerRight {
+  padding-left: var(--space-sm);
+  transform: translateY(-50%);
+}
+
+.banner {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--type-label-size);
+  line-height: var(--type-tight-line);
+  white-space: nowrap;
+}
+
+.positionerRight .banner {
+  --hint-banner-hidden-transform: translateX(-8px) scale(0.98);
+  --hint-banner-visible-transform: translateX(0) scale(1);
+}

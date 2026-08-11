@@ -19,6 +19,7 @@
   --ui-bg-surface-hover: rgb(235, 235, 235);
   --ui-bg-surface-selected: rgba(186, 227, 156, 0.6);
   --ui-bg-surface-50: color-mix(in srgb, var(--ui-bg-surface) 50%, transparent);
+  --ui-bg-scroll-fade: #f2f1f0;
 
   /* Text input surfaces */
   --ui-bg-text-input: #fffaf6;
@@ -94,6 +95,7 @@
   --ui-bg-surface-hover: rgb(88, 86, 84);
   --ui-bg-surface-selected: rgba(109, 151, 108, 0.85);
   --ui-bg-surface-50: color-mix(in srgb, var(--ui-bg-surface) 50%, transparent);
+  --ui-bg-scroll-fade: #373537;
 
   /* Text input surfaces */
   --ui-bg-text-input: #3c3733;
