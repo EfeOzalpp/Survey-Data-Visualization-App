@@ -164,6 +164,9 @@ butterfly-effect/
 |   |   |       |-- filter/
 |   |   |       |   |-- filter.svg
 |   |   |       |   \-- FilterIcon.tsx
+|   |   |       |-- forward/
+|   |   |       |   |-- forward.svg
+|   |   |       |   \-- ForwardIcon.tsx
 |   |   |       |-- gui/
 |   |   |       |   |-- asset/
 |   |   |       |   |   \-- asset.svg
@@ -171,10 +174,32 @@ butterfly-effect/
 |   |   |       |   |   \-- brush.svg
 |   |   |       |   |-- canvas/
 |   |   |       |   |   \-- canvas.svg
+|   |   |       |   |-- copy/
+|   |   |       |   |   \-- copy.svg
+|   |   |       |   |-- devices/
+|   |   |       |   |   |-- desktop/
+|   |   |       |   |   |   \-- desktop.svg
+|   |   |       |   |   |-- mobile/
+|   |   |       |   |   |   \-- mobile.svg
+|   |   |       |   |   \-- tablet/
+|   |   |       |   |       \-- tablet.svg
 |   |   |       |   |-- erase/
 |   |   |       |   |   \-- erase.svg
+|   |   |       |   |-- fullscreen/
+|   |   |       |   |   |-- close_fullscreen.svg
+|   |   |       |   |   \-- fullscreen.svg
+|   |   |       |   |-- grid/
+|   |   |       |   |   |-- grid_off.svg
+|   |   |       |   |   \-- grid_on.svg
+|   |   |       |   |-- hide-tooling/
+|   |   |       |   |   |-- collapse.svg
+|   |   |       |   |   \-- expand.svg
+|   |   |       |   |-- horizon/
+|   |   |       |   |   \-- horizon.svg
 |   |   |       |   |-- move/
 |   |   |       |   |   \-- move.svg
+|   |   |       |   |-- reset/
+|   |   |       |   |   \-- reset.svg
 |   |   |       |   |-- responsive/
 |   |   |       |   |   \-- responsive_layout.svg
 |   |   |       |   |-- select/
@@ -450,10 +475,22 @@ butterfly-effect/
 |   |   |   |   |-- state/
 |   |   |   |   |   |-- editor-state-context.ts
 |   |   |   |   |   \-- editor-state-provider.tsx
+|   |   |   |   |-- workspace/
+|   |   |   |   |   |-- index.tsx
+|   |   |   |   |   |-- keyboard/
+|   |   |   |   |   |   \-- index.ts
+|   |   |   |   |   |-- lib/
+|   |   |   |   |   |   |-- device-canvas-size.ts
+|   |   |   |   |   |   |-- simulated-viewport.ts
+|   |   |   |   |   |   \-- tool-cursor.ts
+|   |   |   |   |   |-- use-workspace-camera.ts
+|   |   |   |   |   \-- workspace.module.css
 |   |   |   |   |-- side-tools/
 |   |   |   |   |   |-- fullscreen/
 |   |   |   |   |   |   \-- index.tsx
 |   |   |   |   |   |-- grid/
+|   |   |   |   |   |   \-- index.tsx
+|   |   |   |   |   |-- hide-tooling/
 |   |   |   |   |   |   \-- index.tsx
 |   |   |   |   |   |-- index.tsx
 |   |   |   |   |   |-- orient/
@@ -520,6 +557,9 @@ butterfly-effect/
 |   |   |   \-- rerenderBenchmark.ts
 |   |   |-- scene-canvas/
 |   |   |   |-- EngineHost.tsx
+|   |   |   |-- editor-runtime/
+|   |   |   |   |-- index.ts
+|   |   |   |   \-- preview-engine.tsx
 |   |   |   |-- grid-layout/
 |   |   |   |   |-- __tests__/
 |   |   |   |   |   |-- buildGrid.test.ts
