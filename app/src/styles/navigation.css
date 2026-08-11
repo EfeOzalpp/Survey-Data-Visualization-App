@@ -30,6 +30,11 @@
 
 .visual-editor-button { margin-left: var(--space-sm); }
 .system-color.is-dark { opacity: 0.95; }
+.system-color .ui-icon path {
+  stroke: var(--ui-icon-fill);
+  stroke-width: 0.3;
+  stroke-linejoin: round;
+}
 
 /* Bottom mode toggle - lives inside .nav-bottom */
 .mode-toggle-wrap { display: flex; align-items: center; user-select: none; }
