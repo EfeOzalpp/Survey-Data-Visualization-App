@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   padding: var(--space-md) 3.2rem 0;
+  scroll-margin-top: var(--space-lg-2x);
 }
 
 .workspace {
@@ -39,24 +40,12 @@
   padding: var(--space-lg) var(--space-lg-2x);
 }
 
-.canvasPlaceholder {
-  flex: 1 1 auto;
-  min-width: 0;
-  background: color-mix(in srgb, var(--ui-text) 18%, var(--ui-bg-surface));
-}
-
 .fullscreen {
   position: fixed;
   inset: 0;
   z-index: 1100;
   overflow: hidden;
   background: var(--ui-bg-surface-50);
-}
-
-.fullscreenCanvas {
-  position: absolute;
-  inset: 0;
-  background: color-mix(in srgb, var(--ui-text) 18%, var(--ui-bg-surface));
 }
 
 @media (max-width: 1024px) {

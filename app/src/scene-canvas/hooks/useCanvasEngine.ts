@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { CanvasBounds } from "../multi-canvas-setup/hostDefs";
+import type { EngineLayoutMode } from "../runtime/platform/mount";
 import type { DprMode } from "../runtime/platform/viewport";
 import {
   startCanvasEngine,
@@ -19,6 +20,7 @@ interface EngineOpts {
   bounds?: CanvasBounds;
   fpsCap?: number;
   animationActive?: boolean;
+  layout?: EngineLayoutMode;
 }
 
 function safeCall(fn: (() => void) | null | undefined, label?: string) {
@@ -62,6 +64,7 @@ export function useCanvasEngine(opts: EngineOpts = {}) {
     bounds,
     fpsCap,
     animationActive = true,
+    layout = "fixed",
   } = opts;
 
   const controlsRef = useRef<CanvasEngineControls | null>(null);
@@ -88,6 +91,7 @@ export function useCanvasEngine(opts: EngineOpts = {}) {
       zIndex,
       bounds,
       fpsCap,
+      layout,
       initialDarkMode: readStoredDarkMode(false),
       onReady: () => {
         readyRef.current = true;
@@ -103,7 +107,7 @@ export function useCanvasEngine(opts: EngineOpts = {}) {
 
       shutdownControls(controls, mount);
     };
-  }, [enabled, dprMode, mount, zIndex, bounds, fpsCap]);
+  }, [enabled, dprMode, mount, zIndex, bounds, fpsCap, layout]);
 
   useEffect(() => {
     safeCall(() => {

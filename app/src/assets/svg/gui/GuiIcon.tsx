@@ -10,6 +10,8 @@ import closeFullscreenSvg from "./fullscreen/close_fullscreen.svg?raw";
 import fullscreenSvg from "./fullscreen/fullscreen.svg?raw";
 import gridOffSvg from "./grid/grid_off.svg?raw";
 import gridOnSvg from "./grid/grid_on.svg?raw";
+import collapseToolingSvg from "./hide-tooling/collapse.svg?raw";
+import expandToolingSvg from "./hide-tooling/expand.svg?raw";
 import moveSvg from "./move/move.svg?raw";
 import resetSvg from "./reset/reset.svg?raw";
 import responsiveSvg from "./responsive/responsive_layout.svg?raw";
@@ -31,6 +33,8 @@ const GUI_ICONS = {
   fullscreen: fullscreenSvg,
   gridOff: gridOffSvg,
   gridOn: gridOnSvg,
+  collapseTooling: collapseToolingSvg,
+  expandTooling: expandToolingSvg,
   move: moveSvg,
   reset: resetSvg,
   responsive: responsiveSvg,

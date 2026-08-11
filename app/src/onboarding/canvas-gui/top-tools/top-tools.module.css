@@ -10,6 +10,8 @@
 }
 
 .floating {
+  --ui-bg-scroll-fade: var(--ui-bg-surface);
+
   position: absolute;
   top: var(--space-lg);
   left: 50%;
@@ -18,6 +20,26 @@
   width: max-content;
   max-width: calc(100vw - var(--space-lg-4x));
   transform: translateX(-50%);
+}
+
+.hidden {
+  display: none;
+}
+
+.floating .label {
+  display: none;
+}
+
+.root.floating .group {
+  padding: var(--container-md);
+}
+
+.root.floating .drawingToolGroup {
+  padding: 0;
+}
+
+.floating .toolIdentity {
+  padding: var(--container-md);
 }
 
 .group {

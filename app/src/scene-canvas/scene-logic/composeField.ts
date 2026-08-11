@@ -257,8 +257,10 @@ export function buildFieldPrelude(opts: ComposeOpts): FieldPrelude | null {
   const h = Math.round(opts.canvas.h);
   const ruleW = Math.round(opts.ruleWidthPx ?? w);
 
-  const device = currentViewportDeviceType(ruleW);
-  const landscapeScale = getLandscapeCountScale(device, opts.landscapeCountScale);
+  const device = opts.ruleDevice ?? currentViewportDeviceType(ruleW);
+  const landscapeScale = opts.ruleDevice === undefined
+    ? getLandscapeCountScale(device, opts.landscapeCountScale)
+    : 1;
   const spec = resolvePaddingSpec(ruleW, opts.padding);
 
   const { cell, cellW, cellH, ox, oy, rows, cols, metrics } = makeCenteredSquareGrid({

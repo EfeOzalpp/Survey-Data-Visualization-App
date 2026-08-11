@@ -7,13 +7,19 @@ import {
 } from "./editor-state-context";
 
 const INITIAL_EDITOR_STATE: EditorState = {
-  activeTool: "select",
+  activeTool: "move",
   activeView: "canvas",
   activeDevice: "desktop",
-  selectedPreset: "temperate",
+  selectedPreset: "desert",
   activeAsset: "house",
   gridVisible: true,
   isFullscreen: false,
+  toolingCollapsed: false,
+  workspaceCamera: {
+    x: 0,
+    y: 0,
+    zoom: 1,
+  },
   drawingSizes: {
     brush: 5,
     eraser: 5,
@@ -40,7 +46,15 @@ function editorStateReducer(state: EditorState, action: EditorAction): EditorSta
     case "toggle-grid":
       return { ...state, gridVisible: !state.gridVisible };
     case "set-fullscreen":
-      return { ...state, isFullscreen: action.fullscreen };
+      return {
+        ...state,
+        isFullscreen: action.fullscreen,
+        toolingCollapsed: action.fullscreen ? state.toolingCollapsed : false,
+      };
+    case "toggle-tooling":
+      return { ...state, toolingCollapsed: !state.toolingCollapsed };
+    case "set-workspace-camera":
+      return { ...state, workspaceCamera: action.camera };
     case "set-drawing-size":
       return {
         ...state,

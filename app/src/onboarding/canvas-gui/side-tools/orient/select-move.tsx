@@ -4,8 +4,8 @@ import { useEditorState } from "../../state/editor-state-context";
 import styles from "../side-tools.module.css";
 
 const MODES = [
-  { key: "select", label: "Select" },
   { key: "move", label: "Move" },
+  { key: "select", label: "Select" },
 ] as const;
 
 export default function SelectMove() {

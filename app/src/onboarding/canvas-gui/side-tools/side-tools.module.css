@@ -17,6 +17,11 @@
   transform: translateY(-50%);
 }
 
+.collapsed .collapsibleTool,
+.collapsed .collapsibleGroup {
+  display: none;
+}
+
 .group {
   display: flex;
   flex-direction: column;

@@ -23,6 +23,12 @@ export interface DeviceLayout {
   rowPerspective: number;
 }
 
+export interface WorkspaceCamera {
+  x: number;
+  y: number;
+  zoom: number;
+}
+
 export interface EditorState {
   activeTool: EditorTool;
   activeView: EditorView;
@@ -31,6 +37,8 @@ export interface EditorState {
   activeAsset: AssetKey;
   gridVisible: boolean;
   isFullscreen: boolean;
+  toolingCollapsed: boolean;
+  workspaceCamera: WorkspaceCamera;
   drawingSizes: Record<DrawingTool, number>;
   deviceLayouts: Record<DeviceKey, DeviceLayout>;
 }
@@ -43,6 +51,8 @@ export type EditorAction =
   | { type: "set-asset"; asset: AssetKey }
   | { type: "toggle-grid" }
   | { type: "set-fullscreen"; fullscreen: boolean }
+  | { type: "toggle-tooling" }
+  | { type: "set-workspace-camera"; camera: WorkspaceCamera }
   | { type: "set-drawing-size"; tool: DrawingTool; size: number }
   | { type: "set-row-count"; device: DeviceKey; rowCount: number }
   | { type: "set-row-perspective"; device: DeviceKey; rowPerspective: number };

@@ -4,12 +4,12 @@ import { useEditorState } from "../../state/editor-state-context";
 import shared from "../top-tools.module.css";
 import styles from "./view.module.css";
 
-export default function View() {
+export default function View({ floating = false }: { floating?: boolean }) {
   const { state, dispatch } = useEditorState();
 
   return (
     <div className={`${shared.group} ${styles.group}`}>
-      <div className={styles.toggleStack}>
+      <div className={`${styles.toggleStack}${floating ? ` ${styles.toggleStackFloating}` : ""}`}>
         <HoverHintTarget copy="Canvas view">
           <button
             type="button"

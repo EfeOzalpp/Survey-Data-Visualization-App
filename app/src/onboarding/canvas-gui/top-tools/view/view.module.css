@@ -11,6 +11,10 @@
   gap: var(--space-sm);
 }
 
+.toggleStackFloating {
+  flex-direction: row;
+}
+
 :global(.ui-icon-text-button).toggle {
   color: var(--ui-text-muted);
 }

@@ -11,7 +11,7 @@ import type { HostId } from "../multi-canvas-setup/hostDefs";
 import { HOST_DEFS } from "../multi-canvas-setup/hostDefs";
 import type { CanvasEngineControls } from "../runtime";
 import type { EngineShapeLightSource } from "../runtime/engine/state";
-import { fieldRefreshSignature } from "./sceneFieldSignature";
+import { fieldAppearSignature } from "./sceneFieldSignature";
 import type { useCanvasEngine } from "./useCanvasEngine";
 import { getCanvasLogicalSize, useCanvasLogicalSizeTick } from "./useCanvasLogicalSize";
 
@@ -20,11 +20,16 @@ import type { SceneLookupKey, SceneState } from "../scene-state";
 import { resolvePaddingPolicyVariants, resolvePaddingSpec } from "../scene-rules/canvas-padding";
 import type { ScenePlacementRules } from "../scene-rules/placement-rules";
 
-import { getViewportSize, type DeviceCountScale } from "../shared/responsiveness";
+import { getViewportSize, type DeviceCountScale, type DeviceType } from "../shared/responsiveness";
 import { usePreferences } from "../../app/state/preferences-context";
 import type { Place } from "../grid-layout/occupancy";
 
 type Engine = ReturnType<typeof useCanvasEngine>;
+
+export interface SceneFieldViewportOverride {
+  ruleDevice: DeviceType;
+  ruleWidthPx: number;
+}
 
 
 export function useSceneField(
@@ -37,12 +42,12 @@ export function useSceneField(
   fog?: boolean,
   shapeLightSource?: EngineShapeLightSource | null,
   initialFieldDelayMs = 0,
-  initialComposeDelayMs = 0
+  initialComposeDelayMs = 0,
+  viewportOverride?: SceneFieldViewportOverride
 ) {
   const fieldDelayStateRef = useRef<{ generation: number; untilMs: number } | null>(null);
   const fieldApplyStateRef = useRef<{
-    liveAvg: number | undefined;
-    signature: string;
+    appearSignature: string;
     itemCount: number;
   } | null>(null);
   const { ready, controls, readyTick } = engine;
@@ -50,6 +55,8 @@ export function useSceneField(
   const hostDef = HOST_DEFS[hostId];
   const { darkMode } = usePreferences();
   const canvasResizeTick = useCanvasLogicalSizeTick(engine);
+  const ruleDeviceOverride = viewportOverride?.ruleDevice;
+  const ruleWidthOverride = viewportOverride?.ruleWidthPx;
 
   const ruleset = hostDef.scene.ruleset;
   const sceneLookupKey: SceneLookupKey = hostDef.scene.lookupKey;
@@ -93,7 +100,7 @@ export function useSceneField(
         landscapeCountScale: DeviceCountScale | undefined;
         ruleWidthPx: number;
         canvas: { w: number; h: number };
-        refreshSignature: string;
+        appearSignature: string;
       }
     ) => {
       if (!ready.current) return;
@@ -105,24 +112,22 @@ export function useSceneField(
         reservedFootprints,
         landscapeCountScale: args.landscapeCountScale,
         ruleWidthPx: args.ruleWidthPx,
+        ruleDevice: ruleDeviceOverride,
         canvas: args.canvas,
       });
 
       if (cancelled) return;
 
       const previousApply = fieldApplyStateRef.current;
-      const liveAvgOnlyRefresh =
-        previousApply !== null &&
-        previousApply.itemCount > 0 &&
-        placed.length > 0 &&
-        previousApply.signature === args.refreshSignature &&
-        !Object.is(previousApply.liveAvg, liveAvg);
+      const shouldReplayAppear =
+        previousApply === null ||
+        previousApply.itemCount === 0 ||
+        previousApply.appearSignature !== args.appearSignature;
 
-      engineControls.setFieldItems(placed, { replayAppear: !liveAvgOnlyRefresh });
+      engineControls.setFieldItems(placed, { replayAppear: shouldReplayAppear });
       engineControls.setFieldVisible(placed.length > 0);
       fieldApplyStateRef.current = {
-        liveAvg,
-        signature: args.refreshSignature,
+        appearSignature: args.appearSignature,
         itemCount: placed.length,
       };
     };
@@ -137,13 +142,13 @@ export function useSceneField(
 
     const canvas = engineControls.canvas;
     const { w, h } = getCanvasLogicalSize(canvas);
-    const viewportW = getViewportSize().w;
+    const viewportW = ruleWidthOverride ?? getViewportSize().w;
     // Device-band rules should follow the actual viewport/device, not the
     // bounded size of a canvas instance such as Spotlight.
     const ruleWidthPx = viewportW;
     const resolvedShapeLightSource =
       shapeLightSource === undefined
-        ? resolveAuthoredLightSource(placements, liveAvg, ruleWidthPx)
+        ? resolveAuthoredLightSource(placements, liveAvg, ruleWidthPx, ruleDeviceOverride)
         : shapeLightSource;
 
     // Let runtime compute forbidden/rows from the current profile padding
@@ -166,16 +171,11 @@ export function useSceneField(
       landscapeCountScale: profile.landscapeCountScale,
       ruleWidthPx,
       canvas: { w, h },
-      refreshSignature: fieldRefreshSignature({
+      appearSignature: fieldAppearSignature({
         hostId,
         sceneLookupKey,
-        viewportKey,
         spotlightIndex,
-        fog,
-        darkMode,
-        canvas: { w, h },
         reservedFootprints,
-        shapeLightSource,
       }),
     };
 
@@ -190,6 +190,7 @@ export function useSceneField(
           reservedFootprints,
           landscapeCountScale: fieldArgs.landscapeCountScale,
           ruleWidthPx: fieldArgs.ruleWidthPx,
+          ruleDevice: ruleDeviceOverride,
           canvas: fieldArgs.canvas,
         }).then((placed) => {
           if (cancelled) return;
@@ -204,8 +205,7 @@ export function useSceneField(
               engineControls.setFieldItems(placed, { replayAppear: true });
               engineControls.setFieldVisible(placed.length > 0);
               fieldApplyStateRef.current = {
-                liveAvg,
-                signature: fieldArgs.refreshSignature,
+                appearSignature: fieldArgs.appearSignature,
                 itemCount: placed.length,
               };
             });
@@ -253,5 +253,7 @@ export function useSceneField(
     darkMode,
     initialFieldDelayMs,
     initialComposeDelayMs,
+    ruleDeviceOverride,
+    ruleWidthOverride,
   ]);
 }

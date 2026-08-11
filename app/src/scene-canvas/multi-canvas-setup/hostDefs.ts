@@ -8,6 +8,7 @@ import type { DprMode } from "../runtime/platform/viewport";
 export type CanvasBounds =
   | { kind: "viewport" }
   | { kind: "parent" }
+  | { kind: "parent-layout" }
   | { kind: "fixed"; w: number; h: number };
 
 interface HostDefBase {
