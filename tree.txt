@@ -164,6 +164,27 @@ butterfly-effect/
 |   |   |       |-- filter/
 |   |   |       |   |-- filter.svg
 |   |   |       |   \-- FilterIcon.tsx
+|   |   |       |-- gui/
+|   |   |       |   |-- asset/
+|   |   |       |   |   \-- asset.svg
+|   |   |       |   |-- brush/
+|   |   |       |   |   \-- brush.svg
+|   |   |       |   |-- canvas/
+|   |   |       |   |   \-- canvas.svg
+|   |   |       |   |-- erase/
+|   |   |       |   |   \-- erase.svg
+|   |   |       |   |-- move/
+|   |   |       |   |   \-- move.svg
+|   |   |       |   |-- responsive/
+|   |   |       |   |   \-- responsive_layout.svg
+|   |   |       |   |-- select/
+|   |   |       |   |   \-- select.svg
+|   |   |       |   |-- terminal/
+|   |   |       |   |   \-- terminal.svg
+|   |   |       |   |-- zoom/
+|   |   |       |   |   |-- zoom_in.svg
+|   |   |       |   |   \-- zoom_out.svg
+|   |   |       |   \-- GuiIcon.tsx
 |   |   |       |-- info/
 |   |   |       |   |-- info.svg
 |   |   |       |   |-- InfoIcon.tsx
@@ -418,6 +439,58 @@ butterfly-effect/
 |   |   |   |-- canvas-info/
 |   |   |   |   |-- canvas-info.module.css
 |   |   |   |   \-- index.tsx
+|   |   |   |-- canvas-gui/
+|   |   |   |   |-- canvas-gui.module.css
+|   |   |   |   |-- index.tsx
+|   |   |   |   |-- shared/
+|   |   |   |   |   |-- floating-tools.module.css
+|   |   |   |   |   |-- hover-hint.module.css
+|   |   |   |   |   |-- hover-hint.tsx
+|   |   |   |   |   \-- range-control.module.css
+|   |   |   |   |-- state/
+|   |   |   |   |   |-- editor-state-context.ts
+|   |   |   |   |   \-- editor-state-provider.tsx
+|   |   |   |   |-- side-tools/
+|   |   |   |   |   |-- fullscreen/
+|   |   |   |   |   |   \-- index.tsx
+|   |   |   |   |   |-- grid/
+|   |   |   |   |   |   \-- index.tsx
+|   |   |   |   |   |-- index.tsx
+|   |   |   |   |   |-- orient/
+|   |   |   |   |   |   |-- index.tsx
+|   |   |   |   |   |   |-- select-move.tsx
+|   |   |   |   |   |   \-- zoom.tsx
+|   |   |   |   |   |-- reset/
+|   |   |   |   |   |   |-- index.tsx
+|   |   |   |   |   |   \-- reset.module.css
+|   |   |   |   |   \-- side-tools.module.css
+|   |   |   |   \-- top-tools/
+|   |   |   |       |-- assets/
+|   |   |   |       |   |-- assets.module.css
+|   |   |   |       |   \-- index.tsx
+|   |   |   |       |-- drawing/
+|   |   |   |       |   |-- brush/
+|   |   |   |       |   |   \-- index.tsx
+|   |   |   |       |   |-- eraser/
+|   |   |   |       |   |   \-- index.tsx
+|   |   |   |       |   \-- shared/
+|   |   |   |       |       |-- tool-slider-popover.tsx
+|   |   |   |       |       \-- tool-slider.module.css
+|   |   |   |       |-- index.tsx
+|   |   |   |       |-- presets/
+|   |   |   |       |   |-- index.tsx
+|   |   |   |       |   \-- presets.module.css
+|   |   |   |       |-- top-tools.module.css
+|   |   |   |       |-- viewport/
+|   |   |   |       |   |-- device.module.css
+|   |   |   |       |   |-- device.tsx
+|   |   |   |       |   |-- index.tsx
+|   |   |   |       |   |-- rows.module.css
+|   |   |   |       |   |-- rows.tsx
+|   |   |   |       |   \-- viewport.module.css
+|   |   |   |       \-- view/
+|   |   |   |           |-- index.tsx
+|   |   |   |           \-- view.module.css
 |   |   |   |-- index.tsx
 |   |   |   |-- onboarding-info/
 |   |   |   |   |-- index.tsx
