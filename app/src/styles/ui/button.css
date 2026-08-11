@@ -343,13 +343,9 @@ button { pointer-events: auto; cursor: pointer; }
 /* Icon glyph size (svg-sm/svg-md) is set directly on the icon element now -
    see styles/tokens/spacing-sizing.css. */
 
-/* Positioning only, genuinely per-consumer (not svg-lg styling) - these two
-   sit next to each other in the nav. .system-color's negative margin-right
-   was tuned against the old text-pill "observe-results" button - reset it
-   here so the back icon button (much slimmer, no internal padding to
-   compensate) doesn't end up overlapping it; the flex gap on .right is
-   --space-sm, so this margin-left brings the two up to a full --space-md gap. */
-.system-color { margin-right: calc(-1 * var(--space-md)); }
+/* Positioning only, genuinely per-consumer (not svg-lg styling). Reset the
+   theme control's nav spacing when the slimmer back icon follows it. */
+.system-color { margin-right: calc(-1 * var(--space-sm)); }
 .system-color:has(+ .back-nav-button) { margin-right: 0; }
 
 /* -- Focus visible - WCAG 2.4.7 / 2.4.11 --------------------------- */

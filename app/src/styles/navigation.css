@@ -18,7 +18,7 @@
 .navigation > .left, .navigation > .right, .navigation > .graph-picker { display: flex; }
 
 .navigation > .left { align-items: center; width: var(--logo-wrap-w); height: var(--logo-wrap-h); z-index: 15; }
-.navigation > .right { align-items: center; gap: var(--space-sm); height: 36px; }
+.navigation > .right { align-items: center; gap: var(--space-sm); height: 44px; }
 .navigation > .right > * { flex-shrink: 0; }
 
 /* Left logo area */
@@ -28,7 +28,7 @@
 
 .logo-text { display: inline-flex; align-items: center; justify-content: center; min-width: var(--logo-w); min-height: var(--logo-h); color: var(--ui-text); font-family: var(--font-title); font-size: clamp(1.45rem, 2vw, 1.85rem); font-weight: 700; line-height: 1; letter-spacing: -0.06em; text-transform: lowercase; }
 
-.observe-results { margin-left: var(--space-sm); }
+.visual-editor-button { margin-left: var(--space-sm); }
 .system-color.is-dark { opacity: 0.95; }
 
 /* Bottom mode toggle - lives inside .nav-bottom */

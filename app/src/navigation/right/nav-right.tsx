@@ -3,6 +3,7 @@ import { memo, useState } from "react";
 
 import ColorToggle from "./theme-toggle";
 import BackIcon from "../../assets/svg/back/BackIcon";
+import ForwardIcon from "../../assets/svg/forward/ForwardIcon";
 import { Button } from "../../app/ui/Button";
 import GraphPicker from "../../graph-components/graph-picker/graph-picker";
 import { getSessionItem } from "../../app/session";
@@ -10,7 +11,6 @@ import { useIdentity } from "../../app/state/identity-context";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
 import { useSurveyDataStore } from "../../app/state/survey-data-store";
-import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
 import { useWindowAspectRatio } from "../../lib/hooks/useWindowAspectRatio";
 import { useWindowWidth } from "../../lib/hooks/useWindowWidth";
 import { isDesktopWidth, isTabletWidth } from "../../lib/responsive/breakpoints";
@@ -36,9 +36,6 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
     logsOpen,
     widgetsOpen,
     questionnaireOpen,
-    vizVisible,
-    cityPanelOpen,
-    setCityPanelOpen,
   } = useUiStore(
     useShallow((s) => ({
       isSurveyActive: s.isSurveyActive,
@@ -53,16 +50,12 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
       logsOpen: s.logsOpen,
       widgetsOpen: s.widgetsOpen,
       questionnaireOpen: s.questionnaireOpen,
-      vizVisible: s.vizVisible,
-      cityPanelOpen: s.cityPanelOpen,
-      setCityPanelOpen: s.setCityPanelOpen,
     }))
   );
   const { section, setSection } = useSurveyDataStore(
     useShallow((s) => ({ section: s.section, setSection: s.setSection }))
   );
   const { myEntryId, mySection, setMyEntryId, setMySection, setMyRole } = useIdentity();
-  const setLiveAvg = useCanvasRuntimeStore((s) => s.setLiveAvg);
   const windowWidth = useWindowWidth();
   const aspectRatio = useWindowAspectRatio();
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -74,32 +67,19 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
 
   const showPicker = (observerMode || hasCompletedSurvey) && !isSurveyActive;
   const showObserverButton = !isSurveyActive || observerMode || hasCompletedSurvey;
-  const observerLabel = observerMode || hasCompletedSurvey ? "Back" : "Explore Results";
+  const observerLabel = observerMode || hasCompletedSurvey ? "Back" : "Check Results";
   const savedEntryId = myEntryId;
   const savedSection = mySection;
-  const hasSavedSubmission = Boolean(savedEntryId && savedSection);
-  const showSavedCityButton =
-    hasSavedSubmission &&
-    !isSurveyActive &&
-    !observerMode &&
-    !hasCompletedSurvey &&
-    !vizVisible;
+  const showVisualEditorButton = !questionnaireOpen && showObserverButton && observerLabel === "Check Results";
   const pickerStyle: PickerOffsetStyle = {
     "--picker-offset": `${String(pickerOffset)}px`,
   };
 
-  const openSavedCity = () => {
-    if (!savedEntryId || !savedSection) return;
-    setMyEntryId(savedEntryId);
-    setMySection(savedSection);
-    setMyRole(getSessionItem("be.myRole"));
-    setSection(savedSection);
-    const storedAvg = getSessionItem("be.myAvg");
-    if (storedAvg !== null) {
-      const parsed = parseFloat(storedAvg);
-      if (Number.isFinite(parsed)) setLiveAvg(parsed);
-    }
-    setCityPanelOpen(!cityPanelOpen);
+  const scrollToVisualEditor = () => {
+    document.getElementById("visual-editor")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const toggleObserverMode = () => {
@@ -138,6 +118,17 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
       <div className={cx("right", isDark && "is-dark", introActive && "nav-first-enter")}>
         <ColorToggle />
 
+        {showVisualEditorButton && (
+          <Button
+            variant="secondary"
+            baseClassName="visual-editor-button"
+            onClick={scrollToVisualEditor}
+            aria-label="Visual Editor"
+          >
+            Visual Editor
+          </Button>
+        )}
+
         {showObserverButton && (
           observerLabel === "Back" ? (
             <button
@@ -149,27 +140,16 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
               <BackIcon />
             </button>
           ) : (
-            <Button
-              variant="secondary"
-              baseClassName="observe-results"
+            <button
+              type="button"
+              className="ui-icon-text-button observe-results"
               onClick={toggleObserverMode}
-              aria-pressed={observerMode || hasCompletedSurvey}
-              aria-label="Explore Results"
+              aria-label="Check Results"
             >
-              {observerLabel}
-            </Button>
+              <span>{observerLabel}</span>
+              <ForwardIcon className="ui-icon svg-md" />
+            </button>
           )
-        )}
-
-        {showSavedCityButton && (
-          <Button
-            variant="secondary"
-            baseClassName="city-button"
-            onClick={openSavedCity}
-            aria-label={cityPanelOpen ? "Back to home" : "Open my city"}
-          >
-            {cityPanelOpen ? "Back" : "My city"}
-          </Button>
         )}
       </div>
       {showPicker && (
