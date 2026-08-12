@@ -1,7 +1,4 @@
-// -------------------------------------------------------------
-// graph-components/widgets/bargraph/EmptyArt.tsx
 // Simple decorative empty-state SVG
-// -------------------------------------------------------------
 
 interface EmptyDustProps {
   className?: string;

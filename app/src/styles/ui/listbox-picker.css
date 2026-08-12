@@ -39,8 +39,8 @@
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
+  width: var(--tap-target-sm);
+  height: var(--tap-target-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,6 +115,7 @@
   flex: 1 1 auto;
   min-width: 0;
   color: var(--ui-text);
+  font-weight: var(--fw-bold);
 }
 .option-label {
   overflow: hidden;

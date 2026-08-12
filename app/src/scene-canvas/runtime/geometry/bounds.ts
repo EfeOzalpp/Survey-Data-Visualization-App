@@ -14,6 +14,13 @@ export function resolveBounds(
 
   if (b.kind === "fixed") return { w: b.w, h: b.h };
 
+  if (b.kind === "parent-layout") {
+    return {
+      w: Math.max(1, Math.round(parentEl.clientWidth)),
+      h: Math.max(1, Math.round(parentEl.clientHeight)),
+    };
+  }
+
   if (b.kind === "parent") {
     const r = parentEl.getBoundingClientRect();
     return {

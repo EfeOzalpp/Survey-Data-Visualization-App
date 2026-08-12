@@ -5,7 +5,9 @@ import React, { Suspense, startTransition, useEffect, useRef, useState } from "r
 import { useShallow } from "zustand/react/shallow";
 import LinkIcon from "../../assets/svg/link/LinkIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
+import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
 import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
+import styles from "./canvas-info.module.css";
 
 const SpotlightEntry = React.lazy(() => import("../../canvas-instances/SpotlightEntry"));
 
@@ -15,6 +17,7 @@ const SpotlightEntry = React.lazy(() => import("../../canvas-instances/Spotlight
 // scheduleStartupWork - each file keeps its own since the timeouts differ).
 const SPOTLIGHT_LOAD_TIMEOUT_MS = 800;
 const SPOTLIGHT_INTERSECTION_THRESHOLD = 0.1;
+const SPOTLIGHT_SLIDE_DURATION_MS = 7000;
 
 interface IdleWindow {
   requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
@@ -101,7 +104,7 @@ export default function CanvasInfo() {
 
     const id = window.setInterval(() => {
       nextSpotlight();
-    }, 4500);
+    }, SPOTLIGHT_SLIDE_DURATION_MS);
 
     return () => {
       window.clearInterval(id);
@@ -109,20 +112,20 @@ export default function CanvasInfo() {
   }, [nextSpotlight, spotlight.index, spotlight.paused, inView, spotlightReady]);
 
   return (
-    <aside ref={asideRef} className="onboarding-info canvas-info" aria-label="Scene Canvas information">
-      <section className="canvas-info__slider" aria-label="Scene Canvas preview">
-        <div className="canvas-info__spotlight-frame">
+    <aside ref={asideRef} className={styles.root} aria-label="Scene Canvas information">
+      <section className={styles.slider} aria-label="Scene Canvas preview">
+        <div className={styles.spotlightFrame}>
           {spotlightReady ? (
-            <Suspense fallback={<div id="spotlight-canvas-root" className="canvas-info__spotlight-canvas" aria-hidden="true" />}>
-              <SpotlightEntry spotlight={spotlight} liveAvg={spotlightLiveAvg} />
+            <Suspense fallback={<div id="spotlight-canvas-root" className={styles.spotlightCanvas} aria-hidden="true" />}>
+              <SpotlightEntry className={styles.spotlightCanvas} spotlight={spotlight} liveAvg={spotlightLiveAvg} />
             </Suspense>
           ) : (
-            <div id="spotlight-canvas-root" className="canvas-info__spotlight-canvas" aria-hidden="true" />
+            <div id="spotlight-canvas-root" className={styles.spotlightCanvas} aria-hidden="true" />
           )}
-          <div className="ui-icon-nav canvas-info__slider-controls" aria-label="Scene Canvas preview controls">
-            <div className="canvas-info__liveavg-control">
+          <div className={`ui-icon-nav ${styles.sliderControls}`} aria-label="Scene Canvas preview controls">
+            <div className={styles.liveAvgControl}>
               <input
-                className="canvas-info__liveavg-slider"
+                className={`${styles.liveAvgSlider} canvas-info__liveavg-slider`}
                 type="range"
                 min="0"
                 max="1"
@@ -135,9 +138,7 @@ export default function CanvasInfo() {
               />
             </div>
             <button type="button" className="ui-icon-nav-button canvas-info__slider-button" aria-label="Previous preview" onClick={previousSpotlight}>
-              <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M15 18L9 12L15 6" />
-              </svg>
+              <ChevronIcon direction="previous" className="ui-icon svg-md" />
             </button>
             <button
               type="button"
@@ -146,26 +147,24 @@ export default function CanvasInfo() {
               aria-label={spotlight.paused ? "Resume preview" : "Pause preview"}
               onClick={toggleSpotlightPaused}
             >
-              <PlayPauseIcon mode={spotlight.paused ? "play" : "pause"} className="ui-icon" />
+              <PlayPauseIcon mode={spotlight.paused ? "play" : "pause"} className="ui-icon svg-md" />
             </button>
             <button type="button" className="ui-icon-nav-button canvas-info__slider-button" aria-label="Next preview" onClick={nextSpotlight}>
-              <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M9 18L15 12L9 6" />
-              </svg>
+              <ChevronIcon direction="next" className="ui-icon svg-md" />
             </button>
           </div>
         </div>
       </section>
 
-      <section className="canvas-info__information">
-        <div className="canvas-info-div">
-          <h3 className="canvas-info__eyebrow">Built With a Custom Graphics Renderer</h3>
-          <ul className="canvas-info__copy">
+      <section className={styles.information}>
+        <div className={styles.content}>
+          <h3 className={styles.eyebrow}>Built With a Custom Graphics Renderer</h3>
+          <ul className={styles.copy}>
             <li>Butterfly Effect's city runs on a custom scene system, built on top of the Canvas2D API.</li>
-            <li>It's the predecessor of Canvas Engine, a more complete renderer for interactive visual tools I'm building.</li>
+            <li>It's the predecessor of Canvas Engine, a computer-aided, no code web graphics tool.</li>
             <li>Let's collaborate on GitHub. You can also reach out at efe.ozalp@canvas-engine.com.</li>
           </ul>
-          <div className="canvas-info__actions">
+          <div className={styles.actions}>
             <a
               className="canvas-engine-link"
               href="https://github.com/EfeOzalpp/canvas-engine"

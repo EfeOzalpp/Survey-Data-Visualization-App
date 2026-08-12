@@ -7,7 +7,7 @@ interface SearchIconProps {
   className?: string;
 }
 
-export default function SearchIcon({ className = "ui-icon" }: SearchIconProps) {
+export default function SearchIcon({ className = "ui-icon svg-sm" }: SearchIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

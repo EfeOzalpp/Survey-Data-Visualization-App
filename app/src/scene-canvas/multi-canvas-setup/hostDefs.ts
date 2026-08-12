@@ -8,6 +8,7 @@ import type { DprMode } from "../runtime/platform/viewport";
 export type CanvasBounds =
   | { kind: "viewport" }
   | { kind: "parent" }
+  | { kind: "parent-layout" }
   | { kind: "fixed"; w: number; h: number };
 
 interface HostDefBase {
@@ -18,6 +19,7 @@ interface HostDefBase {
   initialFieldDelayMs?: number;
   initialComposeDelayMs?: number;
   canvasDimensions?: CanvasBounds;
+  pauseWhenOffscreen?: boolean;
   stopOnOpen?: readonly string[];
   pointerHit?: boolean;
   scene?: {
@@ -43,6 +45,7 @@ export const HOST_DEFS = defineHosts({
     initialFieldDelayMs: 140,
     initialComposeDelayMs: 60,
     canvasDimensions: { kind: "parent" },
+    pauseWhenOffscreen: true,
     pointerHit: true,
     scene: { lookupKey: "start", ruleset: SCENE_RULESETS.intro },
   },
@@ -55,6 +58,7 @@ export const HOST_DEFS = defineHosts({
     stopOnOpen: ["start"],
     initialFieldDelayMs: 100,
     canvasDimensions: { kind: "parent" },
+    pauseWhenOffscreen: true,
     pointerHit: false,
     scene: { lookupKey: "questionnaire", ruleset: SCENE_RULESETS.intro },
   },
@@ -66,6 +70,7 @@ export const HOST_DEFS = defineHosts({
     fpsCap: 60,
     initialFieldDelayMs: 50,
     canvasDimensions: { kind: "viewport" },
+    pauseWhenOffscreen: true,
     pointerHit: true,
     scene: { lookupKey: "city", ruleset: SCENE_RULESETS.city },
   },
@@ -76,6 +81,7 @@ export const HOST_DEFS = defineHosts({
     dprMode: "cap2",
     fpsCap: 60,
     canvasDimensions: { kind: "parent" },
+    pauseWhenOffscreen: true,
     scene: { lookupKey: "spotlight", ruleset: SCENE_RULESETS.spotlight },
   },
 } as const);

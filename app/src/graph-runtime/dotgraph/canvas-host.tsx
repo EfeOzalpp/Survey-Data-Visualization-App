@@ -32,6 +32,7 @@ import {
   resumeSpriteTextureQueue,
 } from "../sprites/entry";
 import { setGraphContextLost } from "../debug/context";
+import styles from "./dotgraph.module.css";
 
 interface GraphCanvasElement extends HTMLCanvasElement {
   __gp_onLost?: EventListener | null;
@@ -302,12 +303,12 @@ const DotGraphCanvasHost = () => {
   }, [vizVisible]);
 
   return (
-    <div className="graph-container" style={{ height: '100svh', width: '100%' }}>
+    <div className={styles.container} data-graph-container style={{ height: '100svh', width: '100%' }}>
       {!section ? (
-        <p className="graph-loading">Pick a section to begin.</p>
+        <p className={styles.loading}>Pick a section to begin.</p>
       ) : loading ? (
         <div
-          className="graph-loading"
+          className={styles.loading}
           aria-busy="true"
           aria-live="polite"
           style={{
@@ -317,13 +318,13 @@ const DotGraphCanvasHost = () => {
             justifyContent: 'center',
           }}
         >
-          <h3 className="graph-loading-word" style={{ transform: emptyStateTransform, transition: 'transform 0.2s ease' }}>
+          <h3 className={styles.loadingWord} style={{ transform: emptyStateTransform, transition: 'transform 0.2s ease' }}>
             Loading...
           </h3>
         </div>
       ) : safeData.length === 0 ? (
         <div
-          className="graph-loading"
+          className={styles.loading}
           style={{
             height: '100%',
             display: 'flex',

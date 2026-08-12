@@ -7,7 +7,7 @@ interface CloseIconProps {
   className?: string;
 }
 
-export default function CloseIcon({ className = "ui-close" }: CloseIconProps) {
+export default function CloseIcon({ className = "ui-close svg-sm" }: CloseIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

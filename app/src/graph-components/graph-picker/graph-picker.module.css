@@ -12,13 +12,14 @@
 }
 .picker :global(.trigger):hover { padding: var(--button-padding-hover); }
 .picker :global(.trigger.is-open) { padding: var(--button-padding); }
+.picker :global(.trigger-chevron) { right: var(--space-sm); }
 
 .triggerLabel {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   flex: 1 1 auto;
-  max-width: calc(100% - 34px);
+  max-width: calc(100% - var(--tap-target-sm) - var(--space-sm));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

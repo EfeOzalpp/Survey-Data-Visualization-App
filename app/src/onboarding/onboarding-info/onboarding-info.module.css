@@ -1,0 +1,218 @@
+/* Root/overlay/shell positioning and transitions live in the shared Modal.
+   Only information-dialog sizing and content styling live here. */
+.dialog {
+  height: 460px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: var(--container-lg);
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+  font-size: var(--type-h4-size);
+  line-height: var(--type-h4-line);
+}
+
+.title span:first-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.copy {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 9rem;
+  overflow: hidden;
+  padding: var(--container-lg);
+}
+
+.copy p {
+  margin: 0;
+  color: var(--ui-text-secondary);
+}
+
+.slide.hasMedia {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: var(--space-lg);
+}
+
+.media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  margin: 0;
+  overflow: hidden;
+  background: var(--ui-bg-surface);
+}
+
+.media img,
+.media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media.isLoading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ui-text) 6%, transparent) 25%,
+    color-mix(in srgb, var(--ui-text) 14%, transparent) 50%,
+    color-mix(in srgb, var(--ui-text) 6%, transparent) 75%
+  );
+  background-size: 200% 100%;
+  animation: infoMediaShimmer 1.4s ease-in-out infinite;
+}
+
+.slide[data-slide-key="join-collective"] .media video {
+  transform: translateY(1px);
+}
+
+:global(.ui-icon-nav).sliderControls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: var(--multi-buttons-mobile);
+}
+
+.timeline {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.controlCluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 0 0 auto;
+}
+
+.progress {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+button.progressButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.progressTrack {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ui-text) 24%, transparent);
+}
+
+.progressFill {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ui-text) 62%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.progressFill.isComplete {
+  transform: scaleX(1);
+}
+
+.progressFill.isActive {
+  animation-name: infoDialogProgress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+button.progressButton:hover .progressTrack {
+  background: color-mix(in srgb, var(--ui-text) 38%, transparent);
+}
+
+button.progressButton:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 1px;
+  border-radius: var(--radius-md);
+}
+
+@keyframes infoDialogProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes infoMediaShimmer {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+
+@media (max-width: 767px) {
+  .copyBreak {
+    display: none;
+  }
+
+  :global(html.info-dialog-scroll-lock) {
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 768px) {
+  .shell {
+    width: min(600px, calc(100vw - var(--space-lg-4x)));
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .dialog {
+    height: min(60svh, 600px);
+    position: relative;
+    top: var(--space-md);
+  }
+}
+
+@media (min-width: 1025px) {
+  .dialog {
+    height: min(80.4svh, 680px);
+    position: relative;
+    top: var(--space-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  :global(.ui-icon-nav).sliderControls { padding: var(--multi-buttons); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media.isLoading::before {
+    animation: none;
+  }
+}

@@ -12,7 +12,7 @@ import type {
 import type { EngineFieldItem } from "./engine/field";
 
 import { createEngineTicker, type LoopDeps } from "./engine/loop";
-import { registerEngineFrame, unregisterEngineFrame } from "./engine/scheduler";
+import { registerEngineFrame, type EngineFrameRegistration } from "./engine/scheduler";
 import {
   reconcileLiveStatesOnFieldUpdate,
   type LiveState,
@@ -54,7 +54,16 @@ const FIELD_REFRESH_APPEAR_MS = 180;
 const FIELD_REFRESH_STAGGER_MS = 120;
 
 export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineControls {
-  const { mount = "#canvas-root", onReady, dprMode = "fixed1", zIndex = 2, layout = "fixed", fpsCap, initialDarkMode } = opts;
+  const {
+    mount = "#canvas-root",
+    onReady,
+    dprMode = "fixed1",
+    zIndex = 2,
+    layout = "fixed",
+    fpsCap,
+    initialDarkMode,
+    animationActive: initialAnimationActive = true,
+  } = opts;
 
   const parentEl = ensureMount(mount, zIndex, layout);
 
@@ -89,6 +98,10 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
 
   // layout + caches
   const gridCache = createGridCache();
+  let requestRender = () => {
+    // The initial resize runs before scheduler registration; the active first
+    // frame or subsequent scene-field invalidation will paint that size.
+  };
   const cleanupResize = installResizeHandlers({
     parentEl,
     canvasEl,
@@ -97,6 +110,7 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
     resizeTo: () => resolveBounds(parentEl, opts.bounds),
     onAfterResize: () => {
       invalidateGridCache(gridCache);
+      requestRender();
     },
   });
 
@@ -123,9 +137,32 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
 
   const ticker = createEngineTicker(loopDeps);
 
+  // Engine-local animation time advances only while continuous animation is
+  // active. Static invalidation frames redraw at the frozen time instead of
+  // catching up the entire offscreen interval.
+  const MAX_ACTIVE_CLOCK_STEP_MS = 1000 / 30;
+  let animationActive = initialAnimationActive;
+  let engineNowMs = performance.now();
+  let lastActiveWallNowMs: number | null = null;
+
+  const scheduledTick = (wallNowMs: number) => {
+    if (animationActive) {
+      if (lastActiveWallNowMs !== null) {
+        const elapsedMs = Math.max(0, wallNowMs - lastActiveWallNowMs);
+        engineNowMs += Math.min(elapsedMs, MAX_ACTIVE_CLOCK_STEP_MS);
+      }
+      lastActiveWallNowMs = wallNowMs;
+    } else {
+      lastActiveWallNowMs = null;
+    }
+
+    ticker.tick(engineNowMs);
+  };
+
   // stop + global instance registry
 
   let unregister: null | (() => void) = null;
+  let frameRegistration: EngineFrameRegistration | null = null;
   let didStop = false;
 
   function stop() {
@@ -137,7 +174,7 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
     } catch {}
 
     try {
-      unregisterEngineFrame(frameId);
+      frameRegistration?.unregister();
     } catch {}
 
     try {
@@ -164,6 +201,7 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
     if ("spotlight" in args) inputs.spotlight = args.spotlight ?? null;
     if ("hoveredItemId" in args) inputs.hoveredItemId = args.hoveredItemId ?? null;
     if ("selectedItemId" in args) inputs.selectedItemId = args.selectedItemId ?? null;
+    requestRender();
   }
 
   function setFieldItems(nextItems: EngineFieldItem[] = [], options: EngineSetFieldItemsOptions = {}) {
@@ -188,6 +226,7 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
     });
 
     field.items = safeNextItems;
+    requestRender();
   }
 
   function setFieldStyle(args: EngineFieldStyle = {}) {
@@ -238,13 +277,22 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
       if (typeof d.grid === "boolean") style.debug.grid = d.grid;
       if (typeof d.gridAlpha === "number") style.debug.gridAlpha = Math.max(0, Math.min(1, d.gridAlpha));
     }
+    requestRender();
   }
 
   function setFieldVisible(v: boolean) {
     field.visible = v;
+    requestRender();
   }
   function setVisibleCanvas(v: boolean) {
     canvasEl.style.opacity = v ? "1" : "0";
+  }
+
+  function setAnimationActive(active: boolean) {
+    if (animationActive === active) return;
+    animationActive = active;
+    lastActiveWallNowMs = null;
+    frameRegistration?.setActive(active);
   }
 
   function setSceneProfile(next: EngineSceneProfile) {
@@ -265,6 +313,7 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
     sceneProfile = nextProfile;
 
     if (shouldInvalidateGrid) invalidateGridCache(gridCache);
+    requestRender();
   }
 
   const controls: EngineControls = {
@@ -273,6 +322,7 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
     setFieldStyle,
     setFieldVisible,
     setVisible: setVisibleCanvas,
+    setAnimationActive,
     setSceneProfile,
     stop,
     sampleShapeHitMask: ticker.sampleShapeHitMask,
@@ -284,6 +334,14 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
     layout: gridCache,
   };
 
+  const registeredFrame = registerEngineFrame(frameId, scheduledTick, {
+    priority: zIndex,
+    fpsCap,
+    active: animationActive,
+  });
+  frameRegistration = registeredFrame;
+  requestRender = () => { registeredFrame.requestFrame(); };
+
   // Register this engine instance (stops any previous one for same mount/element)
   unregister = registerEngineInstance({
     mount,
@@ -292,7 +350,6 @@ export function startCanvasEngine(opts: StartCanvasEngineOpts = {}): EngineContr
   });
 
   onReady?.(controls);
-  registerEngineFrame(frameId, ticker.tick, { priority: zIndex, fpsCap });
   return controls;
 }
 

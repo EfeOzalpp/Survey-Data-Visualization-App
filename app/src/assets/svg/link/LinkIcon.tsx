@@ -7,7 +7,7 @@ interface LinkIconProps {
   className?: string;
 }
 
-export default function LinkIcon({ className = "ui-icon" }: LinkIconProps) {
+export default function LinkIcon({ className = "ui-icon svg-sm" }: LinkIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

@@ -7,7 +7,7 @@ interface BackIconProps {
   className?: string;
 }
 
-export default function BackIcon({ className = "ui-icon" }: BackIconProps) {
+export default function BackIcon({ className = "ui-icon svg-md" }: BackIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

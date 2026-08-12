@@ -1,0 +1,57 @@
+/* CompactToolsPanel-only styling (mobile+tablet modal content). Its trigger
+   uses the shared secondary icon-button primitive in styles/ui/button.css. */
+
+/* Tab strip comes from widgets/footer/multi-button-footer.tsx. The header
+   wrappers and close-button below belong only to the compact modal. */
+
+.compactToolsModal :global(.logs-popover) { border: none; border-radius: 0; box-shadow: none; }
+.compactToolsModal :global(.logs-table-wrap) { min-height: 260px; max-height: min(56svh, 480px); }
+
+.compactHeader {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.compactHeaderContent { flex: 1 1 auto; min-width: 0; }
+.compactHeaderContent > * { height: 100%; border-bottom: 0; }
+.compactLogsHeader .compactHeaderContent > * { padding-block: var(--space-md); }
+
+.compactWidgetBody { border-top: 1px solid var(--ui-border); }
+
+.closeButtonWrap {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+}
+
+.closeButtonDivider {
+  align-self: center;
+  width: 1px;
+  height: var(--space-lg-2x);
+  background: var(--ui-border);
+}
+
+.closeButton {
+  align-self: center;
+  width: var(--tap-target-sm);
+  height: var(--tap-target-sm);
+  margin: 0 var(--space-sm);
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  :global(.ui-modal-root:has(.compact-tools-modal)) { align-items: end; }
+  :global(.ui-modal-shell:has(.compact-tools-modal)) {
+    width: min(400px, calc(100% - 4rem));
+    transform: translateY(100%);
+  }
+  :global(.ui-modal-shell:has(.compact-tools-modal [data-compact-tool="logs"])) {
+    width: min(480px, calc(100% - 4rem));
+  }
+  :global(.ui-modal-root.is-open .ui-modal-shell:has(.compact-tools-modal)) { transform: translateY(0); }
+  :global(.ui-modal-card.compact-tools-modal) {
+    border: 1px solid var(--ui-border);
+    border-bottom: 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+}

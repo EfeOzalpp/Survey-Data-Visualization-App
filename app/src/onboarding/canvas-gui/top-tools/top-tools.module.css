@@ -1,0 +1,140 @@
+.root {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-width: 0;
+  box-sizing: border-box;
+  border-left: 1px solid var(--ui-border);
+}
+
+.floating {
+  --ui-bg-scroll-fade: var(--ui-bg-surface);
+
+  position: absolute;
+  top: var(--space-lg);
+  left: 50%;
+  z-index: 2;
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: calc(100vw - var(--space-lg-4x));
+  transform: translateX(-50%);
+}
+
+.hidden {
+  display: none;
+}
+
+.floating .label {
+  display: none;
+}
+
+.root.floating .group {
+  padding: var(--container-md);
+}
+
+.root.floating .drawingToolGroup {
+  padding: 0;
+}
+
+.floating .toolIdentity {
+  padding: var(--container-md);
+}
+
+.group {
+  display: flex;
+  align-self: stretch;
+  gap: var(--space-sm);
+  box-sizing: border-box;
+  padding: var(--space-lg) var(--space-lg-2x);
+  border-right: 1px solid var(--ui-border);
+}
+
+.label {
+  align-self: flex-start;
+  color: var(--ui-text);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--font-ui-weight);
+  line-height: var(--type-tight-line);
+}
+
+.iconGroup {
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space-md);
+  border-right: none;
+}
+
+.fullDivider {
+  border-right: 1px solid var(--ui-border);
+}
+
+.drawingToolGroup {
+  position: relative;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-right: 1px solid var(--ui-border);
+}
+
+.toolIdentity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-md);
+}
+
+.toolActions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolButton :global(svg.ui-icon) {
+  stroke: none;
+}
+
+.toolButton[aria-pressed="true"] {
+  background: var(--ui-bg-surface-hover);
+  color: var(--ui-text);
+}
+
+.sizeControl {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: var(--tap-target-sm);
+  height: var(--tap-target-sm);
+}
+
+.sizeControl :global(.ui-popover-anchor) {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.sizeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.sizeChevron {
+  transform: rotate(90deg);
+}
+
+.iconButton :global(svg.ui-icon) {
+  stroke: none;
+}

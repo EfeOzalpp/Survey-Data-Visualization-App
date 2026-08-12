@@ -18,13 +18,15 @@ function rgbaCss(r: number, g: number, b: number, a: number): string {
 
 function frameDeltaMs(now: number, last: number): number {
   const raw = now - last;
-  if (!Number.isFinite(raw) || raw <= 0) return DEFAULT_FRAME_DELTA_MS;
+  if (!Number.isFinite(raw) || raw < 0) return DEFAULT_FRAME_DELTA_MS;
+  if (raw === 0) return 0;
   return Math.min(raw, MAX_FRAME_DELTA_MS);
 }
 
 export function makeP(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): PLike {
   let _delta = DEFAULT_FRAME_DELTA_MS,
-    _last = performance.now();
+    _now = performance.now(),
+    _last = _now;
   const state = { doFill: true, doStroke: false, lineWidth: 1 };
 
   // Engine-side state that must survive save/restore
@@ -69,7 +71,7 @@ export function makeP(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D):
       return _delta;
     },
     millis() {
-      return performance.now();
+      return _now;
     },
     drawingContext: ctx,
     P2D: "2d",
@@ -252,6 +254,7 @@ export function makeP(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D):
     __tick(now) {
       _delta = frameDeltaMs(now, _last);
       _last = now;
+      _now = now;
     },
   };
 

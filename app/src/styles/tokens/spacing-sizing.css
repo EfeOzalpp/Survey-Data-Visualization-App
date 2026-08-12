@@ -1,0 +1,35 @@
+/* Spacing + shape + sizing tokens - gap/padding rhythm, corner radius,
+   tap-target hit boxes, icon glyph sizes. */
+:root {
+  --container-sm: 0rem;
+  --container-md: 0.4rem;
+  --container-lg: 0.9rem 1.2rem;
+
+  --multi-buttons: 0.4rem;
+  --multi-buttons-mobile: 0.6rem 0.6rem calc(1rem + env(safe-area-inset-bottom, 0px));
+
+  --space-sm: 0.3rem;
+  --space-md: 0.6rem;
+  --space-lg: 0.9rem;
+  --space-sm-1-5x: calc(var(--space-sm) * 1.5);
+  --space-lg-2x: calc(var(--space-lg) * 2);
+  --space-lg-3x: calc(var(--space-lg) * 3);
+  --space-lg-4x: calc(var(--space-lg) * 4);
+
+  --radius-md: 3px;
+  --radius-lg: 5px;
+
+  --tap-target-md: 44px;
+  --tap-target-sm: 40px;
+
+  --icon-size-sm: 1.2rem;
+  --icon-size-md: 1.6rem;
+}
+.svg-sm { width: var(--icon-size-sm) !important; height: var(--icon-size-sm) !important; }
+.svg-md { width: var(--icon-size-md) !important; height: var(--icon-size-md) !important; }
+
+@media (max-width: 768px) {
+  :root {
+    --container-md: 0.6rem 0.6rem 0.5rem;
+  }
+}

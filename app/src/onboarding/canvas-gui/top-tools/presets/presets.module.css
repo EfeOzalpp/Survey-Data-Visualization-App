@@ -1,0 +1,50 @@
+.group {
+  --picker-rest-w: 8rem;
+  --picker-hover-w: 9rem;
+  --picker-open-w: 10rem;
+
+  flex-direction: column;
+  flex: 0 0 calc(var(--picker-rest-w) + var(--space-lg-2x) + var(--space-lg-2x));
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--picker-rest-w) + var(--space-lg-2x) + var(--space-lg-2x));
+  min-width: 0;
+  max-width: calc(var(--picker-rest-w) + var(--space-lg-2x) + var(--space-lg-2x));
+}
+
+.picker {
+  position: relative;
+  z-index: 10;
+}
+
+.picker :global(.trigger) {
+  min-height: var(--tap-target-sm);
+  padding-inline: var(--space-md);
+  font-size: var(--type-label-size);
+}
+
+.picker :global(.trigger-chevron) {
+  right: 0;
+}
+
+.picker :global(.listbox-shell) {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 20;
+  width: var(--picker-open-w);
+  transform: translateX(-50%);
+}
+
+.picker :global(.listbox) {
+  max-height: 12rem;
+}
+
+.triggerLabel {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ui-text);
+  font-weight: var(--fw-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

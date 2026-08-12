@@ -5,14 +5,16 @@ export default function SpotlightEntry({
   visible = true,
   spotlight,
   liveAvg = 0.5,
+  className,
 }: {
   visible?: boolean;
   spotlight?: SpotlightSignal;
   liveAvg?: number;
+  className?: string;
 }) {
   return (
     <>
-      <div id="spotlight-canvas-root" className="canvas-info__spotlight-canvas" />
+      <div id="spotlight-canvas-root" className={className} />
       <EngineHost
         id="spotlight"
         open

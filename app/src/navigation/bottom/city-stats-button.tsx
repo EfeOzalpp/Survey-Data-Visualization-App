@@ -1,4 +1,3 @@
-import "../../styles/city-stats.css";
 import MapIcon from "../../assets/svg/map/MapIcon";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
@@ -14,13 +13,13 @@ export default function CityStatsButton() {
   return (
     <button
       type="button"
-      className="city-stats-trigger"
+      className="btn-secondary-icon"
       aria-expanded={cityStatsOpen}
       aria-haspopup="dialog"
       aria-label="City stats"
       onClick={() => { setCityStatsOpen(!cityStatsOpen); }}
     >
-      <MapIcon className="ui-icon" />
+      <MapIcon className="ui-icon svg-sm" />
     </button>
   );
 }

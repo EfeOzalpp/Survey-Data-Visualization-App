@@ -12,10 +12,10 @@ const MASSART_ROLE_OPTIONS: { val: Exclude<RoleValue, "visitor">; label: string 
 function SelectionIndicator({ selected }: { selected: boolean }) {
   if (selected) {
     return (
-      <CheckIcon className={styles.roleCheckIcon} />
+      <CheckIcon className={`${styles.roleCheckIcon} svg-sm`} />
     );
   }
-  return <span className={styles.roleIndicatorSpacer} />;
+  return <span className={`${styles.roleIndicatorSpacer} svg-sm`} />;
 }
 
 export default function RolePicker({
@@ -94,7 +94,7 @@ export default function RolePicker({
         >
           <SelectionIndicator selected={value === "visitor"} />
           <p className={styles.roleOptionLabel}>Explorer...</p>
-          <span className={styles.roleIndicatorSpacer} />
+          <span className={`${styles.roleIndicatorSpacer} svg-sm`} />
         </div>
 
         {/* MassArt roles share one visual island. */}
@@ -114,7 +114,7 @@ export default function RolePicker({
               >
                 <SelectionIndicator selected={checked} />
                 <p className={styles.roleOptionLabel}>{opt.label}</p>
-                <span className={styles.roleIndicatorSpacer} />
+                <span className={`${styles.roleIndicatorSpacer} svg-sm`} />
               </div>
             );
           })}

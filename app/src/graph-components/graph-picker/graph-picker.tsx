@@ -9,6 +9,7 @@ import {
   titleFromId,
 } from "./gp-data";
 import ExpandIcon from "../../assets/svg/expand/ExpandIcon";
+import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
 
 export default function GraphPicker({
   value = "all",
@@ -48,14 +49,15 @@ export default function GraphPicker({
   const maxActiveIndex = Math.max(0, VISIBLE_OPTS.length - 1);
   const safeActiveIndex = Math.min(Math.max(activeIndex, 0), maxActiveIndex);
 
-  const closePicker = useCallback(() => {
-    setOpen(false);
-    setMode(null);
-  }, []);
+  const updateOpen = useCallback((nextOpen: boolean) => {
+    setOpen(nextOpen);
+    onOpenChange?.(nextOpen);
+  }, [onOpenChange]);
 
-  useEffect(() => {
-    onOpenChange?.(open);
-  }, [open, onOpenChange]);
+  const closePicker = useCallback(() => {
+    updateOpen(false);
+    setMode(null);
+  }, [updateOpen]);
 
   // NavRight uses this one lifted signal to offset the top controls while open.
   useEffect(() => {
@@ -118,17 +120,17 @@ export default function GraphPicker({
       if (opt.id === CHOOSE_STAFF) { setMode("staff"); return; }
       if (opt.id === GO_BACK) { setMode(null); return; }
       setMode(null);
-      setOpen(false);
+      updateOpen(false);
       onChange?.(opt.id);
       buttonRef.current?.focus();
     },
-    [VISIBLE_OPTS, onChange]
+    [VISIBLE_OPTS, onChange, updateOpen]
   );
 
   const onTriggerKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") { e.preventDefault(); if (!open) setOpen(true); moveActive(1); }
-    else if (e.key === "ArrowUp") { e.preventDefault(); if (!open) setOpen(true); moveActive(-1); }
-    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (!open) setOpen(true); else chooseIndex(safeActiveIndex); }
+    if (e.key === "ArrowDown") { e.preventDefault(); if (!open) updateOpen(true); moveActive(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); if (!open) updateOpen(true); moveActive(-1); }
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (!open) updateOpen(true); else chooseIndex(safeActiveIndex); }
     else if (e.key === "Escape") { closePicker(); }
   };
 
@@ -154,7 +156,7 @@ export default function GraphPicker({
           <h4>{triggerCoreLabel}</h4>
         </span>
       }
-      chevronIcon={<ExpandIcon expanded={open} className="trigger-chevron-icon ui-icon" />}
+      chevronIcon={<ExpandIcon expanded={open} className="trigger-chevron-icon ui-icon svg-sm" />}
       triggerProps={{
         role: "combobox",
         "aria-haspopup": "listbox",
@@ -162,7 +164,7 @@ export default function GraphPicker({
         "aria-expanded": open,
         "aria-controls": listboxId,
         "aria-activedescendant": VISIBLE_OPTS[safeActiveIndex] ? `opt-${VISIBLE_OPTS[safeActiveIndex].id}` : undefined,
-        onClick: () => { if (open) closePicker(); else setOpen(true); },
+        onClick: () => { if (open) closePicker(); else updateOpen(true); },
         onKeyDown: onTriggerKeyDown,
         tabIndex: 0,
       }}
@@ -196,9 +198,7 @@ export default function GraphPicker({
             {isBack ? (
               <>
                 <span className={styles.backIcon} aria-hidden>
-                  <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 18L9 12L15 6" />
-                  </svg>
+                  <ChevronIcon direction="previous" />
                 </span>
                 <span className="label">Back</span>
               </>
@@ -217,9 +217,7 @@ export default function GraphPicker({
                   })()}
                 </span>
                 <span className={styles.chooserIcon} aria-hidden>
-                  <svg className="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 18L15 12L9 6" />
-                  </svg>
+                  <ChevronIcon direction="next" />
                 </span>
               </>
             ) : (

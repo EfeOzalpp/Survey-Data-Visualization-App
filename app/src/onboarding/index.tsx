@@ -4,7 +4,7 @@ import { profilerOnRender, recordOwnRender } from '../render-test/renderProfiler
 
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../app/state/ui-store";
-import "../styles/onboarding-info.css";
+import "../styles/onboarding.css";
 import "../styles/questionnaire.css";
 
 import { ROLE_SECTIONS } from "./section-picker/sections";
@@ -16,7 +16,7 @@ import { useSurveySubmission } from "./useSurveySubmission";
 import { track } from "../lib/posthog";
 import { getSessionItem } from "../app/session";
 
-// RoleStep/CanvasInfo render on the very first paint for every visitor
+// RoleStep/CanvasInfo/CanvasGui render on the very first paint for every visitor
 // (stage === 'role' is the initial state), so lazy-loading them gained no
 // real code-splitting benefit while making them the content of a Suspense
 // boundary that's present from the first byte of SSR output — any update
@@ -26,6 +26,7 @@ import { getSessionItem } from "../app/session";
 // safely past the hydration window.
 import RoleStep from "./role-picker/role-step";
 import CanvasInfo from "./canvas-info";
+import CanvasGui from "./canvas-gui";
 const SectionPickerIntro = React.lazy(() => import("./section-picker"));
 
 function Survey({
@@ -225,6 +226,7 @@ function Survey({
           {stage === 'role' && (
             <>
               <RoleStep value={audience} onChange={handleAudienceChange} onNext={handleRoleNext} error={error} />
+              <CanvasGui />
               <Profiler id="CanvasInfo" onRender={profilerOnRender}>
                 <CanvasInfo />
               </Profiler>

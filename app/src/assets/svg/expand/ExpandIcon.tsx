@@ -9,7 +9,7 @@ interface ExpandIconProps {
   className?: string;
 }
 
-export default function ExpandIcon({ expanded = false, className = "ui-icon" }: ExpandIconProps) {
+export default function ExpandIcon({ expanded = false, className = "ui-icon svg-sm" }: ExpandIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

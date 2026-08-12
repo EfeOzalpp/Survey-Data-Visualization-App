@@ -1,0 +1,172 @@
+/* Logs popover - table, pagination.
+   A few classes below are wrapped in :global(...) instead of hashed like
+   the rest - they're referenced by literal string from outside this file
+   (a prop, a querySelector, or another module's own :global() reach-in),
+   not just from this component's own JSX, so they can't be scoped:
+     - .logs-wrap        - navigation/bottom/logs-button.tsx's own wrapper div
+     - .logs-popover      - LogsPanel's className prop is a plain string,
+                             passed literally by logs-button.tsx and
+                             compact-graph-tools.tsx (not through this file's
+                             styles object)
+     - .logs-popover-shell - passed as Popover's shellClassName prop, and
+                             queried via .querySelector(".logs-popover-shell")
+                             in logs-button.tsx
+     - .logs-table-wrap   - reached into via compact-tools.module.css's own
+                             ".compactToolsModal :global(.logs-table-wrap)" */
+
+:global(.logs-wrap) { display: inline-flex; flex-direction: column; align-items: flex-start; pointer-events: all; }
+
+:global(.ui-popover-shell.logs-popover-shell) {
+  left: 0;
+  bottom: 0;
+  top: auto;
+  margin-bottom: 0;
+}
+
+:global(.logs-popover) { width: 100%; background: var(--ui-bg-surface); overflow: hidden; pointer-events: all; display: flex; flex-direction: column; }
+
+.logsHeader { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding: 0.8rem 1.2rem 0.4rem; flex-shrink: 0; }
+
+.logsTitle { margin: 0; font-size: var(--type-p-size); color: var(--ui-text); font-weight: var(--fw-bold); }
+
+.logsHeaderTools { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--space-sm); flex-shrink: 0; }
+
+.logsEntryCount { white-space: nowrap; }
+
+.logsFilterTrigger { border: 1px solid transparent; background: var(--ui-bg-surface); transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease; }
+
+.logsFilterTrigger:focus-visible { border-color: var(--ui-border); }
+
+/* Holds the hover treatment while the sort menu it opens stays open, so it
+   doesn't revert to idle the instant the pointer/tap leaves it. */
+.logsFilterTrigger:global(.is-active) { background: var(--ui-bg-surface-hover); color: var(--ui-text); }
+
+.logsSortMenu { display: flex; flex-direction: column; gap: var(--space-sm); padding: 0.6rem 0; min-width: 160px; }
+
+.logsSortMenuLabel { padding-left: 1.2rem; font-size: var(--type-label-size); line-height: var(--type-tight-line); color: var(--ui-text-secondary); }
+
+.logsSortMenuList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+
+.logsSortMenuOption { width: 100%; text-align: left; padding: 0.45rem 0.6rem 0.45rem 1.2rem; border: none; background: transparent; color: var(--ui-text); font-size: var(--type-p-size); font-family: inherit; cursor: pointer; transition: background 0.12s ease, color 0.12s ease; }
+
+.logsSortMenuOption:global(.is-active) { background: var(--ui-bg-surface-hover); font-weight: var(--fw-bold); }
+
+.logsFilterTrigger :global(.ui-icon) { stroke: currentColor; }
+
+.logsFilterField { display: inline-flex; align-items: center; gap: var(--space-sm); width: 160px; height: var(--tap-target-sm); padding: 0 0.8rem; border: 1px solid var(--ui-border); border-radius: var(--radius-md); background: var(--ui-bg-text-input); transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease; }
+
+.logsFilterField:global(.is-focused), .logsFilterField:focus-within { border-color: var(--ui-border-strong); }
+
+.logsFilterField :global(.ui-icon) { flex: 0 0 auto; stroke: var(--ui-text-muted); }
+
+.logsFilterInput { flex: 1 1 auto; min-width: 0; background: transparent; border: none; color: var(--ui-text); font-size: var(--type-label-size); font-family: inherit; outline: none; }
+
+.logsFilterInput::placeholder { color: var(--ui-text-muted); }
+
+:global(.logs-table-wrap) {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  background: var(--ui-bg-surface);
+  min-height: 220px;
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: auto;
+  scrollbar-width: thin; scrollbar-color: var(--scroll-bar) transparent;
+}
+:global(.logs-table-wrap)::-webkit-scrollbar { width: 6px; }
+:global(.logs-table-wrap)::-webkit-scrollbar-track { background: var(--ui-border); border-top: 6px solid transparent; border-bottom: 6px solid transparent; background-clip: padding-box; }
+:global(.logs-table-wrap)::-webkit-scrollbar-thumb { background: var(--scroll-bar); border-radius: 4px; }
+:global(.logs-table-wrap)::-webkit-scrollbar-thumb:hover { background: var(--ui-text-secondary); }
+
+.logsTable { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 100%; }
+
+.logsTh { position: sticky; top: -1px; background: var(--ui-bg-surface); background-clip: padding-box; color: var(--ui-text-secondary); font-size: var(--type-label-size); font-weight: var(--fw-bold); text-align: right; padding: 0.55rem 0.75rem; white-space: nowrap; z-index: 3; box-shadow: 0 1px 0 var(--ui-border), 0 6px 14px color-mix(in srgb, var(--ui-bg-surface) 92%, transparent); transform: translateZ(0); }
+
+.logsThSection { text-align: left; }
+.logsThQs { text-align: left; }
+.logsThAvg { text-align: left; }
+.logsThRank { text-align: left; }
+
+.logsTd { font-size: var(--type-label-size); color: var(--ui-text); text-align: right; padding: 0.7rem 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.logsTdSection {
+  text-align: left;
+  color: var(--ui-text-secondary);
+  white-space: normal;
+  line-height: var(--type-tight-line);
+}
+.logsTdQs { text-align: left; color: var(--ui-text-muted); letter-spacing: 0.01em; }
+.logsTdAvg { font-weight: var(--fw-bold); text-align: left; }
+.logsTdRank { color: var(--ui-text-muted); text-align: left; }
+.logsRow { cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.logsRow:global(.is-active) { background: var(--ui-bg-surface-hover); }
+.logsRow:focus-visible { outline: 2px solid var(--ui-border-strong); outline-offset: -2px; }
+
+.logsEmpty { padding: 1rem 0.75rem; color: var(--ui-text-muted); font-size: var(--type-label-size); text-align: center; }
+
+.logsHighlight { background: transparent; color: inherit; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.14em; padding: 0; }
+
+/* Pagination row - also hosts the desktop close button (LogsPanel passes it
+   as LogsBody's footerAction prop) on the opposite side from the page
+   controls. compact-tools never passes footerAction, so this row is
+   pagination-only there. */
+.logsPagination { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); min-height: var(--tap-target-sm); padding: var(--container-md); border-top: 1px solid var(--ui-border); }
+
+.logsPaginationControls { display: flex; align-items: center; gap: var(--space-sm); margin-left: auto; }
+
+.logsPageLabel { display: inline-flex; align-items: center; justify-content: center; gap: 0.28rem; min-height: var(--tap-target-sm); color: var(--ui-text); font-size: var(--type-label-size); line-height: var(--type-tight-line); font-variant-numeric: tabular-nums; }
+
+.logsPageSep { color: var(--ui-text-muted); margin: 0; }
+
+.logsPageInput { box-sizing: border-box; width: 60px; height: var(--tap-target-sm); padding: 0; background: var(--ui-bg-text-input); border: 1px solid var(--ui-border); border-radius: var(--radius-md); color: var(--ui-text); font-size: var(--type-label-size); line-height: var(--type-tight-line); font-family: inherit; text-align: center; outline: none; transition: border-color 0.12s ease, background 0.12s ease; appearance: textfield; }
+
+.logsPageInput::-webkit-outer-spin-button,
+.logsPageInput::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.logsPageInput:focus { border-color: var(--ui-border-strong); }
+.logsPageInput::placeholder { color: var(--ui-text-muted); }
+
+.logsPageArrow {
+  width: var(--tap-target-sm);
+  height: var(--tap-target-sm);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.logsPageArrowPlaceholder { visibility: hidden; pointer-events: none; }
+.logsPageArrow :global(.ui-icon) { color: currentColor; stroke: currentColor; }
+
+@media (hover: hover) and (pointer: fine) {
+  .logsSortMenuOption:hover { background: var(--ui-bg-surface-hover); }
+  .logsFilterField:hover { background: var(--ui-bg-text-input-hover); }
+  .logsRow:hover { background: var(--ui-bg-surface-hover); }
+  .logsRowEmpty:hover { background: transparent; }
+  .logsPageInput:hover { background: var(--ui-bg-text-input-hover); }
+}
+
+@media (max-width: 767px) {
+  .logsThSection { width: 25%; }
+  .logsThQs { width: 40%; }
+  .logsThAvg { width: 20%; }
+  .logsThRank { width: 15%; }
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  :global(.logs-table-wrap) { min-height: min(58svh, 520px); max-height: min(58svh, 520px); }
+
+  .logsThSection { width: 25%; }
+  .logsThQs { width: 35%; }
+  .logsThAvg { width: 16%; }
+  .logsThRank { width: 12%; }
+}
+
+@media (min-width: 1025px) {
+  :global(.logs-table-wrap) { min-height: calc(100svh - 12.8rem); max-height: calc(100svh - 12.8rem); }
+  :global(.ui-popover-shell.logs-popover-shell) { width: min(460px, calc(100vw - 3.2rem)); }
+
+  .logsThSection { width: 28%; }
+  .logsThQs { width: 38%; }
+  .logsThAvg { width: 17%; }
+  .logsThRank { width: 17%; }
+}

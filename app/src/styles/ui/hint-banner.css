@@ -30,7 +30,7 @@
 .hint-banner.is-visible.is-dismissible { pointer-events: auto; }
 .hint-banner-copy { color: var(--hint-text) !important; }
 
-.hint-banner-close { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 1px solid var(--hint-border); border-radius: 4px; background: transparent; color: var(--hint-text); appearance: none; -webkit-appearance: none; -webkit-tap-highlight-color: transparent; line-height: 0; }
+.hint-banner-close { display: inline-flex; align-items: center; justify-content: center; width: var(--tap-target-sm); height: var(--tap-target-sm); padding: 0; border: 1px solid var(--hint-border); border-radius: 4px; background: transparent; color: var(--hint-text); appearance: none; -webkit-appearance: none; -webkit-tap-highlight-color: transparent; line-height: 0; }
 .hint-banner-close > span { display: flex; align-items: center; justify-content: center; }
 .hint-banner-close:hover { background: var(--hint-bg-hover); color: var(--hint-text); }
 .hint-banner-close svg [stroke] { stroke: var(--hint-svg); }

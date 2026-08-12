@@ -1,0 +1,375 @@
+/* Shared button design tokens + the four button categories */
+
+:root {
+  --btn-font-weight: var(--fw-bold);
+  --btn-hover-scale-lg: 1.01;
+
+  /* Primary button */
+  --btn-primary-bg: rgb(126, 211, 126);
+  --btn-primary-hover-bg: rgb(114, 194, 114);
+  --btn-primary-text: #000000;
+  --btn-primary-icon: #406f4a;
+
+  /* Secondary button */
+  --btn-secondary-bg: #bf9dce;
+  --btn-secondary-text: #000000;
+  --btn-secondary-hover-bg: #a687b6;
+  --btn-secondary-ui-bg: #bf83db;
+
+  /* Tertiary button */
+  --btn-tertiary-bg: #f0ede8;
+  --btn-tertiary-text: var(--ui-text);
+  --btn-tertiary-hover-bg: #dbd4d2;
+
+  --transparent-btn: #1f293714;
+  --btn-radius: 1px;
+}
+
+:root[data-theme="dark"] {
+  --btn-font-weight: var(--fw-bold);
+  --btn-hover-scale-lg: 1.01;
+
+  --btn-primary-bg: #4e915d;
+  --btn-primary-hover-bg: #5c9d6a;
+  --btn-primary-text: #ecf5ef;
+  --btn-primary-icon: #c4eacb;
+
+  --btn-secondary-bg: #845f87;
+  --btn-secondary-text: #ffffff;
+  --btn-secondary-hover-bg: #83678e;
+  --btn-secondary-ui-bg: #875a99;
+
+  --btn-tertiary-bg: #5d5a57;
+  --btn-tertiary-text: var(--ui-text);
+  --btn-tertiary-hover-bg: #797873;
+
+  --transparent-btn: #ffffff14;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --btn-primary-padding: 0.9rem 1rem;
+    --btn-primary-padding-hover: 0.72rem 1.1rem;
+    --btn-primary-padding-reserve-block: 0.95rem;
+    --btn-primary-padding-reserve-inline: 1.1rem;
+    --btn-secondary-padding: 0.55rem 0.72rem;
+    --btn-secondary-padding-hover: 0.47rem 0.82rem;
+    --btn-secondary-padding-reserve-block: 0.55rem;
+    --btn-secondary-padding-reserve-inline: 0.82rem;
+    --button-padding: 0.72rem 0.85rem;
+    --button-padding-hover: 0.68rem 0.95rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --btn-primary-padding: 1rem 1.35rem;
+    --btn-primary-padding-hover: 0.95rem 1.65rem;
+    --btn-primary-padding-reserve-block: 1rem;
+    --btn-primary-padding-reserve-inline: 1.45rem;
+    --btn-secondary-padding: 0.75rem 0.9rem;
+    --btn-secondary-padding-hover: 0.7rem 1.15rem;
+    --btn-secondary-padding-reserve-block: 0.75rem;
+    --btn-secondary-padding-reserve-inline: 1.15rem;
+    --button-padding: 0.9rem 1rem;
+    --button-padding-hover: 0.75rem 1rem;
+  }
+}
+
+/* -- Button default typography --------------------------------------- */
+
+/* No color here on purpose - every real button category already sets its
+   own (--btn-primary-text/--btn-secondary-text/--ui-text-muted/etc), and a
+   bare `button` element selector plus this :not() still carries a type
+   selector, which out-specifies any single-class color rule set directly
+   on a <button> (e.g. .ui-toggle-option, .ui-icon-nav-button) regardless of
+   source order - silently overriding all of them with this one. Audited
+   every <button> in the app before removing it: none rely on inheriting
+   color from here. */
+button:not(.mode-toggle-label) { font-family: var(--font-body); font-size: var(--type-p-size); line-height: var(--type-body-line); font-weight: var(--fw-bold) !important; }
+
+/* -- Button base ---------------------------------------------------- */
+
+button { pointer-events: auto; cursor: pointer; }
+
+/* All expanding buttons use the grid/ghost trick to prevent layout shift on hover */
+.btn-primary,
+.btn-secondary,
+.canvas-engine-link {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--type-p-size);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  text-decoration: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, transform 50ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .canvas-engine-link:hover { padding: 0; background: transparent; }
+}
+
+/* Primary button colors */
+.btn-primary { color: var(--btn-primary-text); }
+
+.btn-primary .ui-icon { color: var(--btn-primary-icon); }
+
+/* Secondary button colors */
+.btn-secondary,
+.canvas-engine-link { color: var(--btn-secondary-text); font-weight: var(--btn-font-weight); }
+
+/* -- Primary ghost (hidden spacer that reserves hover width) -------- */
+
+.btn-primary__ghost {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  visibility: hidden;
+  white-space: nowrap;
+  line-height: 1;
+  padding-block: var(--btn-primary-padding-reserve-block);
+  padding-inline: var(--btn-primary-padding-reserve-inline);
+}
+
+/* -- Primary inner (the visible pill) ------------------------------ */
+
+.btn-primary__inner {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  border-radius: inherit;
+  padding: var(--btn-primary-padding);
+  background: var(--btn-primary-bg);
+  line-height: 1;
+  transition: padding 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:not(:disabled):hover .btn-primary__inner {
+    padding: var(--btn-primary-padding-hover);
+    background: var(--btn-primary-hover-bg);
+  }
+}
+
+/* primary disabled state - begin-button/solo-message-save use native
+   disabled, questionnaire uses aria-disabled (stays clickable/focusable so
+   it can flash a hint instead of doing nothing) - both real DOM signals,
+   Button.tsx wires them directly, no class-based fallback needed. */
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] { cursor: default; }
+
+.btn-primary:disabled .btn-primary__inner,
+.btn-primary[aria-disabled="true"] .btn-primary__inner {
+  background: color-mix(in srgb, var(--btn-primary-bg) 52%, black 48%);
+  box-shadow: none;
+  opacity: 0.58;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:disabled:hover .btn-primary__inner,
+  .btn-primary[aria-disabled="true"]:hover .btn-primary__inner {
+    padding: var(--btn-primary-padding);
+    background: color-mix(in srgb, var(--btn-primary-bg) 52%, black 48%);
+    box-shadow: none;
+  }
+}
+
+/* -- Secondary ghost (hidden spacer that reserves hover width) ----- */
+
+.btn-secondary__ghost,
+.canvas-engine-link__ghost {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  justify-self: center;
+  gap: var(--space-sm);
+  visibility: hidden;
+  white-space: nowrap;
+  padding-block: var(--btn-secondary-padding-reserve-block);
+  padding-inline: var(--btn-secondary-padding-reserve-inline);
+  line-height: 1;
+}
+
+/* -- Secondary inner (the visible pill) ---------------------------- */
+
+.btn-secondary__inner,
+.canvas-engine-link__inner {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--btn-secondary-padding);
+  border-radius: inherit;
+  background: var(--btn-secondary-bg);
+  line-height: 1;
+  transition: padding 120ms ease, background-color 120ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover .btn-secondary__inner,
+  .canvas-engine-link:hover .canvas-engine-link__inner {
+    padding: var(--btn-secondary-padding-hover);
+    background: var(--btn-secondary-hover-bg);
+  }
+}
+
+/* -- Tertiary - .ui-toggle-option, the tab/segment switcher ------------ */
+
+.ui-toggle-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-md);
+  background: var(--btn-tertiary-bg);
+  color: var(--ui-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--fw-bold);
+  line-height: var(--type-tight-line);
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.ui-toggle-option.is-active    { background: var(--ui-bg-surface-selected); color: var(--ui-text); }
+
+@media (hover: hover) and (pointer: fine) {
+  .ui-toggle-option:hover { background: var(--btn-tertiary-hover-bg); color: var(--ui-text); }
+  .ui-toggle-option.is-active:hover { background: var(--ui-bg-surface-selected); color: var(--ui-text); }
+}
+
+/* -- Secondary icon button ------------------------------------------ */
+
+.btn-secondary-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--tap-target-md);
+  height: var(--tap-target-md);
+  padding: 0;
+  border: none;
+  border-radius: var(--btn-radius);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  pointer-events: auto;
+  transition: background 0.12s ease;
+}
+
+.btn-secondary-icon .ui-icon {
+  color: currentColor;
+  stroke: currentColor;
+}
+
+.btn-secondary-icon:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary-icon:hover { background: var(--btn-secondary-hover-bg); }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .btn-secondary-icon:active { background: var(--btn-secondary-hover-bg); }
+}
+
+/* -- Icon-ghost - .svg-lg (theme toggle, back-nav button): transparent at
+   rest, --transparent-btn on hover, icon-only. Its own category, not a
+   second "tertiary" - see file header. */
+
+.svg-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target-md);
+  height: var(--tap-target-md);
+  padding: 6px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--btn-tertiary-text);
+}
+
+/* -- Icon + text: one borderless, content-width interaction surface -- */
+
+.ui-icon-text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: var(--tap-target-sm);
+  padding-inline: var(--space-md);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--btn-tertiary-text);
+  line-height: var(--type-tight-line);
+  white-space: nowrap;
+  transition: background 0.12s ease;
+}
+
+.ui-icon-text-button .ui-icon {
+  flex: 0 0 auto;
+  color: currentColor;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .svg-lg:hover,
+  .ui-icon-text-button:hover { background: var(--transparent-btn); }
+}
+@media (hover: none) and (pointer: coarse) {
+  .svg-lg:active,
+  .ui-icon-text-button:active { background: var(--transparent-btn); }
+}
+/* Icon glyph size (svg-sm/svg-md) is set directly on the icon element now -
+   see styles/tokens/spacing-sizing.css. */
+
+/* Positioning only, genuinely per-consumer (not svg-lg styling). Reset the
+   theme control's nav spacing when the slimmer back icon follows it. */
+.system-color { margin-right: calc(-1 * var(--space-sm)); }
+.system-color:has(+ .back-nav-button) { margin-right: 0; }
+
+/* -- Focus visible - WCAG 2.4.7 / 2.4.11 --------------------------- */
+
+.btn-primary:focus-visible .btn-primary__inner {
+  outline: 2px solid var(--btn-primary-bg);
+  outline-offset: 3px;
+  border-radius: inherit;
+}
+
+.btn-secondary:focus-visible .btn-secondary__inner,
+.canvas-engine-link:focus-visible .canvas-engine-link__inner {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 3px;
+  border-radius: inherit;
+}
+
+.svg-lg:focus-visible,
+.ui-icon-text-button:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 3px;
+}
+
+.ui-toggle-option:focus-visible {
+  outline: 2px solid var(--ui-border-strong);
+  outline-offset: 2px;
+}

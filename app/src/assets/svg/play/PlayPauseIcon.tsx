@@ -14,7 +14,7 @@ const PLAY_SVG = `
 </svg>
 `;
 
-export default function PlayPauseIcon({ mode, className = "ui-icon" }: PlayPauseIconProps) {
+export default function PlayPauseIcon({ mode, className = "ui-icon svg-sm" }: PlayPauseIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {

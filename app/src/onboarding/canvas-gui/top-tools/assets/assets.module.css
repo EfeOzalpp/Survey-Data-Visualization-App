@@ -1,0 +1,76 @@
+.group.group {
+  --asset-group-width: 34rem;
+
+  flex-direction: column;
+  flex: 0 1 var(--asset-group-width);
+  align-items: center;
+  justify-content: center;
+  width: var(--asset-group-width);
+  max-width: var(--asset-group-width);
+  min-width: 0;
+  padding-left: var(--space-md);
+  border-right: none;
+}
+
+.strip {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  scrollbar-width: none;
+}
+
+.optionsDragging {
+  cursor: grabbing;
+}
+
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  width: calc(var(--tap-target-sm) + var(--space-lg-2x));
+  pointer-events: none;
+}
+
+.edge > button {
+  pointer-events: auto;
+}
+
+.edgeStart {
+  left: 0;
+  justify-content: flex-start;
+  background: linear-gradient(
+    to right,
+    var(--ui-bg-scroll-fade) 0 var(--tap-target-sm),
+    transparent 100%
+  );
+}
+
+.edgeEnd {
+  right: 0;
+  justify-content: flex-end;
+  background: linear-gradient(
+    to right,
+    transparent 0,
+    var(--ui-bg-scroll-fade) calc(100% - var(--tap-target-sm)),
+    var(--ui-bg-scroll-fade) 100%
+  );
+}
+
+.options::-webkit-scrollbar {
+  display: none;
+}

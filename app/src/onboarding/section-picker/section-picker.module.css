@@ -3,7 +3,7 @@
    chrome (also used by GraphPicker) lives in styles/ui/listbox-picker.css
    and is reached here via :global(). The onboarding step-chrome classes
    (.survey/.survey-step/.survey-section) are shared across every onboarding
-   step (see styles/onboarding-info.css, role-step.tsx, questionnaire-flow.tsx)
+   step (see styles/onboarding.css, role-step.tsx, questionnaire-flow.tsx)
    and stay global for that reason - .section-select specifically is also
    read via a literal document.querySelector in onboarding/index.tsx, and
    .section-continue-button via a literal Playwright locator in
@@ -20,8 +20,9 @@
   gap: var(--space-md);
   padding: 0;
 }
-.sectionInput { width: 100%; min-width: 0; max-width: 100%; cursor: pointer; background: transparent; border: none; outline: none; padding: var(--button-padding); padding-right: calc(28px + 10px + 1rem); color: var(--ui-text); }
+.sectionInput { width: 100%; min-width: 0; max-width: 100%; cursor: pointer; background: transparent; border: none; outline: none; padding: var(--button-padding); padding-right: calc(28px + 10px + 1rem); color: var(--ui-text); font-weight: var(--fw-bold); }
 .sectionInput::placeholder { color: var(--ui-text-muted); }
+.sectionPicker :global(.trigger-chevron-icon.ui-icon) { transform: none; }
 .sectionPicker :global(.trigger.is-open .trigger-chevron) { transform: translateY(-50%) rotate(180deg); }
 .sectionPicker :global(.listbox-shell) { position: static; margin-top: 0; z-index: 20; }
 .sectionGroupHeader { display: block; position: sticky; top: 0; z-index: 1; background: var(--ui-bg-surface); font-size: var(--type-small-size); color: var(--ui-text-secondary); margin: 0; text-align: center; border-bottom: 1px solid var(--ui-border); }

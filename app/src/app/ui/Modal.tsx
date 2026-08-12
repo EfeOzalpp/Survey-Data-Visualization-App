@@ -35,7 +35,7 @@ export function Modal({
   const dialogRef = useRef<HTMLDivElement | null>(null);
 
   useEscapeToClose(open, () => { onOpenChange(false); });
-  useFocusTrap({ enabled: open, containerRef: dialogRef });
+  useFocusTrap({ enabled: open, containerRef: dialogRef, focusContainerOnTouch: true });
 
   // Spread: `inert` isn't in this project's pinned @types/react yet, but a
   // real boolean is correct here - see Popover.tsx for details.
@@ -54,6 +54,7 @@ export function Modal({
           ref={dialogRef}
           className={`ui-modal-card${cardClassName ? ` ${cardClassName}` : ""}`}
           role="dialog"
+          tabIndex={-1}
           aria-modal="true"
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}

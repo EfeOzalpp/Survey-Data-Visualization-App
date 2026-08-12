@@ -1,0 +1,161 @@
+/* Color tokens - surfaces, text, borders, icons, hints, graph signal colors.
+   --ui-text-title/--ui-questionnaire-title are gradients, not sizes, so they
+   live here rather than typography.css despite styling title text. */
+
+:root {
+  /* Main background surfaces */
+  --ui-bg-page: #ede8e5;
+  /* Graph */
+  --graph-bg: #f8f3ef;
+
+  /* user-flow scene-fade gradient (onboarding.css) */
+  --user-flow-fade-1: #ffffff;
+  --user-flow-fade-2: #ffffff;
+  --user-flow-fade-3: #ffffff;
+
+  /* Main UI surface colors */
+  --ui-bg-surface: #f8fafc;
+  --ui-bg-surface-glass: rgba(248, 250, 252, 0.7);
+  --ui-bg-surface-hover: rgb(235, 235, 235);
+  --ui-bg-surface-selected: rgba(186, 227, 156, 0.6);
+  --ui-bg-surface-50: color-mix(in srgb, var(--ui-bg-surface) 50%, transparent);
+  --ui-bg-scroll-fade: #f2f1f0;
+
+  /* Text input surfaces */
+  --ui-bg-text-input: #fffaf6;
+  --ui-bg-text-input-hover: #fff6ee;
+
+  /* input active */
+  --active-accent-color: #7fba7e;
+  --active-accent-color-hover:#70a56f;
+  --inactive-accent-color: rgba(211, 202, 194, 0.9);
+  --inactive-accent-color-hover: rgb(185, 173, 164);
+
+  --ui-drop-shadow: rgba(239, 240, 250, 0.6);
+
+  /* Text and misc color */
+  --ui-text-title: linear-gradient(120deg, #9ce7eb 0%, #759bc6 55%);
+  --ui-questionnaire-title: linear-gradient(120deg, #656f72 0%, #444649 55%);
+
+  --ui-text: #1f1f1e;
+  --ui-title: #1f1f1e;
+  --ui-text-secondary: #292827;
+  --ui-text-muted: #4b5563;
+  --ui-gamification: #292827;
+  --gam-glow-light-base: var(--ui-bg-page);
+  --gam-glow-dark-base: #21201e;
+
+  /* Border color */
+  --ui-border: #cbd5e1;
+  --ui-border-strong: #879cba;
+
+  /* Icons */
+  --ui-icon: currentColor;
+  --ui-icon-fill: var(--ui-icon);
+  --ui-icon-stroke: var(--ui-icon);
+  --ui-close-fill: rgb(63, 63, 63);
+  --ui-trigger-chevron-fill: rgb(79, 85, 81);
+
+  --scroll-bar: rgb(195, 195, 195);
+
+  /* error color */
+  --ui-error: #cb2418;
+
+  /* Hint theme */
+  --hint-bg: #f8fafc;
+  --hint-bg-hover: #edf0f5;
+  --hint-text: #1f1f1e;
+  --hint-border: rgba(100, 116, 139, 0.22);
+  --hint-svg: var(--hint-text);
+
+  /* graph signal colors - RGB triplets for rgba() composition in keyframes */
+  --graph-green-hi-rgb: 0, 220, 60;
+  --graph-green-lo-rgb: 140, 220, 110;
+  --graph-yellow-hi-rgb: 255, 203, 70;
+  --graph-yellow-lo-rgb: 245, 233, 70;
+  --graph-red-hi-rgb: 240, 108, 13;
+  --graph-red-lo-rgb: 211, 95, 93;
+  --graph-bar-border: rgba(212, 212, 212, 0.8);
+}
+
+:root[data-theme="dark"] {
+  /* Main color */
+  --ui-bg-page: #222329;
+  /* Graph */
+  --graph-bg:#222329;
+
+  /* user-flow scene-fade gradient (onboarding.css) */
+  --user-flow-fade-1: #5c764c;
+  --user-flow-fade-2: #b9c7de;
+  --user-flow-fade-3: #bd9466;
+
+  /* Main UI surface colors */
+  --ui-bg-surface: #4b4845;
+  --ui-bg-surface-glass: rgba(44, 44, 44, 0.7);
+  --ui-bg-surface-hover: rgb(88, 86, 84);
+  --ui-bg-surface-selected: rgba(109, 151, 108, 0.85);
+  --ui-bg-surface-50: color-mix(in srgb, var(--ui-bg-surface) 50%, transparent);
+  --ui-bg-scroll-fade: #373537;
+
+  /* Text input surfaces */
+  --ui-bg-text-input: #3c3733;
+  --ui-bg-text-input-hover: #433e39;
+
+  /* input active */
+  --active-accent-color: #6d976c;
+  --active-accent-color-hover: #6d976c;
+  --inactive-accent-color:#665e5b;
+  --inactive-accent-color-hover: #847f7e;
+
+  --ui-drop-shadow: rgba(0, 0, 0, 0.4);
+
+  --ui-text: rgb(255, 255, 255);
+  --ui-title: rgb(255, 255, 255);
+  --ui-gamification: #f1efea;
+  --gam-glow-dark-base: var(--ui-bg-page);
+  --ui-text-secondary: rgba(255, 255, 255, 0.85);
+  --ui-text-muted: rgba(255, 255, 255, 0.7);
+
+  /* Border color */
+  --ui-border: rgba(255, 255, 255, 0.08);
+  --ui-border-strong: rgba(255, 255, 255, 0.2);
+
+  /* Icons */
+  --ui-icon: #ffffff;
+  --ui-icon-fill: var(--ui-icon);
+  --ui-icon-stroke: var(--ui-icon);
+  --ui-close-fill: #ffffff;
+  --ui-trigger-chevron-fill: rgba(255, 255, 255, 0.75);
+  --scroll-bar: #c3c3c3;
+  --ui-error: #ff8f8f;
+
+  /* Hint theme */
+  --hint-bg: #2c2c2c;
+  --hint-bg-hover: #3a3a3a;
+  --hint-text: #ffffff;
+  --hint-border: rgba(255, 255, 255, 0.1);
+  --hint-svg: var(--hint-text);
+
+  /* graph signal colors - blue-shifted for dark bg */
+  --graph-green-hi-rgb: 35, 195, 115;
+  --graph-green-lo-rgb: 70, 178, 135;
+  --graph-yellow-hi-rgb: 195, 188, 90;
+  --graph-yellow-lo-rgb: 178, 195, 105;
+  --graph-red-hi-rgb: 205, 78, 88;
+  --graph-red-lo-rgb: 178, 60, 108;
+  --graph-bar-border: rgba(70, 75, 90, 0.7);
+}
+
+@media (max-width: 767px) {
+  :root[data-theme="dark"] {
+    --ui-questionnaire-title: linear-gradient(150deg, rgb(240, 240, 240), rgba(255, 255, 255, 0.71));
+    --ui-text-title: linear-gradient(150deg, rgb(245, 245, 245), rgba(255, 255, 255, 0.676));
+  }
+}
+
+@media (min-width: 768px) {
+  :root[data-theme="dark"] {
+    --ui-questionnaire-title: linear-gradient(150deg, rgb(248, 248, 248), rgba(255, 255, 255, 0.86));
+    --ui-text-title: linear-gradient(150deg, rgb(255, 255, 255), rgba(255, 255, 255, 0.753));
+  }
+}

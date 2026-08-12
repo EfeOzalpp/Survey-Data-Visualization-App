@@ -80,7 +80,7 @@ export default function useZoom({
 
     const isGraphEvent = (event: Event) => {
       const target = event.target;
-      return target instanceof Element && Boolean(target.closest('.graph-container'));
+      return target instanceof Element && Boolean(target.closest('[data-graph-container]'));
     };
 
     const preventGraphDefault = (event: Event) => {

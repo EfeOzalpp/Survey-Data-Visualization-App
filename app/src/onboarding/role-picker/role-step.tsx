@@ -1,12 +1,13 @@
 // src/onboarding/role-picker/role-step.tsx
 import styles from "./role-picker.module.css";
+import { Button } from "../../app/ui/Button";
 import RolePicker from ".";
 import type { RoleValue } from ".";
 
 const DISPLAY: Record<RoleValue, string> = {
   student: "Step In",
   staff: "Step In",
-  visitor: "Let's Begin",
+  visitor: "Begin Survey",
 };
 
 interface RoleStepProps {
@@ -37,18 +38,17 @@ export default function RoleStep({ value, onChange, onNext, error }: RoleStepPro
               <p>What option fits best?</p>
             </div>
           )}
-          <div className="button-wrap"><button
-            type="button"
-            className={`begin-button ${!isSelected ? "is-disabled" : ""} ${
-              value === "staff" ? "is-staff" : ""
-            }`}
-            disabled={!isSelected}
-            aria-describedby={errorId}
-            onClick={onNext}
-          >
-            <span className="begin-button__ghost" aria-hidden="true">{buttonLabel}</span>
-            <span className="begin-button__inner">{buttonLabel}</span>
-          </button></div>
+          <div className="button-wrap">
+            <Button
+              baseClassName="begin-button"
+              modifierClassName={value === "staff" ? "is-staff" : undefined}
+              disabled={!isSelected}
+              aria-describedby={errorId}
+              onClick={onNext}
+            >
+              {buttonLabel}
+            </Button>
+          </div>
         </div>
     </section>
   );

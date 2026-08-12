@@ -8,7 +8,7 @@ import type { Size } from "../scene-rules/shapeFootprints";
 import type { ScenePlacementRules } from "../scene-rules/placement-rules/index";
 import type { ProceduralZoneBand } from "../scene-rules/placement-rules";
 import type { EngineFieldItem } from "../runtime/engine/field";
-import type { DeviceCountScale } from "../shared/responsiveness";
+import type { DeviceCountScale, DeviceType } from "../shared/responsiveness";
 
 export type FootRect = GridFootprint;
 
@@ -52,6 +52,7 @@ export interface ComposeOpts {
   liveAvg: number | undefined;
   reservedFootprints?: FootRect[];
   ruleWidthPx?: number;
+  ruleDevice?: DeviceType;
   landscapeCountScale?: DeviceCountScale;
   canvas: { w: number; h: number };
   salt?: number;

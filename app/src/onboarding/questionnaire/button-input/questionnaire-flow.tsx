@@ -23,7 +23,7 @@ function reserveSingleTile(footprint: Place): Place {
 
 function ButtonQuestionnaireIcon({ active }: { active: boolean }) {
   return (
-    <span className="ui-icon button-questionnaire__button-icon" aria-hidden="true">
+    <span className="ui-icon svg-sm button-questionnaire__button-icon" aria-hidden="true">
       {active ? (
         <CheckIcon className="button-questionnaire__button-check-icon" />
       ) : (

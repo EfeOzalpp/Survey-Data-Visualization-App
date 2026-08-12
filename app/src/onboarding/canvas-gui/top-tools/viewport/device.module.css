@@ -1,0 +1,37 @@
+.popover {
+  min-width: 10rem;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding-block: var(--space-md);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg-2x);
+  border: none;
+  background: transparent;
+  color: var(--ui-text);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  line-height: var(--type-tight-line);
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.optionActive {
+  background: var(--ui-bg-surface-hover);
+  font-weight: var(--fw-bold);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .option:hover {
+    background: var(--ui-bg-surface-hover);
+  }
+}

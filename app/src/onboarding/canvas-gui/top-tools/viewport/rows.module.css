@@ -1,0 +1,47 @@
+.popover {
+  --range-thumb-height: 1.4rem;
+
+  min-width: 12rem;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.content {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--ui-border);
+  color: var(--ui-text);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  line-height: var(--type-tight-line);
+  white-space: nowrap;
+}
+
+.content span {
+  font-weight: var(--fw-bold);
+}
+
+.rowControl,
+.perspectiveControl {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-sm);
+}
+
+.rowControl {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.rowCount {
+  align-self: flex-start;
+  color: var(--ui-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  line-height: var(--type-tight-line);
+}

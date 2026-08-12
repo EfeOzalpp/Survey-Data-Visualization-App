@@ -28,9 +28,10 @@ function hasActiveCount(
 export function resolveAuthoredLightSource(
   placements: ScenePlacementRules,
   liveAvg: number | undefined,
-  ruleWidthPx: number
+  ruleWidthPx: number,
+  ruleDevice?: DeviceType
 ): SceneShapeLightSource | null {
-  const device = currentViewportDeviceType(ruleWidthPx);
+  const device = ruleDevice ?? currentViewportDeviceType(ruleWidthPx);
   const sunRule = placements.sun;
 
   if (sunRule?.center && hasActiveCount(sunRule.center.count, sunRule.quota, device, liveAvg, 1)) {

@@ -4,18 +4,17 @@
 
 .survey.survey-step.questionnaire { width: 100%; max-width: 100%; min-height: 100dvh; display: flex; justify-content: flex-start; align-items: center; flex-direction: column; position: relative; overflow: hidden; overflow: clip; }
 .onboarding-canvas.questionnaire-active { position: fixed; inset: 0; width: 100dvw; min-height: 100dvh !important; max-height: 100dvh !important; height: 100dvh !important; overflow: hidden; overflow: clip; }
-.questionnaire { pointer-events: auto; }
-.q-title { color: var(--ui-text); }
+.survey.survey-step.questionnaire .q-title { color: var(--ui-text); }
 
-.questionnaire-title { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; align-content: center; flex-wrap: wrap; opacity: 1; transform: translateY(0); }
-.questionnaire-question-title { background: var(--ui-questionnaire-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; }
+.survey.survey-step.questionnaire .questionnaire-title { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; align-content: center; flex-wrap: wrap; opacity: 1; transform: translateY(0); }
+.survey.survey-step.questionnaire .questionnaire-question-title { background: var(--ui-questionnaire-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; }
 .survey.survey-step.questionnaire.is-ui-delayed .questionnaire-title { opacity: 0; transform: translateY(6px); }
 .survey.survey-step.questionnaire.is-ui-delayed .button-questionnaire__canvas-layer { opacity: 0; pointer-events: none; }
 .survey.survey-step.questionnaire.is-ui-ready .questionnaire-title { opacity: 1; transform: translateY(0); }
 .survey.survey-step.questionnaire.is-ui-ready .button-questionnaire__canvas-layer { opacity: 1; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .questionnaire-question-title { animation: titleWipe 1800ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .survey.survey-step.questionnaire .questionnaire-question-title { animation: titleWipe 1800ms cubic-bezier(0.16, 1, 0.3, 1) both; }
   .survey.survey-step.questionnaire .questionnaire-title { transition: opacity 180ms ease, transform 220ms cubic-bezier(.22,.61,.36,1); }
   .survey.survey-step.questionnaire .button-questionnaire__canvas-layer { transition: opacity 180ms ease; }
   .button-questionnaire__button { animation: titleWipe 1000ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--slot-index, 0) * 80ms) both; }
@@ -28,16 +27,16 @@
 .button-questionnaire__button-label { line-height: 1.15; }
 
 @media (max-width: 767px) {
-  .questionnaire-title { text-align: center; top: 16%; width: 100%; padding: 2.4rem 1.2rem; height: 30dvh; }
-  .q-title { position: relative; top: 3dvh; }
+  .survey.survey-step.questionnaire .questionnaire-title { text-align: center; top: 16%; width: 100%; padding: 2.4rem 1.2rem; height: 30dvh; }
+  .survey.survey-step.questionnaire .q-title { position: relative; top: 3dvh; }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
-  .questionnaire-title { height: 37dvh; }
+  .survey.survey-step.questionnaire .questionnaire-title { height: 37dvh; }
 }
 
 @media (min-width: 1025px) {
-  .questionnaire-title { height: 45dvh; }
+  .survey.survey-step.questionnaire .questionnaire-title { height: 45dvh; }
 }
 
 @media (min-width: 768px) {

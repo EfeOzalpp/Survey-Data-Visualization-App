@@ -2,7 +2,7 @@
    onboarding/role-picker/ - both index.tsx and role-step.tsx import this
    same module). The onboarding step-chrome classes (.survey/.survey-step/
    .survey-section/.button-wrap/.error-container/.welcome-text) are shared
-   across every onboarding step (see styles/onboarding-info.css) and stay
+   across every onboarding step (see styles/onboarding.css) and stay
    global for that reason - .role-select specifically is also read via a
    literal Playwright locator in render-test/rerenderBenchmark.ts, so it
    must stay unhashed regardless. */
@@ -22,10 +22,10 @@
   background: var(--ui-bg-surface-50);
 }
 :global(.survey.survey-step.role-select) .onboarding {
-  padding: calc(var(--space-lg) * 4) calc(var(--space-md)) calc(var(--space-lg) * 4);
+  padding: var(--space-lg-4x) var(--space-md) var(--space-lg-4x);
 }
 
-.radioOptions { display: flex; flex-direction: column; gap: calc(var(--space-sm) * 1.5); margin-top: var(--space-md); pointer-events: auto; }
+.radioOptions { display: flex; flex-direction: column; gap: var(--space-sm-1-5x); margin-top: var(--space-md); pointer-events: auto; }
 .inputPartInside.radioOption, .inputPartInside.radioOption * { cursor: pointer; }
 .inputPartInside.radioOption {
   display: flex;
@@ -47,9 +47,9 @@
 .roleTagCenter .roleLabel { padding-left: 0; }
 .roleLabel { color: var(--ui-text-secondary); font-size: var(--type-label-size); line-height: var(--type-tight-line); }
 .roleGroupOptions { display: flex; flex-direction: column; gap: var(--space-sm); }
-.roleCheckIcon, .roleIndicatorSpacer { width: 1.2em !important; height: 1.2em !important; }
+.roleIndicatorSpacer { display: inline-block; flex: 0 0 auto; }
 .roleCheckIcon [fill] { fill: var(--btn-primary-icon); color: var(--btn-primary-icon); }
-/* Base rule consolidated in from styles/info.css, which previously held
+/* Base rule consolidated from the former styles/info.css, which previously held
    just this - .role-step__heading is exclusively role-step.tsx's own,
    there's no reason for its styling to live in two files. */
 .roleStepHeading { display: flex; flex-direction: column; align-items: center; }
@@ -57,13 +57,11 @@
 @media (max-width: 767px) {
   :global(.survey-section:has(.survey.survey-step.role-select)) { height: 100%; }
   :global(.survey.survey-step.role-select) .onboarding { min-width: 360px; max-width: 360px; }
-  .roleIndicatorSpacer { width: 1.1rem !important; height: 1.1rem !important; min-width: 1.1rem; min-height: 1.1rem; }
   .radioGroup { width: 260px; }
   .roleStepHeading { padding: 0 0.8rem; }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
-  .roleIndicatorSpacer { height: 16px !important; width: 16px !important; }
   .roleStepHeading { padding: 0 1rem; }
 }
 

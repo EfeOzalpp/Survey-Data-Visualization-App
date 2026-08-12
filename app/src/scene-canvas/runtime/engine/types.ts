@@ -69,6 +69,7 @@ export interface EngineControls {
   setSceneProfile: (profile: EngineSceneProfile) => void;
 
   setVisible: (v: boolean) => void;
+  setAnimationActive: (active: boolean) => void;
 
   stop: () => void;
 
@@ -90,4 +91,5 @@ export interface StartCanvasEngineOpts {
   shapeRegistry?: ShapeRegistry;
   fpsCap?: number;
   initialDarkMode?: boolean;
+  animationActive?: boolean;
 }

@@ -1,0 +1,15 @@
+.container {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  background: var(--graph-bg);
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+.container canvas { cursor: grab; }
+.container canvas:global(.hovering-shape) { cursor: pointer; }
+.container canvas:global(.is-rotating) { cursor: grabbing; }
+
+.loading { width: 100%; }
+.loadingWord { margin: 0; padding: 0.6rem 0.9rem; color: var(--ui-text); }

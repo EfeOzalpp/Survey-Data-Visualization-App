@@ -85,14 +85,12 @@ export function AppBrowserPolicies({
 }: AppBrowserPoliciesProps) {
   const zoomAllowedZones = questionnaireOpen
     ? [
-        ".graph-container",
-        ".dot-graph-container",
+        "[data-graph-container]",
         "#questionnaire-canvas-root",
         "#city-canvas-root",
       ]
     : [
-        ".graph-container",
-        ".dot-graph-container",
+        "[data-graph-container]",
         "#canvas-root",
         "#questionnaire-canvas-root",
         "#city-canvas-root",

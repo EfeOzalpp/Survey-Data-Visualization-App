@@ -2,7 +2,7 @@ import React, { Profiler } from "react";
 import NavLeft from "./left/nav-left";
 import NavRight from "./right/nav-right";
 import NavBottom from "./bottom/nav-bottom";
-import InfoDialog from "../onboarding/info";
+import InfoDialog from "../onboarding/onboarding-info";
 import CityStatsDialog from "../graph-components/city-stats";
 import ClientOnly from "../app/client-only";
 import { usePreferences } from "../app/state/preferences-context";
@@ -58,6 +58,11 @@ const Navigation = () => {
     !questionnaireOpen &&
     !animationVisible &&
     (!cityPanelOpen || savedHomeCityOpen);
+  const useOnboardingLayout =
+    !vizVisible &&
+    !questionnaireOpen &&
+    !animationVisible &&
+    !cityPanelOpen;
 
   React.useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -155,7 +160,7 @@ const Navigation = () => {
     <>
       <nav
         ref={navRef}
-        className={`navigation${isLandingState ? " is-landing-centered" : ""}`}
+        className={`navigation${isLandingState ? " is-landing-centered" : ""}${useOnboardingLayout ? " is-onboarding-layout" : ""}`}
       >
         <NavLeft introActive={introActive} />
         <Profiler id="NavRight" onRender={profilerOnRender}>

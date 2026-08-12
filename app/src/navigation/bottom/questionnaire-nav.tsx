@@ -1,6 +1,7 @@
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "../../app/state/ui-store";
 import { useTransientFlag } from "../../lib/hooks/useTransientFlag";
+import { Button } from "../../app/ui/Button";
 
 export default function QuestionnaireNav() {
   const { questionnaireNav, requestQuestionnaireAdvance } = useUiStore(
@@ -30,11 +31,9 @@ export default function QuestionnaireNav() {
         >
           <span>Select at least one answer.</span>
         </div>
-        <button
-          type="button"
-          className={`questionnaire${questionnaireNav.nextDisabled ? " is-disabled" : ""}`}
-          data-label={questionnaireNav.nextLabel}
-          aria-disabled={questionnaireNav.nextDisabled}
+        <Button
+          baseClassName="questionnaire-nav-button"
+          ariaDisabled={questionnaireNav.nextDisabled}
           onClick={() => {
             if (questionnaireNav.nextDisabled) {
               flashQuestionnaireDisabledHint();
@@ -48,13 +47,8 @@ export default function QuestionnaireNav() {
               : "Next question"
           }
         >
-          <span className="questionnaire__ghost" aria-hidden="true">
-            <span>{questionnaireNav.nextLabel}</span>
-          </span>
-          <span className="questionnaire__inner">
-            <span>{questionnaireNav.nextLabel}</span>
-          </span>
-        </button>
+          {questionnaireNav.nextLabel}
+        </Button>
       </div>
     </div>
   );

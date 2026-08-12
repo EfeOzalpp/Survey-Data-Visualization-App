@@ -1,0 +1,49 @@
+.dialog {
+  min-height: 460px;
+  max-height: 460px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: 1rem 1rem 0.8rem 1.2rem;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--type-h4-size);
+  line-height: var(--type-h4-line);
+}
+
+.close { flex: 0 0 auto; }
+
+.body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 280px;
+  overflow: auto;
+}
+
+.placeholder {
+  margin: 0;
+  color: var(--ui-text-secondary);
+  font-size: var(--type-h4-size);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  :global(.ui-modal-shell).dialogShell { width: min(460px, calc(100vw - 4rem)); }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .dialog { min-height: min(56svh, 560px); max-height: min(56svh, 560px); }
+}
+
+@media (min-width: 1025px) {
+  .dialog { min-height: min(60svh, 600px); max-height: min(60svh, 600px); }
+}

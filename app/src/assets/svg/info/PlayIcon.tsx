@@ -7,7 +7,7 @@ interface PlayIconProps {
   className?: string;
 }
 
-export default function PlayIcon({ className = "ui-icon" }: PlayIconProps) {
+export default function PlayIcon({ className = "ui-icon svg-sm" }: PlayIconProps) {
   const iconId = useId().replace(/:/g, "");
 
   const markup = useMemo(() => {
