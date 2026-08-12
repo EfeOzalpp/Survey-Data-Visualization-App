@@ -2,7 +2,7 @@
 
 import { SCENE_RULESETS } from "../scene-rules/registry";
 import type { SceneRuleSet } from "../scene-rules/profile";
-import type { SceneLookupKey } from "../scene-state";
+import type { SceneLookupKey } from "../scene-rules/lookup";
 import type { DprMode } from "../runtime/platform/viewport";
 
 export type CanvasBounds =

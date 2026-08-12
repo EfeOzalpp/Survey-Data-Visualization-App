@@ -1,4 +1,4 @@
-import type { SceneLookupKey } from "../../scene-state";
+import type { SceneLookupKey } from "../lookup";
 import type { FoliageSceneSpec } from "./types";
 import { SPOTLIGHT_SLIDES, type SpotlightSlide } from "../spotlight/slides";
 

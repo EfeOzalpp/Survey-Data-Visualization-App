@@ -1,6 +1,6 @@
 // src/scene-canvas/scene-rules/canvas-padding/index.ts
 
-import type { SceneLookupKey } from '../../scene-state';
+import type { SceneLookupKey } from '../lookup';
 import type { CanvasPaddingPolicy } from './types';
 
 export type { CanvasPaddingPolicy, CanvasPaddingSpec } from './types';

@@ -15,7 +15,7 @@ export { BACKGROUNDS_QUESTIONNAIRE, BACKGROUNDS_QUESTIONNAIRE_DARK } from "./que
 export { BACKGROUNDS_CITY, BACKGROUNDS_CITY_DARK } from "./city";
 export { BACKGROUNDS_SPOTLIGHT, BACKGROUNDS_SPOTLIGHT_DARK } from "./spotlight";
 
-import type { SceneLookupKey } from "../../scene-state";
+import type { SceneLookupKey } from "../lookup";
 import type { BackgroundSpec } from "./types";
 import { BACKGROUNDS_LIGHT, BACKGROUNDS_START_DARK } from "./start";
 import { BACKGROUNDS_QUESTIONNAIRE, BACKGROUNDS_QUESTIONNAIRE_DARK } from "./questionnaire";

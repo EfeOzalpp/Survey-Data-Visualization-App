@@ -1,6 +1,6 @@
 // src/scene-canvas/scene-rules/placement-rules/index.ts
 
-import type { SceneLookupKey } from "../../scene-state";
+import type { SceneLookupKey } from "../lookup";
 import type { ScenePlacementRules } from "./types";
 
 export type {

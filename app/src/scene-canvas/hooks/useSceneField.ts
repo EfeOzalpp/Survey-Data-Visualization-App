@@ -6,16 +6,20 @@ import {
   resolveAuthoredLightSource,
   resolveRuntimePlacements,
 } from "../scene-logic";
+
 import { composeFieldAsync } from "../../workers/scene/compose-worker-host";
+
 import type { HostId } from "../multi-canvas-setup/hostDefs";
 import { HOST_DEFS } from "../multi-canvas-setup/hostDefs";
+
 import type { CanvasEngineControls } from "../runtime";
 import type { EngineShapeLightSource } from "../runtime/engine/state";
+
 import { fieldAppearSignature } from "./sceneFieldSignature";
 import type { useCanvasEngine } from "./useCanvasEngine";
 import { getCanvasLogicalSize, useCanvasLogicalSizeTick } from "./useCanvasLogicalSize";
 
-import type { SceneLookupKey, SceneState } from "../scene-state";
+import type { SceneLookupKey, SceneState } from "../scene-rules/lookup";
 
 import { resolvePaddingPolicyVariants, resolvePaddingSpec } from "../scene-rules/canvas-padding";
 import type { ScenePlacementRules } from "../scene-rules/placement-rules";

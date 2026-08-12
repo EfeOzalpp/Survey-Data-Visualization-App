@@ -1,5 +1,5 @@
 import type { Place } from "../grid-layout/occupancy";
-import type { SceneLookupKey } from "../scene-state";
+import type { SceneLookupKey } from "../scene-rules/lookup";
 
 function reservedFootprintsKey(reservedFootprints: Place[] | undefined) {
   if (!reservedFootprints?.length) return "";

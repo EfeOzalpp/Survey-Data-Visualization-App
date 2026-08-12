@@ -5,7 +5,7 @@ import {
   type LinearGradientSpec,
   type RadialGradientSpec,
 } from "../../../../scene-rules/backgrounds";
-import type { SceneLookupKey } from "../../../../scene-state";
+import type { SceneLookupKey } from "../../../../scene-rules/lookup";
 import type { PLike } from "../../../p/makeP";
 import { resolveBackgroundStops } from "./anchors";
 import { resolveStopColor } from "../shared/color";

@@ -758,6 +758,7 @@ butterfly-effect/
 |   |   |   |   |-- foliage/
 |   |   |   |   |   |-- index.ts
 |   |   |   |   |   \-- types.ts
+|   |   |   |   |-- lookup.ts
 |   |   |   |   |-- placement-rules/
 |   |   |   |   |   |-- city.ts
 |   |   |   |   |   |-- helpers.ts
@@ -787,7 +788,6 @@ butterfly-effect/
 |   |   |   |       |   |-- 11-trees.ts
 |   |   |   |       |   \-- index.ts
 |   |   |   |       \-- types.ts
-|   |   |   |-- scene-state.ts
 |   |   |   |-- shapes/
 |   |   |   |   |-- __tests__/
 |   |   |   |   |-- bus.ts

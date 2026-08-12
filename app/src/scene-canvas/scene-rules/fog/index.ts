@@ -1,4 +1,4 @@
-import type { SceneLookupKey } from "../../scene-state";
+import type { SceneLookupKey } from "../lookup";
 import type { FogLightGradientSpec, FogSceneSpec } from "./types";
 
 export type {

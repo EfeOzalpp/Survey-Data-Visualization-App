@@ -1,7 +1,7 @@
 // src/scene-canvas/scene-rules/registry.ts
 
 import { defineRuleSet } from "../validation/index";
-import type { SceneState } from "../scene-state";
+import type { SceneState } from "./lookup";
 import type { SceneProfileContext } from "./profile";
 import { resolveProfile } from "./resolver";
 

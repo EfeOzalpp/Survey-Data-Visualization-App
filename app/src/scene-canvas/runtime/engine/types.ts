@@ -1,4 +1,4 @@
-import type { SceneLookupKey } from "../../scene-state";
+import type { SceneLookupKey } from "../../scene-rules/lookup";
 import type { CanvasPaddingSpec } from "../../scene-rules/canvas-padding";
 import type { BackgroundSpec } from "../../scene-rules/backgrounds";
 import type { AmbientParticlesSceneSpec } from "../../scene-rules/ambient-particles";

@@ -1,6 +1,6 @@
 // src/scene-canvas/validation/defineRuleSet.ts
 
-import type { SceneState } from "../scene-state";
+import type { SceneState } from "../scene-rules/lookup";
 import type { SceneProfile, SceneProfileContext, SceneRuleSet } from "../scene-rules/profile";
 import { validateSceneProfile } from "./validateSceneProfile";
 

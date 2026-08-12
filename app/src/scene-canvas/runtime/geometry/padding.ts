@@ -2,7 +2,7 @@
 
 import { CANVAS_PADDING } from "../../scene-rules/canvas-padding/index";
 import type { CanvasPaddingSpec } from "../../scene-rules/canvas-padding/index";
-import type { SceneLookupKey } from "../../scene-state";
+import type { SceneLookupKey } from "../../scene-rules/lookup";
 import { resolvePaddingSpec } from "../../scene-rules/canvas-padding";
 
 /**

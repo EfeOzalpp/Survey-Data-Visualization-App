@@ -1,6 +1,6 @@
 // src/scene-canvas/scene-rules/resolver.ts
 
-import type { SceneLookupKey, SceneState } from "../scene-state";
+import type { SceneLookupKey, SceneState } from "./lookup";
 import type { SceneProfile, SceneProfileContext } from "./profile";
 
 import { CANVAS_PADDING } from "./canvas-padding/index";

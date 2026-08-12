@@ -1,7 +1,7 @@
 // src/scene-canvas/validation/validateSceneProfile.ts
 
 import type { SceneProfile } from "../scene-rules/profile";
-import type { SceneLookupKey } from "../scene-state";
+import type { SceneLookupKey } from "../scene-rules/lookup";
 import { invariant } from "./invariant";
 
 const warnedRuntimePresets = new Set<string>();

@@ -1,4 +1,4 @@
-import type { SceneState } from "../scene-state";
+import type { SceneState } from "./lookup";
 import type { BackgroundSpec } from "./backgrounds";
 import type { AmbientParticlesSceneSpec } from "./ambient-particles";
 import type { CanvasPaddingPolicy } from "./canvas-padding";
