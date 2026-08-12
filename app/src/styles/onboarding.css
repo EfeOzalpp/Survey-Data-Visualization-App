@@ -76,7 +76,7 @@ button.more-info-trigger { display: inline-flex; align-items: center; justify-co
 @media (max-width: 767px) {
   .welcome-title, .welcome-text { text-align: center; }
   .welcome-title { padding: var(--space-lg-2x) 2em var(--space-lg) }
-  .welcome-title-inner { top: 3.1rem; }
+  .welcome-title-inner { top: 6rem; }
   .onboarding-canvas { height: 640px; }
   .welcome-title-layer { height: 640px; }
 }

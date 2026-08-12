@@ -12,7 +12,7 @@ const INITIAL_EDITOR_STATE: EditorState = {
   activeDevice: "desktop",
   selectedPreset: "desert",
   activeAsset: "house",
-  gridVisible: true,
+  gridVisible: false,
   isFullscreen: false,
   toolingCollapsed: false,
   workspaceCamera: {

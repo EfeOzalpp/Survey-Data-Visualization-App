@@ -8,7 +8,7 @@
   --nav-control-h: 40px;
 }
 
-.navigation { position: absolute; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; pointer-events: none; z-index: 202; }
+.navigation { position: absolute; flex-direction: row; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; pointer-events: none; z-index: 202; }
 
 
 .navigation > .graph-picker { position: absolute; left: calc(50vw + var(--picker-offset, 0px)); transform: translateX(-50%); pointer-events: all; transition: left 0.2s ease; }
@@ -110,6 +110,7 @@
 
 /* Mobile */
 @media (max-width: 767px) {
+  .navigation.is-onboarding-layout { flex-direction: column; }
   .navigation { padding: 1rem 1.2rem; }
 
   .nav-bottom.bottom-left { left: 1.2rem; gap: 2px;}

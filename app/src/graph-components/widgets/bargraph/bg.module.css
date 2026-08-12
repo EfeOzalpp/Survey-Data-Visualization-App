@@ -63,8 +63,8 @@
 @media (prefers-reduced-motion: reduce) {
   .greenAnimation, .yellowAnimation, .redAnimation, .floaty { animation: none !important; }
 }
-@media (max-width: 767px) {
-  .container { height: min(52svh, 420px); }
+@media (max-width: 768px) {
+  .container { height: min(58svh, 480px); }
   .fill { max-width: 72px; }
   .percentageSection { width: 72px; }
   .bar:first-child .tip { left: 38%; --hint-banner-hidden-transform: translateX(-50%) translateY(-6px) scale(0.88); --hint-banner-visible-transform: translateX(-50%) translateY(0); }

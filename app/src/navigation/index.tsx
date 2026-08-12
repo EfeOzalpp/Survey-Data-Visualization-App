@@ -58,6 +58,11 @@ const Navigation = () => {
     !questionnaireOpen &&
     !animationVisible &&
     (!cityPanelOpen || savedHomeCityOpen);
+  const useOnboardingLayout =
+    !vizVisible &&
+    !questionnaireOpen &&
+    !animationVisible &&
+    !cityPanelOpen;
 
   React.useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -155,7 +160,7 @@ const Navigation = () => {
     <>
       <nav
         ref={navRef}
-        className={`navigation${isLandingState ? " is-landing-centered" : ""}`}
+        className={`navigation${isLandingState ? " is-landing-centered" : ""}${useOnboardingLayout ? " is-onboarding-layout" : ""}`}
       >
         <NavLeft introActive={introActive} />
         <Profiler id="NavRight" onRender={profilerOnRender}>

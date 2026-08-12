@@ -83,6 +83,8 @@ interface OrbitReturn {
   zoomTargetRef: React.RefObject<number | null>;
 }
 
+const DESKTOP_INITIAL_ZOOM_SCALE = 1.15;
+
 export default function useOrbitController(params: OrbitParams = {}): OrbitReturn {
   const ROTATE_EVT = 'gp:orbit-rot';
   const DESKTOP_IDLE_MOUSE_DELAY_MS = 4000;
@@ -126,21 +128,28 @@ export default function useOrbitController(params: OrbitParams = {}): OrbitRetur
 
   const initialTargetComputed = useMemo(
     () => {
+      let target: number;
+
       if (typeof initialZoomFraction === 'number' && Number.isFinite(initialZoomFraction)) {
         const t = Math.max(0, Math.min(1, initialZoomFraction));
-        return maxRadius - t * (maxRadius - minRadius);
+        target = maxRadius - t * (maxRadius - minRadius);
+      } else {
+        target = computeInitialZoomTarget({
+          count,
+          isSmallScreen,
+          isTabletLike,
+          thresholds,
+          minRadius,
+          maxRadius,
+        });
       }
 
-      return computeInitialZoomTarget({
-        count,
-        isSmallScreen,
-        isTabletLike,
-        thresholds,
-        minRadius,
-        maxRadius,
-      });
+      const framedTarget = useDesktopLayout
+        ? target / DESKTOP_INITIAL_ZOOM_SCALE
+        : target;
+      return Math.max(minRadius, Math.min(maxRadius, framedTarget));
     },
-    [count, initialZoomFraction, isSmallScreen, isTabletLike, thresholds, minRadius, maxRadius]
+    [count, initialZoomFraction, isSmallScreen, isTabletLike, thresholds, minRadius, maxRadius, useDesktopLayout]
   );
 
   // Activity and idle helpers
