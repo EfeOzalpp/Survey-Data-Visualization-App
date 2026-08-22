@@ -6,20 +6,20 @@ import {
   type SurveyResponseLimit,
 } from "./responseStore";
 import { SnapshotCache } from "./snapshotCache";
-import { SseClientHub } from "./sseClientHub";
-import { SurveyResponseFeed } from "./surveyResponseFeed";
+import { SseConnectionHub } from "./sseConnectionHub";
+import { SurveyResponseSync } from "./surveyResponseSync";
 
 export type { SurveyResponseLimit } from "./responseStore";
 
 const responseStore = new ResponseStore();
 const snapshotCache = new SnapshotCache(responseStore, SURVEY_RESPONSE_CHUNK_SIZE);
 
-const clientHub = new SseClientHub(() => {
-  surveyResponseFeed.stopIfIdle();
+const connectionHub = new SseConnectionHub(() => {
+  surveyResponseSync.stopIfIdle();
 });
 
-const surveyResponseFeed = new SurveyResponseFeed({
-  hasClients: () => clientHub.size > 0,
+const surveyResponseSync = new SurveyResponseSync({
+  hasClients: () => connectionHub.size > 0,
   canPublishPatches: () => responseStore.hasCompleteSnapshot,
   onSnapshotReset: () => {
     responseStore.resetSnapshot();
@@ -28,7 +28,7 @@ const surveyResponseFeed = new SurveyResponseFeed({
   onSnapshotPage: (rows, options) => {
     responseStore.mergeSnapshotPage(rows);
     snapshotCache.clear();
-    clientHub.broadcastSnapshotPage(rows, options);
+    connectionHub.broadcastSnapshotPage(rows, options);
   },
   onSnapshotComplete: () => {
     responseStore.markSnapshotComplete();
@@ -42,14 +42,14 @@ const surveyResponseFeed = new SurveyResponseFeed({
     snapshotCache.clear();
   },
   onPatch: (patch) => {
-    clientHub.broadcastPatch(patch);
+    connectionHub.broadcastPatch(patch);
   },
   onError: (error) => {
-    clientHub.broadcastError(error);
+    connectionHub.broadcastError(error);
   },
 });
 
-export function openSurveyResponseStream({
+export function openSurveyResponseSse({
   section,
   limit,
   res,
@@ -58,33 +58,33 @@ export function openSurveyResponseStream({
   limit: SurveyResponseLimit;
   res: Response;
 }) {
-  const isFirstClient = clientHub.size === 0;
-  const client = clientHub.open({ section, limit, res });
+  const isFirstClient = connectionHub.size === 0;
+  const client = connectionHub.open({ section, limit, res });
 
   if (
     !isFirstClient &&
     (responseStore.hasCompleteSnapshot || responseStore.hasRows)
   ) {
-    clientHub.sendSnapshot(
+    connectionHub.sendSnapshot(
       client,
       snapshotCache.get(
         section,
         limit,
-        !surveyResponseFeed.isRefreshingSnapshot
+        !surveyResponseSync.isRefreshingSnapshot
       )
     );
   }
 
-  void surveyResponseFeed.startListener().then(() => {
+  void surveyResponseSync.startListener().then(() => {
     if (!responseStore.hasCompleteSnapshot || isFirstClient) {
-      void surveyResponseFeed.ensureSnapshot().catch((error: unknown) => {
-        console.error("[surveyResponseStream] initial snapshot failed:", error);
-        clientHub.sendError(client, error);
+      void surveyResponseSync.ensureSnapshot().catch((error: unknown) => {
+        console.error("[surveyResponseSse] initial snapshot failed:", error);
+        connectionHub.sendError(client, error);
       });
     }
   });
 
   return () => {
-    clientHub.remove(client.id);
+    connectionHub.remove(client.id);
   };
 }

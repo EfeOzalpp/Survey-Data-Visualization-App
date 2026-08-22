@@ -11,7 +11,7 @@ import {
 const PATCH_COALESCE_MS = 750;
 const RECONNECT_DELAY_MS = 15_000;
 
-interface SurveyResponseFeedCallbacks {
+interface SurveyResponseSyncCallbacks {
   hasClients: () => boolean;
   canPublishPatches: () => boolean;
   onSnapshotReset: () => void;
@@ -26,7 +26,7 @@ interface SurveyResponseFeedCallbacks {
   onError: (error: unknown) => void;
 }
 
-export class SurveyResponseFeed {
+export class SurveyResponseSync {
   private snapshotPromise: Promise<void> | null = null;
   private listenerSubscription: SurveyResponseSubscription | null = null;
   private listenerStartPromise: Promise<void> | null = null;
@@ -35,7 +35,7 @@ export class SurveyResponseFeed {
   private readonly pendingUpserts = new Map<string, SurveyRow>();
   private readonly pendingDeletes = new Set<string>();
 
-  constructor(private readonly callbacks: SurveyResponseFeedCallbacks) {}
+  constructor(private readonly callbacks: SurveyResponseSyncCallbacks) {}
 
   get isRefreshingSnapshot() {
     return this.snapshotPromise !== null;
@@ -140,7 +140,7 @@ export class SurveyResponseFeed {
       void this.startListener().then(() => {
         void this.ensureSnapshot().catch((error: unknown) => {
           console.error(
-            "[surveyResponseStream] snapshot refresh failed after reconnect:",
+            "[surveyResponseSync] snapshot refresh failed after reconnect:",
             error
           );
           this.callbacks.onError(error);
@@ -150,7 +150,7 @@ export class SurveyResponseFeed {
   }
 
   private handleListenerError(error: unknown) {
-    console.error("[surveyResponseStream] PostgreSQL listener failed:", error);
+    console.error("[surveyResponseSync] PostgreSQL listener failed:", error);
     this.listenerSubscription?.unsubscribe();
     this.listenerSubscription = null;
     this.callbacks.onError(error);

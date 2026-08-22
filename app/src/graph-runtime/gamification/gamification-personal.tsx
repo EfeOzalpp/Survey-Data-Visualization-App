@@ -11,7 +11,7 @@ import { useUiStore } from "../../app/state/ui-store";
 import HintBanner from "../../app/ui/HintBanner";
 import { Button } from "../../app/ui/Button";
 import { useTransientFlag } from "../../lib/hooks/useTransientFlag";
-import { saveSoloMessage } from "../../client-api/response-api/saveSoloMessage";
+import { saveSoloMessage } from "../../client-api/write-api/saveSoloMessage";
 import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 const FADE_MS = 200;

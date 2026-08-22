@@ -6,12 +6,12 @@ import { type RateRule } from "../security/rateLimiter";
 import { getClientAddress } from "../security/requestIdentity";
 import { checkRateLimits } from "../cluster/clusterRateLimit";
 import { LOAD_TEST_MODE } from "../load-testing/loadTestMode"; // load-testing
+import {
+  openSurveyResponseSse,
+  type SurveyResponseLimit,
+} from "../services/surveyResponseSse";
 import { sha256 } from "../utils/hash";
 import { rejectDisallowedOrigin } from "./shared";
-import {
-  openSurveyResponseStream,
-  type SurveyResponseLimit,
-} from "../services/surveyResponseStream";
 
 const DEFAULT_ROWS_LIMIT = 300;
 const MAX_NUMERIC_ROWS_LIMIT = 5000;
@@ -37,7 +37,7 @@ function buildRateRules(req: Request): RateRule[] {
   ];
 }
 
-export async function surveyResponseStreamRoute(req: Request, res: Response) {
+export async function surveyResponseSseRoute(req: Request, res: Response) {
   if (rejectDisallowedOrigin(req, res)) return;
 
   const section = readSurveyResponseSection(req.query.section);
@@ -59,7 +59,7 @@ export async function surveyResponseStreamRoute(req: Request, res: Response) {
     }
   }
 
-  const cleanup = openSurveyResponseStream({
+  const cleanup = openSurveyResponseSse({
     section,
     limit: readSurveyResponseLimit(req.query.limit),
     res,

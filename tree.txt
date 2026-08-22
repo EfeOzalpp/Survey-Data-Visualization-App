@@ -245,7 +245,7 @@ butterfly-effect/
 |   |   |   |   |-- config.ts
 |   |   |   |   |-- surveyResponseStream.ts
 |   |   |   |   \-- surveyStreamStatus.ts
-|   |   |   \-- response-api/
+|   |   |   \-- write-api/
 |   |   |       |-- saveSoloMessage.ts
 |   |   |       |-- saveUserResponse.ts
 |   |   |       \-- writeApi.ts
@@ -837,7 +837,7 @@ butterfly-effect/
 |   |   |   |   |-- saveSoloMessage.ts
 |   |   |   |   |-- saveUserResponse.ts
 |   |   |   |   |-- shared.ts
-|   |   |   |   \-- surveyResponseStream.ts
+|   |   |   |   \-- surveyResponseSse.ts
 |   |   |   |-- security/
 |   |   |   |   |-- editToken.ts
 |   |   |   |   |-- rateLimiter.ts
@@ -848,9 +848,9 @@ butterfly-effect/
 |   |   |   |   |   \-- snapshotCache.test.ts
 |   |   |   |   |-- responseStore.ts
 |   |   |   |   |-- snapshotCache.ts
-|   |   |   |   |-- sseClientHub.ts
-|   |   |   |   |-- surveyResponseFeed.ts
-|   |   |   |   \-- surveyResponseStream.ts
+|   |   |   |   |-- sseConnectionHub.ts
+|   |   |   |   |-- surveyResponseSse.ts
+|   |   |   |   \-- surveyResponseSync.ts
 |   |   |   |-- upstreams/
 |   |   |   |   |-- postgres/
 |   |   |   |   |   |-- __tests__/

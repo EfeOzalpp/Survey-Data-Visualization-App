@@ -15,8 +15,8 @@ import {
   persistUserResponseSession,
   saveUserResponse,
   savedUserResponseToSurveyRow,
-} from '../client-api/response-api/saveUserResponse';
-import { WriteApiError } from '../client-api/response-api/writeApi';
+} from '../client-api/write-api/saveUserResponse';
+import { WriteApiError } from '../client-api/write-api/writeApi';
 import { parentAggregateForSection } from '../domain/survey/sections';
 import { track } from '../lib/posthog';
 import { getSessionItem, removeSessionItems, setSessionItem } from '../app/session';

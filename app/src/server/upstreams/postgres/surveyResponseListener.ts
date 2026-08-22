@@ -48,7 +48,7 @@ export async function listenToPostgresSurveyResponses({
   const client = new Client({
     connectionString: POSTGRES_CONFIG.connectionString,
     connectionTimeoutMillis: POSTGRES_CONFIG.connectionTimeoutMillis,
-    application_name: "butterfly-effect-sse-listener",
+    application_name: "butterfly-effect-survey-change-listener",
   });
   let closed = false;
   let reportedConnectionFailure = false;

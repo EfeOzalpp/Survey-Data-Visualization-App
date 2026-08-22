@@ -2,8 +2,8 @@ import type { Request, Response } from "express";
 
 import { saveSoloMessageRoute } from "../../../routes/saveSoloMessage";
 import { saveUserResponseRoute } from "../../../routes/saveUserResponse";
-import { SurveyResponseFeed } from "../../../services/surveyResponseFeed";
-import { openSurveyResponseStream } from "../../../services/surveyResponseStream";
+import { openSurveyResponseSse } from "../../../services/surveyResponseSse";
+import { SurveyResponseSync } from "../../../services/surveyResponseSync";
 import {
   importSanitySurveyResponses,
   parseSanitySurveyResponse,
@@ -330,7 +330,7 @@ test("converts a committed PostgreSQL notification into a coalesced SSE patch", 
     rejectPatch = reject;
   });
 
-  const feed = new SurveyResponseFeed({
+  const sync = new SurveyResponseSync({
     hasClients: () => hasClients,
     canPublishPatches: () => snapshotComplete,
     onSnapshotReset: () => {
@@ -348,22 +348,22 @@ test("converts a committed PostgreSQL notification into a coalesced SSE patch", 
     onError: rejectPatch,
   });
 
-  await feed.startListener();
-  await feed.ensureSnapshot();
+  await sync.startListener();
+  await sync.ensureSnapshot();
 
   try {
     await createSurveyResponse(
       createInput({
-        id: "response-feed-patch",
+        id: "response-sync-patch",
         submittedAt: "2026-07-30T15:00:00.000Z",
         idempotencyKeySha256: "2".repeat(64),
       })
     );
 
-    await expect(patchReceived).resolves.toBe("response-feed-patch");
+    await expect(patchReceived).resolves.toBe("response-sync-patch");
   } finally {
     hasClients = false;
-    feed.stopIfIdle();
+    sync.stopIfIdle();
   }
 });
 
@@ -385,7 +385,7 @@ test("writes the initial snapshot and subsequent PostgreSQL patch to an SSE resp
     },
   } as unknown as Response;
 
-  const cleanup = openSurveyResponseStream({
+  const cleanup = openSurveyResponseSse({
     section: "all",
     limit: "all",
     res: response,

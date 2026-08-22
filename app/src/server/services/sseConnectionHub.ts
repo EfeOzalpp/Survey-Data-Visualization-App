@@ -11,7 +11,7 @@ import { serializeSnapshotChunk } from "./snapshotCache";
 
 const HEARTBEAT_MS = 25_000;
 
-export interface StreamClient {
+export interface SseConnection {
   id: number;
   section: string;
   limit: SurveyResponseLimit;
@@ -19,9 +19,9 @@ export interface StreamClient {
   heartbeat: NodeJS.Timeout;
 }
 
-export class SseClientHub {
+export class SseConnectionHub {
   private nextClientId = 1;
-  private readonly clients = new Map<number, StreamClient>();
+  private readonly clients = new Map<number, SseConnection>();
 
   constructor(private readonly onBecameIdle: () => void) {}
 
@@ -48,7 +48,7 @@ export class SseClientHub {
     res.setHeader("X-Accel-Buffering", "no");
     res.flushHeaders();
 
-    const client: StreamClient = {
+    const client: SseConnection = {
       id,
       section,
       limit,
@@ -74,7 +74,7 @@ export class SseClientHub {
     if (this.clients.size === 0) this.onBecameIdle();
   }
 
-  sendSnapshot(client: StreamClient, chunks: string[]) {
+  sendSnapshot(client: SseConnection, chunks: string[]) {
     for (const chunk of chunks) {
       if (this.writeRaw(client, "snapshot", chunk)) continue;
       this.remove(client.id);
@@ -83,7 +83,7 @@ export class SseClientHub {
     return true;
   }
 
-  sendError(client: StreamClient, error: unknown) {
+  sendError(client: SseConnection, error: unknown) {
     if (this.writeEvent(client, "stream-error", {
       message: error instanceof Error ? error.message : "Survey response stream failed",
     })) {
@@ -154,27 +154,27 @@ export class SseClientHub {
     }
   }
 
-  private writeRaw(client: StreamClient, event: string, dataString: string) {
+  private writeRaw(client: SseConnection, event: string, dataString: string) {
     try {
       client.res.write(`event: ${event}\n`);
       client.res.write(`data: ${dataString}\n\n`);
       return true;
     } catch (error) {
-      console.warn("[surveyResponseStream] failed to write SSE event:", error);
+      console.warn("[surveyResponseSse] failed to write SSE event:", error);
       return false;
     }
   }
 
-  private writeEvent(client: StreamClient, event: string, data: unknown) {
+  private writeEvent(client: SseConnection, event: string, data: unknown) {
     return this.writeRaw(client, event, JSON.stringify(data));
   }
 
-  private writeComment(client: StreamClient, comment: string) {
+  private writeComment(client: SseConnection, comment: string) {
     try {
       client.res.write(`: ${comment}\n\n`);
       return true;
     } catch (error) {
-      console.warn("[surveyResponseStream] failed to write SSE heartbeat:", error);
+      console.warn("[surveyResponseSse] failed to write SSE heartbeat:", error);
       return false;
     }
   }

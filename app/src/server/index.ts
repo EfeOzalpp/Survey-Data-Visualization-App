@@ -11,7 +11,7 @@ import { gamificationCopyRoute } from "./routes/gamificationCopy";
 import { infoMediaRoute } from "./routes/infoMedia";
 import { saveSoloMessageRoute } from "./routes/saveSoloMessage";
 import { saveUserResponseRoute } from "./routes/saveUserResponse";
-import { surveyResponseStreamRoute } from "./routes/surveyResponseStream";
+import { surveyResponseSseRoute } from "./routes/surveyResponseSse";
 
 if (CLUSTER_MODE && cluster.isPrimary) {
   runPrimary();
@@ -33,7 +33,7 @@ if (CLUSTER_MODE && cluster.isPrimary) {
   app.get("/api/health", (_req, res) => {
     res.status(200).json({ ok: true });
   });
-  app.get("/api/survey-responses/stream", (req, res) => { void surveyResponseStreamRoute(req, res); });
+  app.get("/api/survey-responses/stream", (req, res) => { void surveyResponseSseRoute(req, res); });
   app.get("/api/gamification-copy", (req, res) => { void gamificationCopyRoute(req, res); });
   app.get("/api/info-media", (req, res) => { void infoMediaRoute(req, res); });
   app.post("/api/save-user-response", (req, res) => { void saveUserResponseRoute(req, res); });
