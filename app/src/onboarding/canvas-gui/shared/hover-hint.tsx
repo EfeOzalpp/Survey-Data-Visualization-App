@@ -11,7 +11,7 @@ import {
   type RefObject,
 } from "react";
 
-import HintBanner from "../../../app/ui/HintBanner";
+import HintBanner from "../../../app-core/ui-generics/HintBanner";
 import styles from "./hover-hint.module.css";
 
 const HOVER_HINT_DELAY_MS = 700;

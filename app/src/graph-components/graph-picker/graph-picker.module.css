@@ -1,6 +1,6 @@
 /* GraphPicker-only styling (CSS module, co-located with graph-picker.tsx).
    Shared trigger/listbox/option chrome (also used by the onboarding
-   SectionPicker) lives in styles/ui/listbox-picker.css and is rendered by
+   SectionPicker) lives in styles/ui-generics/listbox-picker.css and is rendered by
    ListboxShell with literal, unscoped class names - reached here via
    :global() wherever a rule needs to combine with them. */
 
@@ -115,7 +115,7 @@
 
 /* --picker-rest-w / --picker-hover-w / --picker-open-w feed the shared
    rest/hover/open sizing mechanism defined once on .picker-shell in
-   styles/ui/listbox-picker.css - only the numbers live here. */
+   styles/ui-generics/listbox-picker.css - only the numbers live here. */
 @media (max-width: 767px) {
   .picker { --picker-rest-w: 160px; --picker-open-w: 280px; }
   .picker :global(.listbox-shell) { width: 280px; }

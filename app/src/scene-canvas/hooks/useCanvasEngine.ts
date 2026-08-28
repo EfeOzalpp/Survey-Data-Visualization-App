@@ -9,7 +9,7 @@ import {
   stopCanvasEngine,
   type CanvasEngineControls,
 } from "../runtime/index";
-import { readStoredDarkMode } from "../../app/session";
+import { readStoredDarkMode } from "../../app-core/session";
 
 interface EngineOpts {
   enabled?: boolean;

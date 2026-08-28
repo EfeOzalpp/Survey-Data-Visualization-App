@@ -26,7 +26,7 @@ EXPOSE 3000
 # NODE_ENV/LOAD_TEST_MODE/CLUSTER_MODE/SANITY_DATASET etc. are passed at
 # `docker run` time (-e flags), not baked in here, so the same image works
 # for a real prod run and a k6 run without a rebuild.
-CMD ["node", "dist-server/server/index.js"]
+CMD ["node", "dist-server/backend/index.js"]
 
 # Example
 # docker run --rm --name butterfly-effect-loadtest `

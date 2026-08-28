@@ -1,6 +1,7 @@
 import { normalizeSurveyRow } from '../../domain/survey/normalizeSurveyRow';
 import { NON_VISITOR_MASSART, STAFF_IDS, STUDENT_IDS } from '../../domain/survey/sections';
 import type { SurveyRow, SurveyWeights, Unsubscribe } from '../../domain/survey/types';
+import { averageWeights } from '../../lib/utils/average';
 
 interface MockRow {
   _id: string;
@@ -71,9 +72,7 @@ function buildBaseRows(): MockRow[] {
       offsetWeight(q4, drift * 0.55),
       offsetWeight(q5, -drift * 0.3),
     ] as const;
-    const avgWeight = Number(
-      ((values[0] + values[1] + values[2] + values[3] + values[4]) / 5).toFixed(3)
-    );
+    const avgWeight = Number(averageWeights([...values]).toFixed(3));
     const submitted = new Date(Date.UTC(2026, 2, 15, 16, 0 - index * 3, 0)).toISOString();
     return {
       _id: `mock-seed-${String(index + 1)}`,
@@ -113,14 +112,6 @@ const clamp01 = (v?: number) =>
 
 const round3 = (v?: number) =>
   typeof v === 'number' ? Math.round(v * 1000) / 1000 : undefined;
-
-const computeAvg = (weights: SurveyWeights) => {
-  const vals = [weights.q1, weights.q2, weights.q3, weights.q4, weights.q5].filter(
-    (x): x is number => Number.isFinite(x)
-  );
-  if (!vals.length) return undefined;
-  return vals.reduce((a, b) => a + b, 0) / vals.length;
-};
 
 function isMockRow(value: unknown): value is MockRow {
   if (!value || typeof value !== 'object') return false;
@@ -210,7 +201,7 @@ export function createMockUserResponse(section: string, weights: SurveyWeights) 
   };
 
   const now = new Date().toISOString();
-  const avgWeight = round3(computeAvg(clamped));
+  const avgWeight = round3(averageWeights([clamped.q1, clamped.q2, clamped.q3, clamped.q4, clamped.q5]));
   const created: MockRow = {
     _id: `mock-user-${String(Date.now())}`,
     _type: 'userResponseV4',

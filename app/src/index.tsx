@@ -1,5 +1,5 @@
 import { createRoot, hydrateRoot } from 'react-dom/client';
-import AppShell from './app/main';
+import AppShell from './app-core/main';
 import { initPostHog } from './lib/posthog';
 
 interface IdleWindow {

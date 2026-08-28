@@ -1,6 +1,6 @@
 import type { Dispatch, Ref, SetStateAction } from "react";
-import HintBanner from "../../../app/ui/HintBanner";
-import { BUTTON_QUESTIONS } from "../../../onboarding/questionnaire/button-input/button-questions";
+import HintBanner from "../../../app-core/ui-generics/HintBanner";
+import { BUTTON_QUESTIONS } from "../../../onboarding/questionnaire/questions-lookup";
 import styles from "./bq.module.css";
 
 interface ByQuestionBodyProps {

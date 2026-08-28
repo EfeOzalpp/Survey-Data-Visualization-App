@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 
-import Button from "../../../../app/ui/Button";
-import { Popover } from "../../../../app/ui/Popover";
+import Button from "../../../../app-core/ui-generics/Button";
+import { Popover } from "../../../../app-core/ui-generics/Popover";
 import CloseIcon from "../../../../assets/svg/close/CloseIcon";
 import GuiIcon from "../../../../assets/svg/gui/GuiIcon";
 import { HoverHintTarget } from "../../shared/hover-hint";

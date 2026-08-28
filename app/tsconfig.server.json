@@ -9,13 +9,13 @@
     "isolatedModules": false
   },
   "include": [
-    "src/server",
-    "src/server-rendering",
+    "src/backend",
+    "src/server-side-rendering",
     "src/domain/survey/sections.ts",
     "src/onboarding/questionnaire/button-input/button-questions.ts"
   ],
   "exclude": [
-    "src/server-rendering/entry-server.tsx",
+    "src/server-side-rendering/entry-server.tsx",
     "src/**/__tests__/**"
   ]
 }

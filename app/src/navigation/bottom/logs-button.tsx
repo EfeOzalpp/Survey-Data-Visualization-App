@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import { useFocusTrap } from "../../lib/hooks/useFocusTrap";
-import { Popover } from "../../app/ui/Popover";
-import { Button } from "../../app/ui/Button";
+import { Popover } from "../../app-core/ui-generics/Popover";
+import { Button } from "../../app-core/ui-generics/Button";
 import { LogsPanel } from "../../graph-components/logs";
 
 export default function LogsButton({

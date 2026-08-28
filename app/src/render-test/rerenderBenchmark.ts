@@ -17,7 +17,7 @@ const METRIC: Metric = (() => {
   return raw === "subtree" || raw === "own" ? raw : "both";
 })();
 
-// One entry per question in BUTTON_QUESTIONS (button-questions.ts), each value
+// One entry per question in BUTTON_QUESTIONS (questions-lookup.ts), each value
 // is how many distinct answer options to select for that question.
 const ANSWERS_PER_QUESTION = [1, 2, 1, 3, 2];
 

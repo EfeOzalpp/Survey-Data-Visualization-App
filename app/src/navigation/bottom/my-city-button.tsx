@@ -1,6 +1,6 @@
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../app/state/ui-store";
-import { Button } from "../../app/ui/Button";
+import { useUiStore } from "../../app-core/state/ui-store";
+import { Button } from "../../app-core/ui-generics/Button";
 
 export default function MyCityButton() {
   const { cityPanelOpen, questionnaireOpen, setCityPanelOpen } = useUiStore(

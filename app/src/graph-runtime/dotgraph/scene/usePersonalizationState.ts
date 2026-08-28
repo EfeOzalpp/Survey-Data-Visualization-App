@@ -11,8 +11,8 @@ import {
   type SpriteAssignment,
   type SpriteIdentity,
 } from '../../sprites/entry';
-import { useUiStore } from '../../../app/state/ui-store';
-import { getSessionItem, removeSessionItems } from '../../../app/session';
+import { useUiStore } from '../../../app-core/state/ui-store';
+import { getSessionItem, removeSessionItems } from '../../../app-core/session';
 import type {
   DotGraphEntry,
   DotGraphTieStats,

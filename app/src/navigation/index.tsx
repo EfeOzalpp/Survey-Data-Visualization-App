@@ -4,11 +4,11 @@ import NavRight from "./right/nav-right";
 import NavBottom from "./bottom/nav-bottom";
 import InfoDialog from "../onboarding/onboarding-info";
 import CityStatsDialog from "../graph-components/city-stats";
-import ClientOnly from "../app/client-only";
-import { usePreferences } from "../app/state/preferences-context";
-import { useIdentity } from "../app/state/identity-context";
+import ClientOnly from "../app-core/client-only";
+import { usePreferences } from "../app-core/state/preferences-context";
+import { useIdentity } from "../app-core/state/identity-context";
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../app/state/ui-store";
+import { useUiStore } from "../app-core/state/ui-store";
 import { profilerOnRender, recordOwnRender } from "../render-test/renderProfilerStats";
 import "../styles/navigation.css";
 

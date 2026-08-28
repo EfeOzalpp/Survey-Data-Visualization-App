@@ -2,12 +2,12 @@
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useUiStore } from '../app/state/ui-store';
-import { useSurveyDataStore } from '../app/state/survey-data-store';
-import { useIdentity } from '../app/state/identity-context';
-import { useCanvasRuntimeStore } from '../app/state/canvas-runtime-store';
-import { showDuplicateSurveyNotice, showRateLimitNotice } from '../app/notices';
-import { BUTTON_QUESTIONS } from './questionnaire';
+import { useUiStore } from '../app-core/state/ui-store';
+import { useSurveyDataStore } from '../app-core/state/survey-data-store';
+import { useIdentity } from '../app-core/state/identity-context';
+import { useCanvasRuntimeStore } from '../app-core/state/canvas-runtime-store';
+import { showDuplicateSurveyNotice, showRateLimitNotice } from '../app-core/notices';
+import { BUTTON_QUESTIONS } from './questionnaire/questions-lookup';
 import type { Audience, SurveyAction } from './survey-reducer';
 
 import {
@@ -19,7 +19,7 @@ import {
 import { WriteApiError } from '../client-api/write-api/writeApi';
 import { parentAggregateForSection } from '../domain/survey/sections';
 import { track } from '../lib/posthog';
-import { getSessionItem, removeSessionItems, setSessionItem } from '../app/session';
+import { getSessionItem, removeSessionItems, setSessionItem } from '../app-core/session';
 
 function answersToWeights(answers: Record<string, number | null>) {
   const getVal = (i: number) => {

@@ -7,7 +7,7 @@ import {
   deriveRoleFromSectionId,
   allowPersonalInSection,
 } from "./scoping";
-import { getSessionItem } from "../../../app/session";
+import { getSessionItem } from "../../../app-core/session";
 
 interface UseViewerScopeArgs {
   mySection: string | null | undefined;

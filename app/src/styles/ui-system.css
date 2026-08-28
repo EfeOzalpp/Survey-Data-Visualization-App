@@ -83,7 +83,7 @@ p span, li span, label span { font-family: var(--font-body); font-size: var(--ty
   stroke: currentColor;
 }
 
-/* .hint-banner* primitive styles live in styles/ui/hint-banner.css.
+/* .hint-banner* primitive styles live in styles/ui-generics/hint-banner.css.
    These banners below are feature-specific callers of it. */
 .survey-data-status-banner {
   position: fixed;

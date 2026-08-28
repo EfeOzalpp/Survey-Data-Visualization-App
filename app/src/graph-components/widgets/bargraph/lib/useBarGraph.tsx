@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../../../app/state/ui-store";
-import { useIdentity } from "../../../../app/state/identity-context";
-import { useSurveyDataStore } from "../../../../app/state/survey-data-store";
+import { useUiStore } from "../../../../app-core/state/ui-store";
+import { useIdentity } from "../../../../app-core/state/identity-context";
+import { useSurveyDataStore } from "../../../../app-core/state/survey-data-store";
 import { useRelativeScores } from "../../../../lib/hooks/useRelativeScore";
 import { avgWeightOf } from "../../../../lib/utils/score";
 import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData, titleFromId } from "../../../graph-picker/gp-data";

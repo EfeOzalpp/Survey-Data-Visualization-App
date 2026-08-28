@@ -1,7 +1,7 @@
 // src/graph-components/graph-picker/graph-picker.tsx
 import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import styles from "./graph-picker.module.css";
-import { ListboxShell } from "../../app/ui/ListboxShell";
+import { ListboxShell } from "../../app-core/ui-generics/ListboxShell";
 
 import {
   useGraphPickerData,

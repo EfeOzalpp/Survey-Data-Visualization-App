@@ -5,8 +5,8 @@ import React, { useMemo } from 'react';
 import '../../styles/gamification.css';
 
 import { useGeneralPools } from "../../lib/hooks/useGamificationPools";
-import { useOptionalPreferences } from "../../app/state/preferences-context";
-import type { Mode } from "../../app/state/ui-store";
+import { useOptionalPreferences } from "../../app-core/state/preferences-context";
+import type { Mode } from "../../app-core/state/ui-store";
 
 interface GamificationGeneralProps {
   dotId: string;

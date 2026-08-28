@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { usePreferences } from '../../app/state/preferences-context';
+import { usePreferences } from '../../app-core/state/preferences-context';
 
 export default function DarkMode() {
   const { darkMode } = usePreferences();

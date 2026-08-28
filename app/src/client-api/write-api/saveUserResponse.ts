@@ -1,7 +1,8 @@
 import { USE_MOCK_READS } from '../read-api/config';
 import { createMockUserResponse } from '../mock-survey-data/mockData';
 import type { SurveyRow, SurveyWeights } from '../../domain/survey/types';
-import { setSessionItem } from '../../app/session';
+import { setSessionItem } from '../../app-core/session';
+import { averageWeights } from '../../lib/utils/average';
 import {
   getClientId,
   makeRandomId,
@@ -36,14 +37,6 @@ const clamp01 = (v?: number) =>
 const round3 = (v?: number) =>
   typeof v === 'number' ? Math.round(v * 1000) / 1000 : undefined;
 
-const computeAvg = (weights: SurveyWeights) => {
-  const vals = [weights.q1, weights.q2, weights.q3, weights.q4, weights.q5].filter(
-    (x): x is number => Number.isFinite(x)
-  );
-  if (!vals.length) return undefined;
-  return vals.reduce((a, b) => a + b, 0) / vals.length;
-};
-
 function normalizeWeights(weights: SurveyWeights): SurveyWeights {
   return {
     q1: round3(clamp01(weights.q1)),
@@ -63,7 +56,7 @@ function isSavedUserResponse(value: unknown): value is SavedUserResponse {
 export function createOptimisticUserResponse(section: string, weights: SurveyWeights): SavedUserResponse {
   const clamped = normalizeWeights(weights);
   const submittedAt = new Date().toISOString();
-  const avgWeight = round3(computeAvg(clamped)) ?? 0.5;
+  const avgWeight = round3(averageWeights([clamped.q1, clamped.q2, clamped.q3, clamped.q4, clamped.q5])) ?? 0.5;
 
   return {
     _id: `pending-${makeRandomId()}`,

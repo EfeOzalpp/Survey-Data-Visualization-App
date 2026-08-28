@@ -1,10 +1,10 @@
 import { Profiler, useEffect, useMemo, useState } from "react";
 
 import { profilerOnRenderGraph } from "../../render-test/renderProfilerStatsGraph";
-import { useIdentity } from "../../app/state/identity-context";
-import { getSessionItem } from "../../app/session";
+import { useIdentity } from "../../app-core/state/identity-context";
+import { getSessionItem } from "../../app-core/session";
 import { useShallow } from "zustand/react/shallow";
-import { useSurveyDataStore } from "../../app/state/survey-data-store";
+import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
 import { useRealMobileViewport } from "../../lib/hooks/useRealMobileViewport";
 import type { SurveyRow } from "../../domain/survey/types";
 import { GraphDataProvider } from "../GraphDataContext";

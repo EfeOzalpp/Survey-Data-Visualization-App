@@ -2,14 +2,15 @@
 
 import React, { useEffect, useReducer, useState } from 'react';
 import CloseIcon from '../../assets/svg/close/CloseIcon';
+import PlusIcon from '../../assets/svg/plus/PlusIcon';
 
 import "../../styles/gamification.css";
 
-import { getSessionItem } from "../../app/session";
-import { useOptionalPreferences } from "../../app/state/preferences-context";
-import { useUiStore } from "../../app/state/ui-store";
-import HintBanner from "../../app/ui/HintBanner";
-import { Button } from "../../app/ui/Button";
+import { getSessionItem } from "../../app-core/session";
+import { useOptionalPreferences } from "../../app-core/state/preferences-context";
+import { useUiStore } from "../../app-core/state/ui-store";
+import HintBanner from "../../app-core/ui-generics/HintBanner";
+import { Button } from "../../app-core/ui-generics/Button";
 import { useTransientFlag } from "../../lib/hooks/useTransientFlag";
 import { saveSoloMessage } from "../../client-api/write-api/saveSoloMessage";
 import { recordOwnRender } from "../../render-test/renderProfilerStats";
@@ -355,10 +356,7 @@ export default function GamificationPersonalized({
           style={{ pointerEvents: 'auto' }}
         >
           <span className="toggle-icon is-closed svg-sm" aria-hidden>
-            <svg className="icon-plus ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <line x1="12" y1="5"  x2="12" y2="19" strokeWidth="2.5" />
-              <line x1="5"  y1="12" x2="19" y2="12" strokeWidth="2.5" />
-            </svg>
+            <PlusIcon className="icon-plus ui-icon" />
           </span>
         </button>
       )}

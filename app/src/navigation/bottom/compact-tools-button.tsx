@@ -1,7 +1,7 @@
 import panelStyles from "../../graph-components/compact-tools/compact-tools.module.css";
 import { recordOwnRender } from "../../render-test/renderProfilerStats";
 import { useDisclosure } from "../../lib/hooks/useDisclosure";
-import { Modal } from "../../app/ui/Modal";
+import { Modal } from "../../app-core/ui-generics/Modal";
 import { CompactToolsPanel } from "../../graph-components/compact-tools/compact-graph-tools";
 
 function ToolsGridIcon() {

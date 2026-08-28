@@ -3,8 +3,8 @@
 
 import { useMemo, useCallback } from "react";
 import { ROLE_SECTIONS } from "../../onboarding/section-picker/sections";
-import { useSurveyDataStore } from "../../app/state/survey-data-store";
-import { useIdentity } from "../../app/state/identity-context";
+import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
+import { useIdentity } from "../../app-core/state/identity-context";
 
 interface GraphOption {
   id: string;

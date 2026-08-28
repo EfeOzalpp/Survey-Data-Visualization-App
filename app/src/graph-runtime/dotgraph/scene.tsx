@@ -4,11 +4,11 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 
-import { usePreferences } from '../../app/state/preferences-context';
-import { useUiStore } from '../../app/state/ui-store';
-import { useIdentity } from '../../app/state/identity-context';
+import { usePreferences } from '../../app-core/state/preferences-context';
+import { useUiStore } from '../../app-core/state/ui-store';
+import { useIdentity } from '../../app-core/state/identity-context';
 import { useShallow } from 'zustand/react/shallow';
-import { useSurveyDataStore } from '../../app/state/survey-data-store';
+import { useSurveyDataStore } from '../../app-core/state/survey-data-store';
 import { useSharedGraphData } from '../useSharedGraphData';
 import { bumpGeneration, resetQueue } from '../sprites/entry';
 import { DEFAULT_VIEWPORT_WIDTH, isMobileWidth } from '../../lib/responsive/breakpoints';

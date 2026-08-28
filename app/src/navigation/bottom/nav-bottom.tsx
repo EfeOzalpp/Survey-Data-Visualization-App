@@ -1,7 +1,7 @@
 import { Profiler, memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../app/state/ui-store";
+import { useUiStore } from "../../app-core/state/ui-store";
 import { useWindowAspectRatio } from "../../lib/hooks/useWindowAspectRatio";
 import { useWindowWidth } from "../../lib/hooks/useWindowWidth";
 import { isDesktopWidth, isMobileWidth, isTabletWidth } from "../../lib/responsive/breakpoints";

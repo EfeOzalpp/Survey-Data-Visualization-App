@@ -1,4 +1,4 @@
-import { Popover } from "../../../../app/ui/Popover";
+import { Popover } from "../../../../app-core/ui-generics/Popover";
 import GuiIcon from "../../../../assets/svg/gui/GuiIcon";
 import { HoverHintTarget } from "../../shared/hover-hint";
 import type { DeviceKey } from "../../state/editor-state-context";

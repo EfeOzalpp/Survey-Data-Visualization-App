@@ -52,7 +52,7 @@
 .mode-toggle-check { display: flex; align-items: center; flex-shrink: 0; }
 
 /* City overlay/button - display/color/background/cursor now come from
-   .btn-secondary in styles/ui/button.css (city-button was migrated to the
+   .btn-secondary in styles/ui-generics/button.css (city-button was migrated to the
    shared Button component); this is only the hover-bounce flourish that's
    genuinely unique to it. */
 .city-button { transition: transform 220ms cubic-bezier(.2,.8,.2,1); }

@@ -1,6 +1,6 @@
 /* SectionPicker-only styling (CSS module, co-located with
    onboarding/section-picker/index.tsx). Shared trigger/listbox/option
-   chrome (also used by GraphPicker) lives in styles/ui/listbox-picker.css
+   chrome (also used by GraphPicker) lives in styles/ui-generics/listbox-picker.css
    and is reached here via :global(). The onboarding step-chrome classes
    (.survey/.survey-step/.survey-section) are shared across every onboarding
    step (see styles/onboarding.css, role-step.tsx, questionnaire-flow.tsx)
@@ -29,7 +29,7 @@
 
 /* --picker-rest-w / --picker-hover-w / --picker-open-w feed the shared
    rest/hover/open sizing mechanism defined once on .picker-shell in
-   styles/ui/listbox-picker.css - only the numbers live here. */
+   styles/ui-generics/listbox-picker.css - only the numbers live here. */
 @media (max-width: 767px) {
   :global(.survey-section:has(.survey.survey-step.section-select)) { height: 100%; }
   :global(.survey.survey-step.section-select) { height: 100%; }

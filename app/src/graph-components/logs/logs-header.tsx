@@ -2,7 +2,7 @@ import type { Dispatch, KeyboardEvent, Ref, SetStateAction } from "react";
 import styles from "./logs.module.css";
 import SearchIcon from "../../assets/svg/search/SearchIcon";
 import FilterIcon from "../../assets/svg/filter/FilterIcon";
-import { Popover } from "../../app/ui/Popover";
+import { Popover } from "../../app-core/ui-generics/Popover";
 import { SORT_OPTIONS, type SortKey } from "./lib/constants";
 
 export interface LogsHeaderProps {

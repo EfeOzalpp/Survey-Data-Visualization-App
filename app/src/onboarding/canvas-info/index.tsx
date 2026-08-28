@@ -6,10 +6,10 @@ import { useShallow } from "zustand/react/shallow";
 import LinkIcon from "../../assets/svg/link/LinkIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
 import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
-import { useCanvasRuntimeStore } from "../../app/state/canvas-runtime-store";
+import { useCanvasRuntimeStore } from "../../app-core/state/canvas-runtime-store";
 import styles from "./canvas-info.module.css";
 
-const SpotlightEntry = React.lazy(() => import("../../canvas-instances/SpotlightEntry"));
+const SpotlightEntry = React.lazy(() => import("../../scene-canvas-instances/SpotlightEntry"));
 
 // Fallback cap only - on an idle browser this fires almost immediately via
 // requestIdleCallback instead of always eating the full flat delay (same

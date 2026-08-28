@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Popover } from "../../../../../app/ui/Popover";
+import { Popover } from "../../../../../app-core/ui-generics/Popover";
 import ChevronIcon from "../../../../../assets/svg/chevron/ChevronIcon";
 import { HoverHintTarget } from "../../../shared/hover-hint";
 import rangeStyles from "../../../shared/range-control.module.css";

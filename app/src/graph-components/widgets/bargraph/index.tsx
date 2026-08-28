@@ -1,5 +1,5 @@
 import { lazy, Profiler, Suspense } from "react";
-import { useSurveyDataStore } from "../../../app/state/survey-data-store";
+import { useSurveyDataStore } from "../../../app-core/state/survey-data-store";
 import { GraphDataProvider } from "../../../graph-runtime/GraphDataContext";
 import { profilerOnRender } from "../../../render-test/renderProfilerStats";
 import WidgetsHeader from "../widgets-header";

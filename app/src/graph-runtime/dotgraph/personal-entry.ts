@@ -1,4 +1,4 @@
-import { getSessionItem } from "../../app/session";
+import { getSessionItem } from "../../app-core/session";
 
 function isPendingEntryId(entryId: string | null): boolean {
   return typeof entryId === "string" && entryId.startsWith("pending-");

@@ -2,8 +2,8 @@
 import { useMemo, useRef, useState, useEffect, useCallback, useId } from 'react';
 import type { KeyboardEvent } from 'react';
 import styles from './section-picker.module.css';
-import { ListboxShell } from '../../app/ui/ListboxShell';
-import { Button } from '../../app/ui/Button';
+import { ListboxShell } from '../../app-core/ui-generics/ListboxShell';
+import { Button } from '../../app-core/ui-generics/Button';
 import type { SectionHeader, SectionItem, SectionOption } from './sections';
 
 interface NormalizedSectionOption extends SectionOption {

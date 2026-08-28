@@ -1,5 +1,5 @@
 import { memo, type Ref } from "react";
-import HintBanner from "../../../app/ui/HintBanner";
+import HintBanner from "../../../app-core/ui-generics/HintBanner";
 import EmptyStateArt from "./emptyArt";
 import { ORDERED_COLORS, ordinalSuffix, percentileBoundsForColor, type BarColor, type Categories } from "./lib/useBarGraph";
 import styles from "./bg.module.css";

@@ -1,6 +1,6 @@
 // src/onboarding/role-picker/role-step.tsx
 import styles from "./role-picker.module.css";
-import { Button } from "../../app/ui/Button";
+import { Button } from "../../app-core/ui-generics/Button";
 import RolePicker from ".";
 import type { RoleValue } from ".";
 

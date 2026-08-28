@@ -43,7 +43,7 @@ services:
     command:
       [
         "node",
-        "dist-server/server/upstreams/postgres/migrate.js",
+        "dist-server/backend/upstreams/postgres/migrate.js",
       ]
     environment:
       DATABASE_URL: "postgresql://butterfly_effect_app:${POSTGRES_PASSWORD:-butterfly-effect-local}@postgres:5432/butterfly_effect"
@@ -59,7 +59,7 @@ services:
       [
         "sh",
         "-c",
-        "node dist-server/server/upstreams/postgres/migrate.js && npm run test:postgres",
+        "node dist-server/backend/upstreams/postgres/migrate.js && npm run test:postgres",
       ]
     environment:
       DATABASE_URL: "postgresql://butterfly_effect_test:butterfly-effect-test@postgres-test:5432/butterfly_effect_test"

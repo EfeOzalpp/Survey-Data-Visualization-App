@@ -1,7 +1,7 @@
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../app/state/ui-store";
+import { useUiStore } from "../../app-core/state/ui-store";
 import { useTransientFlag } from "../../lib/hooks/useTransientFlag";
-import { Button } from "../../app/ui/Button";
+import { Button } from "../../app-core/ui-generics/Button";
 
 export default function QuestionnaireNav() {
   const { questionnaireNav, requestQuestionnaireAdvance } = useUiStore(

@@ -3,9 +3,9 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
 import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
-import { usePreferences } from "../../app/state/preferences-context";
-import { useUiStore } from "../../app/state/ui-store";
-import { Modal } from "../../app/ui/Modal";
+import { usePreferences } from "../../app-core/state/preferences-context";
+import { useUiStore } from "../../app-core/state/ui-store";
+import { Modal } from "../../app-core/ui-generics/Modal";
 import styles from "./onboarding-info.module.css";
 import { INFO_SLIDES, readInfoSlideMedia, type InfoSlideMediaMap } from "./slides";
 
@@ -21,14 +21,7 @@ export default function InfoDialog() {
   const [mediaBySlide, setMediaBySlide] = useState<InfoSlideMediaMap>({});
   const [mediaLoaded, setMediaLoaded] = useState(false);
 
-  // Decide the format ourselves via canPlayType (a synchronous, no-network
-  // capability check) instead of handing the browser two <source> candidates
-  // to fall back between: on-device logs showed Safari picking the WebM
-  // source, failing to decode it (MEDIA_ERR_DECODE), and never advancing to
-  // the MP4 source at all — the native multi-<source> fallback just doesn't
-  // reliably happen here. Browsers that truly support WebM still get it;
-  // Safari gets routed straight to MP4 without ever touching the WebM file.
-  // TEMP: force MP4-only to verify the fallback path works in isolation.
+
   const [preferWebm] = useState(() => false);
   const closeDialog = useCallback(() => {
     setInfoOpen(false);
@@ -55,12 +48,6 @@ export default function InfoDialog() {
     };
   }, [open]);
 
-  // Not gated on `open`: InfoDialog is always mounted (hidden via CSS, see
-  // the `is-open` class below) rather than conditionally rendered, so the
-  // <video> element already exists in the DOM before the user ever taps
-  // "Watch how it works" — fetching media on mount means a real src is
-  // already in place by the time that tap happens, which main.tsx's onClick
-  // relies on to prime playback synchronously within the click itself.
   useEffect(() => {
     let active = true;
 
@@ -79,27 +66,12 @@ export default function InfoDialog() {
 
   const slide = INFO_SLIDES[activeSlide];
   const slideMedia = mediaBySlide[slide.key];
-  // Falls back to any available slide's media so the persistent <video>
-  // below always has something to prime with the very first "open" tap,
-  // even before the user has reached a slide that actually has media.
   const displayMedia = slideMedia ?? Object.values(mediaBySlide)[0];
 
   useEffect(() => {
     setMediaLoaded(false);
   }, [slide.key, darkMode]);
 
-  // Combines two mechanisms: the declarative `autoplay` attribute (which
-  // WebKit exempts from user-gesture rules entirely when muted+playsInline —
-  // it's not a script action, so it isn't subject to activation checks the
-  // way element.play() is) drives actual playback; this effect only nudges
-  // genuinely-stalled loading (explicit load(), retried at 2.5s/5s if stuck)
-  // and opportunistically calls play() as a bonus, not the primary trigger.
-  // Earlier, JS-triggered play() calls issued from an auto-advance (a CSS
-  // animationend, not a real click) were rejected with NotAllowedError even
-  // though the video is muted — `autoplay` sidesteps that entirely. The
-  // <video> element itself is never recreated across slide changes (no
-  // `key` prop) so it keeps whatever playback permission it already has,
-  // rather than starting over as an unlocked-from-scratch element each time.
   useEffect(() => {
     const node = videoRef.current;
     if (!node || !displayMedia) return;

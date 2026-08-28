@@ -1,5 +1,5 @@
 /* CompactToolsPanel-only styling (mobile+tablet modal content). Its trigger
-   uses the shared secondary icon-button primitive in styles/ui/button.css. */
+   uses the shared secondary icon-button primitive in styles/ui-generics/button.css. */
 
 /* Tab strip comes from widgets/footer/multi-button-footer.tsx. The header
    wrappers and close-button below belong only to the compact modal. */

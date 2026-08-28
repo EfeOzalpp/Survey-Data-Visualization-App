@@ -1,6 +1,6 @@
 /* Global skeleton - base element rules. Design tokens live in
    styles/tokens/ (typography.css/color.css/spacing-sizing.css) and
-   styles/ui/button.css (button-specific tokens) instead of here. Icon
+   styles/ui-generics/button.css (button-specific tokens) instead of here. Icon
    glyph sizing (svg-sm/svg-md) also lives in spacing-sizing.css now - the
    classes below are color/identity only, applied alongside svg-sm/svg-md
    on the actual icon elements. */

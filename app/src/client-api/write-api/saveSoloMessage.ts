@@ -1,4 +1,4 @@
-import { getSessionItem, setSessionItem } from '../../app/session';
+import { getSessionItem, setSessionItem } from '../../app-core/session';
 import { USE_MOCK_READS } from '../read-api/config';
 import {
   getClientId,

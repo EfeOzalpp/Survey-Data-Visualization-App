@@ -1,3 +1,5 @@
+import { averageWeights } from "./average";
+
 export interface WithWeights {
   _id?: string;
   weights?: Record<string, number>;
@@ -9,8 +11,7 @@ export function avgWeightOf(item: WithWeights): number {
     return item.avgWeight;
   }
 
-  const values = Object.values(item.weights ?? {});
-  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0.5;
+  return averageWeights(Object.values(item.weights ?? {}));
 }
 
 export function toScore100(value: number, decimals = 0): number {

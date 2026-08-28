@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
-import { usePreferences } from "../../../app/state/preferences-context";
+import { usePreferences } from "../../../app-core/state/preferences-context";
 import { EditorRuntimePreview } from "../../../scene-canvas/editor-runtime";
 import { useEditorState, type WorkspaceCamera } from "../state/editor-state-context";
 import { useWorkspaceKeyboard } from "./keyboard";

@@ -3,6 +3,7 @@
 import type { Vec3, GeneratePositionsOptions } from "./positions";
 import { generatePositions } from "./positions";
 import { sampleStops, rgbString } from "../../../lib/utils/color-and-interpolation";
+import { averageWeights } from "../../../lib/utils/average";
 
 export interface SurveyResponseLike {
   _id?: string;
@@ -50,12 +51,8 @@ const hashUnit = (seed: number): number => {
   return x - Math.floor(x);
 };
 
-const computeLocalAvg = (response: SurveyResponseLike): number | undefined => {
-  const vals = [response.q1, response.q2, response.q3, response.q4, response.q5]
-    .filter((value): value is number => Number.isFinite(value));
-  if (!vals.length) return undefined;
-  return vals.reduce((a, b) => a + b, 0) / vals.length;
-};
+const computeLocalAvg = (response: SurveyResponseLike): number =>
+  averageWeights([response.q1, response.q2, response.q3, response.q4, response.q5]);
 
 function normalizedSlotIndex(response: SurveyResponseLike, fallbackIndex: number): number {
   const slotIndex = response.__dotSlotIndex;
@@ -138,14 +135,12 @@ export function computeDotPoints(
   );
 
   const pts: DotPoint[] = safe.map((response, i) => {
-    const rawAvg =
+    // averageWeights (via computeLocalAvg) always returns a finite number,
+    // so no further fallback is needed once we reach this point.
+    const avg: number =
       typeof response.avgWeight === 'number' && Number.isFinite(response.avgWeight)
         ? response.avgWeight
         : computeLocalAvg(response);
-
-    // Guarantee a real number no matter what:
-    const avg: number =
-      typeof rawAvg === 'number' && Number.isFinite(rawAvg) ? rawAvg : 0.5;
 
     const slotIndex = normalizedSlotIndex(response, i);
     const pos: Vec3 = base[slotIndex];

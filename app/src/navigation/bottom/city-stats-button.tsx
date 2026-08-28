@@ -1,6 +1,6 @@
 import MapIcon from "../../assets/svg/map/MapIcon";
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../app/state/ui-store";
+import { useUiStore } from "../../app-core/state/ui-store";
 
 export default function CityStatsButton() {
   const { cityStatsOpen, setCityStatsOpen } = useUiStore(

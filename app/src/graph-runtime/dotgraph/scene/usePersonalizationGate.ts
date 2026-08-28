@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 
-import { getSessionItem } from '../../../app/session';
+import { getSessionItem } from '../../../app-core/session';
 import useViewerScope from '../scope/useViewerScope';
 import { resolvePersonalEntryId } from '../personal-entry';
 import type { DotGraphEntry } from '../types';

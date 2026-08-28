@@ -22,20 +22,20 @@
   },
   "scripts": {
     "dev": "vite",
-    "dev:server": "tsx watch src/server/index.ts",
+    "dev:server": "tsx watch src/backend/index.ts",
     "build": "vite build",
     "build:server": "tsc -p tsconfig.server.json",
-    "build:ssr": "vite build --ssr src/server-rendering/entry-server.tsx --outDir dist-ssr",
+    "build:ssr": "vite build --ssr src/server-side-rendering/entry-server.tsx --outDir dist-ssr",
     "build:all": "npm run build && npm run build:ssr && npm run build:server",
     "build:analyze": "vite build --config vite.analyze.ts && start dist/stats.html",
 
-    "db:migrate": "tsx src/server/upstreams/postgres/migrate.ts",
-    "db:migrate:production": "node dist-server/server/upstreams/postgres/migrate.js",
-    "db:import:sanity-survey": "tsx src/server/upstreams/postgres/importSanitySurveyResponses.ts",
-    "db:import:sanity-survey:production": "node dist-server/server/upstreams/postgres/importSanitySurveyResponses.js",
+    "db:migrate": "tsx src/backend/upstreams/postgres/migrate.ts",
+    "db:migrate:production": "node dist-server/backend/upstreams/postgres/migrate.js",
+    "db:import:sanity-survey": "tsx src/backend/upstreams/postgres/importSanitySurveyResponses.ts",
+    "db:import:sanity-survey:production": "node dist-server/backend/upstreams/postgres/importSanitySurveyResponses.js",
     
     "preview": "vite preview",
-    "start": "node --env-file=.env -e \"process.env.NODE_ENV='production'; require('./dist-server/server/index.js')\"",
+    "start": "node --env-file=.env -e \"process.env.NODE_ENV='production'; require('./dist-server/backend/index.js')\"",
     
     "typecheck": "tsc --noEmit",
     "lint": "eslint",

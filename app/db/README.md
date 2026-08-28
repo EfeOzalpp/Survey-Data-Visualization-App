@@ -72,7 +72,7 @@ container:
 ```powershell
 docker compose run --rm --build `
   --volume ../sanity/data-backups:/imports:ro `
-  app node dist-server/server/upstreams/postgres/importSanitySurveyResponses.js `
+  app node dist-server/backend/upstreams/postgres/importSanitySurveyResponses.js `
   /imports/<export>.tar.gz --dry-run
 ```
 
