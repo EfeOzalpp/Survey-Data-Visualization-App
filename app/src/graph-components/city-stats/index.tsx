@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { useUiStore } from "../../app-core/state/ui-store";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
 import { Modal } from "../../app-core/ui-generics/Modal";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import styles from "./city-stats.module.css";

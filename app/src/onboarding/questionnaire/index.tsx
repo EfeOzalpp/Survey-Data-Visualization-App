@@ -2,8 +2,8 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 // uses both ui state and canvas state.
-import { useCanvasRuntimeStore } from "../../app-core/state/canvas-runtime-store";
-import { useUiStore } from "../../app-core/state/ui-store";
+import { useCanvasRuntimeStore } from "../../app-core/state/stores/canvas-runtime-store";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
 
 import { BUTTON_QUESTIONS } from "./questions-lookup";
 

@@ -3,8 +3,8 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import CloseIcon from "../../assets/svg/close/CloseIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
 import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
-import { usePreferences } from "../../app-core/state/preferences-context";
-import { useUiStore } from "../../app-core/state/ui-store";
+import { usePreferences } from "../../app-core/state/context/preferences-context";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
 import { Modal } from "../../app-core/ui-generics/Modal";
 import styles from "./onboarding-info.module.css";
 import { INFO_SLIDES, readInfoSlideMedia, type InfoSlideMediaMap } from "./slides";
@@ -68,9 +68,16 @@ export default function InfoDialog() {
   const slideMedia = mediaBySlide[slide.key];
   const displayMedia = slideMedia ?? Object.values(mediaBySlide)[0];
 
-  useEffect(() => {
+  // Reset the loading flag when the slide or theme changes - adjusted during
+  // render (React's recommended pattern for this, see CompactToolsPanel's
+  // activeTool reset) rather than in an effect, which would cause an extra
+  // cascading render.
+  const mediaResetKey = `${slide.key}:${String(darkMode)}`;
+  const [prevMediaResetKey, setPrevMediaResetKey] = useState(mediaResetKey);
+  if (mediaResetKey !== prevMediaResetKey) {
+    setPrevMediaResetKey(mediaResetKey);
     setMediaLoaded(false);
-  }, [slide.key, darkMode]);
+  }
 
   useEffect(() => {
     const node = videoRef.current;

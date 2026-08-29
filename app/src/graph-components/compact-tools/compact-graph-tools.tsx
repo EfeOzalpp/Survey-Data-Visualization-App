@@ -1,6 +1,6 @@
 import { lazy, Profiler, Suspense, useState } from "react";
 import { profilerOnRender, recordOwnRender } from "../../render-test/renderProfilerStats";
-import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
+import { useSurveyDataStore } from "../../app-core/state/stores/survey-data-store";
 import { GraphDataProvider } from "../../graph-runtime/GraphDataContext";
 import { useLogsPanel } from "../logs/lib/useLogsPanel";
 import { LogsBody } from "../logs/logs-body";

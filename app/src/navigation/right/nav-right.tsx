@@ -7,10 +7,10 @@ import ForwardIcon from "../../assets/svg/forward/ForwardIcon";
 import { Button } from "../../app-core/ui-generics/Button";
 import GraphPicker from "../../graph-components/graph-picker/graph-picker";
 import { getSessionItem } from "../../app-core/session";
-import { useIdentity } from "../../app-core/state/identity-context";
+import { useIdentity } from "../../app-core/state/context/identity-context";
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../app-core/state/ui-store";
-import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
+import { useSurveyDataStore } from "../../app-core/state/stores/survey-data-store";
 import { useWindowAspectRatio } from "../../lib/hooks/useWindowAspectRatio";
 import { useWindowWidth } from "../../lib/hooks/useWindowWidth";
 import { isDesktopWidth, isTabletWidth } from "../../lib/responsive/breakpoints";
@@ -58,6 +58,7 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
   const { myEntryId, mySection, setMyEntryId, setMySection, setMyRole } = useIdentity();
   const windowWidth = useWindowWidth();
   const aspectRatio = useWindowAspectRatio();
+
   const [pickerOpen, setPickerOpen] = useState(false);
   const pickerOffset = isDesktopWidth(windowWidth)
     ? desktopGraphToolsOffsetPx(windowWidth, logsOpen, widgetsOpen, aspectRatio)
@@ -117,18 +118,6 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
     <>
       <div className={cx("right", isDark && "is-dark", introActive && "nav-first-enter")}>
         <ColorToggle />
-
-        {showVisualEditorButton && (
-          <Button
-            variant="secondary"
-            baseClassName="visual-editor-button"
-            onClick={scrollToVisualEditor}
-            aria-label="Visual Editor"
-          >
-            Visual Editor
-          </Button>
-        )}
-
         {showObserverButton && (
           observerLabel === "Back" ? (
             <button
@@ -150,6 +139,16 @@ function NavRight({ isDark, introActive = false }: { isDark: boolean; introActiv
               <ForwardIcon className="ui-icon svg-md" />
             </button>
           )
+        )}
+        {showVisualEditorButton && (
+          <Button
+            variant="secondary"
+            baseClassName="visual-editor-button"
+            onClick={scrollToVisualEditor}
+            aria-label="Visual Editor"
+          >
+            Visual Editor
+          </Button>
         )}
       </div>
       {showPicker && (

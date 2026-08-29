@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useSurveyDataStore } from "../../../../app-core/state/survey-data-store";
+import { useSurveyDataStore } from "../../../../app-core/state/stores/survey-data-store";
 import { CHOOSE_STAFF, CHOOSE_STUDENT, GO_BACK, useGraphPickerData } from "../../../graph-picker/gp-data";
 
 interface LocalSectionState {

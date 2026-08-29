@@ -1,35 +1,8 @@
-// src/app-core/state/ui-store.ts
-//
-// STATE AUDIT (2026-08-21):
-// - CALL SITES: 22 source files across 5 top-level folders — app-core/
-//   (main.tsx, app-provider.tsx), onboarding/ (root, questionnaire x2,
-//   onboarding-info), navigation/ (root, right, bottom x5, left/logo),
-//   graph-runtime/ (gamification, dotgraph root, dotgraph/scene x2,
-//   dotgraph/interaction), graph-components/ (widgets/bargraph, city-stats).
-//   This is the most widely-read store in the app by folder spread.
-
-// - WRAPPING: none. Zustand module singleton — no <Provider> or {children}
-//   tree. Any component can `import { useUiStore }` regardless of where it's
-//   mounted; nothing needs to sit inside a particular subtree to read it.
-
-// - RE-RENDER SCOPE: per-field selector (`useUiStore(s => s.field)`) at every
-//   call site checked — e.g. mode-toggle.tsx only re-renders on `mode`
-//   changing, not on unrelated fields like `logsOpen` toggling. No component
-//   subscribes to the whole store.
-
-// - FOLDER-LOCAL STATE ALONGSIDE: yes, and deliberately so. e.g.
-//   useQuestionnaireGridLayout.ts keeps `canvasBox` as local useState (a
-//   ResizeObserver measurement only that one hook needs);
-//   useDotGraphSceneState.ts keeps `tileSize` local for the same reason.
-//   Split rationale: this store holds cross-cutting UI toggles that multiple
-//   unrelated folders read/write (survey open/closed, viz visible, mode);
-//   local useState holds derived-from-DOM/single-consumer values nothing
-//   else needs — pushing those into this store would add churn with no
-//   sharing benefit.
+// src/app-core/state/stores/ui-store.ts
 
 import { create } from 'zustand';
 import { startTransition, useEffect } from 'react';
-import { readStoredMode, setSessionItem } from '../session';
+import { readStoredMode, setSessionItem } from '../../session';
 
 export type Mode = 'relative' | 'absolute';
 

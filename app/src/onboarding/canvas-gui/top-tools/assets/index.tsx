@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
-import { usePreferences } from "../../../../app-core/state/preferences-context";
+import { usePreferences } from "../../../../app-core/state/context/preferences-context";
 import ChevronIcon from "../../../../assets/svg/chevron/ChevronIcon";
 import { HoverHintTarget } from "../../shared/hover-hint";
 import { useEditorState, type AssetKey } from "../../state/editor-state-context";

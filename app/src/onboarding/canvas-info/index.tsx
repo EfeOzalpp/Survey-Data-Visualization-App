@@ -6,15 +6,18 @@ import { useShallow } from "zustand/react/shallow";
 import LinkIcon from "../../assets/svg/link/LinkIcon";
 import PlayPauseIcon from "../../assets/svg/play/PlayPauseIcon";
 import ChevronIcon from "../../assets/svg/chevron/ChevronIcon";
-import { useCanvasRuntimeStore } from "../../app-core/state/canvas-runtime-store";
+import { useCanvasRuntimeStore } from "../../app-core/state/stores/canvas-runtime-store";
 import styles from "./canvas-info.module.css";
 
 const SpotlightEntry = React.lazy(() => import("../../scene-canvas-instances/SpotlightEntry"));
 
 // Fallback cap only - on an idle browser this fires almost immediately via
-// requestIdleCallback instead of always eating the full flat delay (same
-// local-helper pattern as app-effects.tsx's scheduleIdle / index.tsx's
-// scheduleStartupWork - each file keeps its own since the timeouts differ).
+// requestIdleCallback instead of always eating the full flat delay. Same
+// shape as lib/utils/scheduleIdle.ts (which app-core's deferred-preloaders.tsx
+// and browser-policies.tsx now share) - this one's kept local only because
+// it hasn't been switched over to that shared version yet. src/index.tsx's
+// scheduleStartupWork is a genuinely different fire-and-forget helper for
+// one-time boot work, not a duplicate.
 const SPOTLIGHT_LOAD_TIMEOUT_MS = 800;
 const SPOTLIGHT_INTERSECTION_THRESHOLD = 0.1;
 const SPOTLIGHT_SLIDE_DURATION_MS = 7000;

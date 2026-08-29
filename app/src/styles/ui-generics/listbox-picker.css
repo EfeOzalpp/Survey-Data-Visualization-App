@@ -48,7 +48,7 @@
 }
 .trigger-chevron .ui-icon { opacity: 0.95; color: var(--ui-trigger-chevron-fill); }
 .trigger-chevron-icon.ui-icon { opacity: 0.95; transform: scale(1.1, 0.95); }
-.trigger-chevron-icon.ui-icon [stroke] { stroke: var(--ui-trigger-chevron-fill); }
+.trigger-chevron-icon.ui-icon [stroke] { stroke: var(--ui-trigger-chevron-fill); stroke-width: 0.6; }
 
 .listbox-shell {
   display: grid;

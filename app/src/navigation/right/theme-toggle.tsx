@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { usePreferences } from "../../app-core/state/preferences-context";
+import { usePreferences } from "../../app-core/state/context/preferences-context";
 import ThemeIcon from "../../assets/svg/theme/ThemeIcon";
 
 export default function ColorToggle() {

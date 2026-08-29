@@ -1,5 +1,5 @@
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../app-core/state/ui-store";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
 import { useTransientFlag } from "../../lib/hooks/useTransientFlag";
 import { Button } from "../../app-core/ui-generics/Button";
 

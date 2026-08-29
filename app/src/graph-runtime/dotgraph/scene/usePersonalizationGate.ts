@@ -3,14 +3,10 @@
 import { useMemo, useState } from 'react';
 
 import { getSessionItem } from '../../../app-core/session';
-import useViewerScope from '../scope/useViewerScope';
-import { resolvePersonalEntryId } from '../personal-entry';
+import { usePersonalizationScope } from '../usePersonalizationScope';
 import type { DotGraphEntry } from '../types';
 
 interface UsePersonalizationGateParams {
-  myEntryId: string | null;
-  mySection: string | null;
-  section: string;
   safeData: DotGraphEntry[];
   observerMode: boolean;
   isSmallScreen: boolean;
@@ -30,14 +26,11 @@ function hasStoredPersonalSnapshot(entryId: string | null): boolean {
 }
 
 export default function usePersonalizationGate({
-  myEntryId,
-  mySection,
-  section,
   safeData,
   observerMode,
   isSmallScreen,
 }: UsePersonalizationGateParams) {
-  const personalizedEntryId: string | null = resolvePersonalEntryId(myEntryId);
+  const { personalizedEntryId, shouldShowPersonalized } = usePersonalizationScope();
 
   const [personalOpen, setPersonalOpen] = useState(true);
 
@@ -49,11 +42,6 @@ export default function usePersonalizationGate({
     () => hasStoredPersonalSnapshot(personalizedEntryId),
     [personalizedEntryId]
   );
-
-  const { shouldShowPersonalized } = useViewerScope({
-    mySection,
-    section,
-  });
 
   const wantsSkew =
     isSmallScreen &&

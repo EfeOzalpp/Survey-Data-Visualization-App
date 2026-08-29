@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { useThree } from "../../r3f";
 import { Frustum, Matrix4, Vector3, type Group } from "../../three";
 import type { RefObject } from "react";
-import { useUiStore } from "../../../app-core/state/ui-store";
+import { useUiStore } from "../../../app-core/state/stores/ui-store";
 import { resolveSpriteVisual } from "../../sprites/entry";
 import { hasDotId } from "../types";
 import { makeCenteredTooltipEvent } from "../tooltip/hoverEvent";

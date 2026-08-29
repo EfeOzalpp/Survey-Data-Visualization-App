@@ -37,10 +37,11 @@ export function Modal({
   useEscapeToClose(open, () => { onOpenChange(false); });
   useFocusTrap({ enabled: open, containerRef: dialogRef, focusContainerOnTouch: true });
 
-  // Spread: `inert` isn't in this project's pinned @types/react yet, but a
-  // real boolean is correct here - see Popover.tsx for details.
+  // Spread: `inert` isn't in this project's pinned @types/react yet, and on
+  // this project's React 18 it must be a string (or omitted) - see
+  // Popover.tsx for the full explanation.
   const modal = (
-    <div className={`ui-modal-root${open ? " is-open" : ""}`} aria-hidden={!open} {...{ inert: !open }}>
+    <div className={`ui-modal-root${open ? " is-open" : ""}`} aria-hidden={!open} {...{ inert: !open ? "" : undefined }}>
       <button
         type="button"
         className="ui-modal-overlay"

@@ -345,7 +345,6 @@ button { pointer-events: auto; cursor: pointer; }
 
 /* Positioning only, genuinely per-consumer (not svg-lg styling). Reset the
    theme control's nav spacing when the slimmer back icon follows it. */
-.system-color { margin-right: calc(-1 * var(--space-sm)); }
 .system-color:has(+ .back-nav-button) { margin-right: 0; }
 
 /* -- Focus visible - WCAG 2.4.7 / 2.4.11 --------------------------- */

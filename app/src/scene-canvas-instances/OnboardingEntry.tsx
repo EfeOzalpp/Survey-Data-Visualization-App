@@ -1,7 +1,7 @@
 // src/scene-canvas-instances/OnboardingEntry.tsx
 
 import { memo } from "react";
-import { useCanvasRuntimeStore } from "../app-core/state/canvas-runtime-store";
+import { useCanvasRuntimeStore } from "../app-core/state/stores/canvas-runtime-store";
 import { EngineHost } from "../scene-canvas/EngineHost";
 import { recordOwnRender } from "../render-test/renderProfilerStats";
 

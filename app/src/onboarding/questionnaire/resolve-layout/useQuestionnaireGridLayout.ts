@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
-import { useUiStore } from "../../../app-core/state/ui-store";
+import { useUiStore } from "../../../app-core/state/stores/ui-store";
 
 import { CANVAS_PADDING, resolvePaddingSpec } from "../../../scene-canvas/scene-rules/canvas-padding";
 import {

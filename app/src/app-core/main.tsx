@@ -4,7 +4,7 @@ import React, { Profiler, Suspense } from "react";
 
 import { AppProvider } from "./app-provider";
 import ClientOnly from "./client-only"; // wrapper to exclude certain files from server-side rendering.
-import { useUiStore } from "./state/ui-store";
+import { useUiStore } from "./state/stores/ui-store";
 import { profilerOnRender, recordOwnRender } from "../render-test/renderProfilerStats";
 import PlayIcon from "../assets/svg/info/PlayIcon";
 
@@ -16,14 +16,9 @@ import DataVisualization from "../graph-runtime";
 import CanvasEntry from "../scene-canvas-instances/OnboardingEntry";
 import CityOverlay from "../scene-canvas-instances/CityEntry";
 
-import {
-  AppBrowserPolicies,
-  DeferredGraphPreloader,
-  DeferredGamificationPreloader,
-  DuplicateSurveyBanner,
-  RateLimitBanner,
-  SurveyDataStatusBanner,
-} from "./app-effects";
+import { AppBrowserPolicies } from "./browser-policies";
+import { DeferredGraphPreloader, DeferredGamificationPreloader } from "./deferred-preloaders";
+import { DuplicateSurveyBanner, RateLimitBanner, SurveyDataStatusBanner } from "./notice-banners";
 import ErrorBoundary from "./error-boundary";
 import graphStyles from "../graph-runtime/graph.module.css";
 
@@ -81,7 +76,9 @@ const AppInner: React.FC = () => {
                 if (primer instanceof HTMLVideoElement) {
                   primer.muted = true;
                   primer.defaultMuted = true;
-                  void primer.play().catch(() => {});
+                  void primer.play().catch(() => {
+                    // Autoplay can be legitimately refused in some contexts; nothing to do.
+                  });
                 }
                 setInfoOpen(true);
               }}

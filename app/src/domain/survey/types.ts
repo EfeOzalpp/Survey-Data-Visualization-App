@@ -9,14 +9,9 @@ export interface SurveyWeights {
   q5?: number;
 }
 
-export interface SurveyRow {
+export interface SurveyRow extends SurveyWeights {
   _id: string;
   section: string;
-  q1?: number;
-  q2?: number;
-  q3?: number;
-  q4?: number;
-  q5?: number;
   avgWeight?: number;
   soloMessage?: string;
   submittedAt: string;

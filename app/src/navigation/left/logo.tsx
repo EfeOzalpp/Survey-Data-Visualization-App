@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { useUiStore } from "../../app-core/state/ui-store";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
 import { recordOwnRender } from "../../render-test/renderProfilerStats";
 
 const Logo = () => {

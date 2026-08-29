@@ -1,19 +1,20 @@
 import { Profiler, useEffect, useMemo, useState } from "react";
 
 import { profilerOnRenderGraph } from "../../render-test/renderProfilerStatsGraph";
-import { useIdentity } from "../../app-core/state/identity-context";
+import { useIdentity } from "../../app-core/state/context/identity-context";
 import { getSessionItem } from "../../app-core/session";
 import { useShallow } from "zustand/react/shallow";
-import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
+import { useSurveyDataStore } from "../../app-core/state/stores/survey-data-store";
 import { useRealMobileViewport } from "../../lib/hooks/useRealMobileViewport";
 import type { SurveyRow } from "../../domain/survey/types";
 import { GraphDataProvider } from "../GraphDataContext";
+import { PersonalizationScopeProvider } from "./personalizationScope";
 import DotGraphCanvasHost from "./canvas-host";
 import { resolvePersonalEntryId } from "./personal-entry";
 import {
   allowPersonalInSection,
   deriveRoleFromSectionId,
-} from "./scope/scoping";
+} from "./scoping";
 import {
   buildVisibleRowsSnapshot,
   graphDataLimit,
@@ -63,20 +64,21 @@ export default function DotGraphDataBoundary() {
   const { myEntryId, mySection } = useIdentity();
   const isRealMobile = useRealMobileViewport();
   const dataLimit = graphDataLimit(isRealMobile);
-  const personalEntryId = resolvePersonalEntryId(myEntryId);
+  const personalizedEntryId = resolvePersonalEntryId(myEntryId);
   const effectiveMySection = mySection ?? getSessionItem("be.mySection") ?? "";
 
   const personalRow = useMemo(() => {
-    if (!personalEntryId) return null;
-    return allFilteredRows.find((row) => row._id === personalEntryId)
-      ?? readPersonalSnapshot(personalEntryId);
-  }, [allFilteredRows, personalEntryId]);
+    if (!personalizedEntryId) return null;
+    return allFilteredRows.find((row) => row._id === personalizedEntryId)
+      ?? readPersonalSnapshot(personalizedEntryId);
+  }, [allFilteredRows, personalizedEntryId]);
 
-  const scopedPersonalRow = useMemo(() => {
-    if (!personalRow) return null;
+  const shouldShowPersonalized = useMemo(() => {
     const role = deriveRoleFromSectionId(effectiveMySection);
-    return allowPersonalInSection(role, effectiveMySection, section) ? personalRow : null;
-  }, [effectiveMySection, personalRow, section]);
+    return allowPersonalInSection(role, effectiveMySection, section);
+  }, [effectiveMySection, section]);
+
+  const scopedPersonalRow = shouldShowPersonalized ? personalRow : null;
 
   const stableVisibleRows = useStableVisibleRows(allFilteredRows, dataLimit, section);
   const cappedData = useMemo(
@@ -85,10 +87,15 @@ export default function DotGraphDataBoundary() {
   );
 
   return (
-    <GraphDataProvider data={cappedData}>
-      <Profiler id="DotGraphCanvasHost" onRender={profilerOnRenderGraph}>
-        <DotGraphCanvasHost />
-      </Profiler>
-    </GraphDataProvider>
+    <PersonalizationScopeProvider
+      personalizedEntryId={personalizedEntryId}
+      shouldShowPersonalized={shouldShowPersonalized}
+    >
+      <GraphDataProvider data={cappedData}>
+        <Profiler id="DotGraphCanvasHost" onRender={profilerOnRenderGraph}>
+          <DotGraphCanvasHost />
+        </Profiler>
+      </GraphDataProvider>
+    </PersonalizationScopeProvider>
   );
 }

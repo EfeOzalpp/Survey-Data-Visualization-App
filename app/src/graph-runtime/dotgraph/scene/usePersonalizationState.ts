@@ -11,7 +11,7 @@ import {
   type SpriteAssignment,
   type SpriteIdentity,
 } from '../../sprites/entry';
-import { useUiStore } from '../../../app-core/state/ui-store';
+import { useUiStore } from '../../../app-core/state/stores/ui-store';
 import { getSessionItem, removeSessionItems } from '../../../app-core/session';
 import type {
   DotGraphEntry,

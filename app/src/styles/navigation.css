@@ -1,7 +1,7 @@
 /* Navigation shell, logo, left panel, mode toggle, city, bottom */
 
 :root {
-  --logo-wrap-w: 2.6rem;
+  --logo-wrap-w: 3.2rem;
   --logo-wrap-h: 2.6rem;
   --logo-w: 3.2rem;
   --logo-h: 3.2rem;
@@ -28,7 +28,9 @@
 
 .logo-text { display: inline-flex; align-items: center; justify-content: center; min-width: var(--logo-w); min-height: var(--logo-h); color: var(--ui-text); font-family: var(--font-title); font-size: clamp(1.45rem, 2vw, 1.85rem); font-weight: 700; line-height: 1; letter-spacing: -0.06em; text-transform: lowercase; }
 
-.visual-editor-button { margin-left: var(--space-sm); }
+.visual-editor-button { margin-left: -0.05rem; }
+/* Compound selectors so these beat .svg-lg on specificity, not load order. */
+.svg-lg.system-color, .svg-lg.back-nav-button { width: var(--tap-target-sm); height: var(--tap-target-sm); }
 .system-color.is-dark { opacity: 0.95; }
 .system-color .ui-icon path {
   stroke: var(--ui-icon-fill);
@@ -129,7 +131,8 @@
 
 /* 768 and above */
 @media (min-width: 768px) {
-  
+  .visual-editor-button { margin-left: -0.125rem; }
+
   .navigation { padding: 1rem 1.6rem; }
 
   :root { --nav-control-h: 48px; }

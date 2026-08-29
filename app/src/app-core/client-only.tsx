@@ -1,4 +1,5 @@
-// wrapper to return null pre-hydration for modules that depend on browser or aren't effective to server-side render.
+// wrapper to return null pre-hydration for modules 
+// that depend on browser or aren't effective to server-side render.
 import React from "react";
 
 interface ClientOnlyProps {

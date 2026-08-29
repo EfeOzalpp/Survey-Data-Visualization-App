@@ -2,10 +2,10 @@
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useUiStore } from '../app-core/state/ui-store';
-import { useSurveyDataStore } from '../app-core/state/survey-data-store';
-import { useIdentity } from '../app-core/state/identity-context';
-import { useCanvasRuntimeStore } from '../app-core/state/canvas-runtime-store';
+import { useUiStore } from '../app-core/state/stores/ui-store';
+import { useSurveyDataStore } from '../app-core/state/stores/survey-data-store';
+import { useIdentity } from '../app-core/state/context/identity-context';
+import { useCanvasRuntimeStore } from '../app-core/state/stores/canvas-runtime-store';
 import { showDuplicateSurveyNotice, showRateLimitNotice } from '../app-core/notices';
 import { BUTTON_QUESTIONS } from './questionnaire/questions-lookup';
 import type { Audience, SurveyAction } from './survey-reducer';

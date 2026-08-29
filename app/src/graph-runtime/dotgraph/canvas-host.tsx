@@ -15,9 +15,9 @@ import {
 
 import DotGraph from "./scene";
 
-import { useUiStore } from "../../app-core/state/ui-store";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
 import { useShallow } from "zustand/react/shallow";
-import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
+import { useSurveyDataStore } from "../../app-core/state/stores/survey-data-store";
 import { useRealMobileViewport } from "../../lib/hooks/useRealMobileViewport";
 import { DEFAULT_VIEWPORT_WIDTH, isMobileWidth } from "../../lib/responsive/breakpoints";
 import { desktopGraphToolsOffsetPx } from "../../lib/responsive/graph-tools-offset";

@@ -7,7 +7,7 @@ import { useRealMobileViewport } from '../../../lib/hooks/useRealMobileViewport'
 import { useWindowWidth } from '../../../lib/hooks/useWindowWidth';
 import { isMobileWidth, isTabletWidth } from '../../../lib/responsive/breakpoints';
 import { desktopGraphToolsOffsetPx, tabletGraphToolsYOffsetPx } from '../../../lib/responsive/graph-tools-offset';
-import { useUiStore } from '../../../app-core/state/ui-store';
+import { useUiStore } from '../../../app-core/state/stores/ui-store';
 import { chooseCameraSpriteTileSize, prewarmSpriteTextures, resolveSpriteVisual } from '../../sprites/entry';
 import { bumpZoomMetric } from '../../debug/zoomMetrics';
 import { useOrbitController } from '../camera';

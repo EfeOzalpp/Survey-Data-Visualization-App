@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { useSurveyDataStore } from "../../../app-core/state/survey-data-store";
+import { useSurveyDataStore } from "../../../app-core/state/stores/survey-data-store";
 import styles from "../logs.module.css";
 import { PAGE_SIZE, type SortKey } from "./constants";
 import { fmt, fmtQs, formatSectionLabel } from "./format";

@@ -5,10 +5,10 @@ import NavBottom from "./bottom/nav-bottom";
 import InfoDialog from "../onboarding/onboarding-info";
 import CityStatsDialog from "../graph-components/city-stats";
 import ClientOnly from "../app-core/client-only";
-import { usePreferences } from "../app-core/state/preferences-context";
-import { useIdentity } from "../app-core/state/identity-context";
+import { usePreferences } from "../app-core/state/context/preferences-context";
+import { useIdentity } from "../app-core/state/context/identity-context";
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../app-core/state/ui-store";
+import { useUiStore } from "../app-core/state/stores/ui-store";
 import { profilerOnRender, recordOwnRender } from "../render-test/renderProfilerStats";
 import "../styles/navigation.css";
 

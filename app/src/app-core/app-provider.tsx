@@ -5,16 +5,16 @@ import React, { useCallback, useEffect, useMemo } from "react";
 
 import { getSessionItem, removeSessionItems } from "./session";
 
-import useIdentityState from "./state/useIdentityState";
-import usePreferencesState from "./state/usePreferencesState";
+import useIdentityState from "./state/context/useIdentityState";
+import usePreferencesState from "./state/context/usePreferencesState";
 
-import { resetCanvasRuntimeState, useBootstrapLiveAvgFromSession } from "./state/canvas-runtime-store";
-import { useUiStore, useBootstrapModeFromSession, useSyncResetToStart } from "./state/ui-store";
-import { useSurveyDataStore, useSyncMySectionForSurveyData } from "./state/survey-data-store";
-import { IdentityCtx } from "./state/identity-context";
-import type { IdentityState } from "./state/identity-context";
-import { PreferencesCtx } from "./state/preferences-context";
-import type { PreferencesState } from "./state/preferences-context";
+import { resetCanvasRuntimeState, useBootstrapLiveAvgFromSession } from "./state/stores/canvas-runtime-store";
+import { useUiStore, useBootstrapModeFromSession, useSyncResetToStart } from "./state/stores/ui-store";
+import { useSurveyDataStore, useSyncMySectionForSurveyData } from "./state/stores/survey-data-store";
+import { IdentityCtx } from "./state/context/identity-context";
+import type { IdentityState } from "./state/context/identity-context";
+import { PreferencesCtx } from "./state/context/preferences-context";
+import type { PreferencesState } from "./state/context/preferences-context";
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const { mySection, setMySection, myEntryId, setMyEntryId, myRole, setMyRole } = useIdentityState();
@@ -23,7 +23,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   useBootstrapModeFromSession();
   useSyncMySectionForSurveyData(mySection);
 
-  // Sanity subscription starts once at the app boundary and writes into the survey-data store.
+  // The realtime survey-response subscription (SSE) starts once at the app boundary and writes into the survey-data store.
   // Mobile browsers can silently kill/freeze the underlying EventSource while the tab is
   // backgrounded (phone locked) without it cleanly self-reconnecting on resume, so force a
   // fresh subscription when the page returns to the foreground after a real backgrounding.

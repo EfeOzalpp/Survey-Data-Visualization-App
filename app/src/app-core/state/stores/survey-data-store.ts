@@ -1,47 +1,15 @@
-// src/app-core/state/survey-data-store.ts
-//
-// STATE AUDIT (2026-08-21):
-// - CALL SITES: 13 source files, concentrated in graph-components/
-//   (widgets/byquestion, widgets/bargraph x2, logs, compact-tools,
-//   graph-picker) and graph-runtime/dotgraph (root + data-boundary), plus
-//   onboarding/ (root, on submit) and navigation/ (right, bottom).
-// - WRAPPING: none directly (Zustand singleton), BUT three of those call
-//   sites — dotgraph/data-boundary.tsx, widgets/bargraph/index.tsx,
-//   compact-tools/compact-graph-tools.tsx — each take this store's
-//   `allFilteredRows` and wrap it in a SEPARATE, subtree-scoped context:
-//   `GraphDataProvider` (graph-runtime/GraphDataContext.tsx). It's
-//   instantiated independently 3 times, once per consuming subtree, each
-//   deriving its own `useGraphData(data)` value — not one shared provider.
-//   That's the layering: this store is the source of truth + section
-//   filtering; GraphDataProvider is a per-subtree derived-value cache so
-//   nested widgets (bars, legends, tooltips) don't each recompute
-//   useGraphData themselves.
+// src/app-core/state/stores/survey-data-store.ts
 
-// - RE-RENDER SCOPE: per-field selector at this store's level. Downstream,
-//   `useSharedGraphData()` consumers of a given GraphDataProvider DO all
-//   re-render together on `data` change (one bundled context value, same
-//   shape as identity-context) — but each provider's blast radius is
-//   deliberately small (one bargraph, one compact-tools panel, one
-//   data-boundary), never the whole app.
-
-// - FOLDER-LOCAL STATE ALONGSIDE: yes — useByQuestion.tsx (internalPaused,
-//   tooltipIndex, localSectionState), useBarGraph.tsx (animationState,
-//   animateBars, internalPaused, hoveredBarColor), useLogsPanel.tsx (page,
-//   query, searchOpen, filterFocused) all keep local useState. Split
-//   rationale: rows/section/counts are shared truth many widgets read;
-//   per-widget hover/pagination/animation flags are read by nothing else,
-//   so they stay local rather than in this store or GraphDataProvider.
 import { create } from 'zustand';
 import { startTransition, useEffect } from 'react';
-import { getSessionItem, removeSessionItems, setSessionItem } from '../session';
-import { parentAggregateForSection } from '../../domain/survey/sections';
-import type { SurveyRow } from '../../domain/survey/types';
+import { getSessionItem, removeSessionItems, setSessionItem } from '../../session';
+import { parentAggregateForSection, filterRowsForSection } from '../../../domain/survey/sections';
+import type { SurveyRow } from '../../../domain/survey/types';
 import {
   deriveSectionCounts,
-  filterRowsForSection,
   removeSurveyRow,
   upsertSurveyRow,
-} from './survey-data-utils';
+} from '../../../domain/survey/survey-data-utils';
 
 const ALL_ROWS_LIMIT = 'all';
 const FIRST_SECTION_SUBMISSION_COUNT = 1;
@@ -184,7 +152,7 @@ export const useSurveyDataStore = create<SurveyDataStoreState>((set, get) => ({
     let unsub = noopUnsubscribe;
     let closed = false;
 
-    void import('../../client-api/read-api/surveyResponseStream')
+    void import('../../../client-api/read-api/surveyResponseStream')
       .then(({ subscribeSurveyData }) => {
         if (closed) return;
         unsub = subscribeSurveyData({

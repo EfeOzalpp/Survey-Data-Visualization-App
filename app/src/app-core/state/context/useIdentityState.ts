@@ -1,13 +1,8 @@
-// STATE AUDIT (2026-08-21):
-// Not independently called elsewhere — this is private to app-provider.tsx,
-// which is the only importer. It owns the raw useState + sessionStorage-sync
-// logic that identity-context.ts's bundled `identityValue` object is built
-// from. The "call sites / wrapping / re-render" questions apply to
-// identity-context.ts (the public surface), not here — see the audit note
-// there for why this ends up bundled and whole-app-scoped downstream.
+// src/app-core/state/context/useIdentityState.ts
+
 import { startTransition, useEffect, useState } from 'react';
 
-import { getSessionItem } from '../session';
+import { getSessionItem } from '../../session';
 
 export default function useIdentityState() {
   const [mySection, setMySection] = useState<string | null>(null);

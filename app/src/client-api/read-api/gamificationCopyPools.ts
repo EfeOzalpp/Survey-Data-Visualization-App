@@ -1,7 +1,7 @@
-// src/lib/hooks/useGamificationPools.ts
+// src/client-api/read-api/gamificationCopyPools.ts
 import { useMemo, useSyncExternalStore } from 'react';
-import { shouldUseMockReads } from '../../client-api/read-api/config';
-import { storageKeyFor, safeSession, bucketForPercent } from '../utils/session-cache';
+import { shouldUseMockReads } from './config';
+import { storageKeyFor, safeSession, bucketForPercent } from '../../lib/utils/session-cache';
 
 interface CopyDoc {
   _id: string;
@@ -24,7 +24,7 @@ interface PoolState {
   loaded: boolean;  // true after first live fetch completes
 }
 
-interface FallbackBucket {
+export interface FallbackBucket {
   titles: string[];
   secondary: string[];
 }
@@ -141,7 +141,7 @@ function createPool(copyType: CopyType) {
   };
 
   const usePool = () => {
-    // Subscribe to external store (React 18 safe)
+    // Subscribe to external store
     const snapshot = useSyncExternalStore(store.subscribe, store.get, store.get);
     const { docs, rev, loaded } = snapshot;
 

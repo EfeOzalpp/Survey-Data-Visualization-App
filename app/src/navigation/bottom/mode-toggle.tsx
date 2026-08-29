@@ -3,10 +3,10 @@
 import React, { useMemo } from "react";
 
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../../app-core/state/ui-store";
-import type { Mode } from "../../app-core/state/ui-store";
-import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
-import { useIdentity } from "../../app-core/state/identity-context";
+import { useUiStore } from "../../app-core/state/stores/ui-store";
+import type { Mode } from "../../app-core/state/stores/ui-store";
+import { useSurveyDataStore } from "../../app-core/state/stores/survey-data-store";
+import { useIdentity } from "../../app-core/state/context/identity-context";
 import { avgWeightOf } from "../../lib/utils/score";
 import { useAbsoluteScore } from "../../lib/hooks/useAbsoluteScore";
 import CheckIcon from "../../assets/svg/check/CheckIcon";

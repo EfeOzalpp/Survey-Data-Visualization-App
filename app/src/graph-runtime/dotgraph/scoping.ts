@@ -1,17 +1,8 @@
-// src/graph-runtime/dotgraph/scope/scoping.ts
+// src/graph-runtime/dotgraph/scoping.ts
 
 // Role and section normalization for deciding when a user's personal dot belongs in the current graph view.
 
-import { ROLE_SECTIONS } from '../../../onboarding/section-picker/sections';
-
-interface SectionOption {
-  value: string;
-}
-
-interface RoleSectionGroups {
-  student: SectionOption[];
-  staff: SectionOption[];
-}
+import { STUDENT_IDS, STAFF_IDS } from '../../domain/survey/sections';
 
 export const ROLE = {
   VISITOR: 'visitor',
@@ -23,10 +14,9 @@ export const ROLE = {
 export type ViewerRole = (typeof ROLE)[keyof typeof ROLE];
 
 const BUCKETS = new Set(['all', 'all-massart', 'all-students', 'all-staff', 'visitor']);
-const roleSections = ROLE_SECTIONS as RoleSectionGroups;
 
-const STUDENT_ID_SET = new Set(roleSections.student.map((section) => section.value));
-const STAFF_ID_SET = new Set(roleSections.staff.map((section) => section.value));
+const STUDENT_ID_SET = new Set(STUDENT_IDS);
+const STAFF_ID_SET = new Set(STAFF_IDS);
 
 const normStr = (v: unknown) => {
   if (typeof v === "string") return v.trim().toLowerCase();
@@ -34,7 +24,7 @@ const normStr = (v: unknown) => {
   return "";
 };
 
-// Sanity, session storage, and UI labels can all produce slightly different section strings.
+// Postgres, session storage, and UI labels can all produce slightly different section strings.
 export function normSection(sectionRaw: unknown): string {
   const s = normStr(sectionRaw);
   if (!s) return 'all';

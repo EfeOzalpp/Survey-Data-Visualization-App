@@ -76,16 +76,20 @@ export function Popover({
       {trigger}
       {/* aria-hidden alone doesn't stop Tab from reaching focusable content
           in here while closed; inert does. Spread because this project's
-          pinned @types/react doesn't have `inert` in its types yet - React's
-          runtime already treats it as a real boolean attribute though (its
-          own property table has it typed BOOLEAN, confirmed by triggering
-          react-dom's own dev warning for passing it a *string* instead - do
-          not "fix" this to a string, that's the wrong direction and was
-          tried here already). */}
+          pinned @types/react doesn't have `inert` in its types yet. This
+          project runs React 18 (see package.json), and React only added
+          native boolean handling for `inert` in React 19 - on 18, passing a
+          raw boolean hits React's generic "unknown attribute" path and logs
+          a dev warning asking for a string. But `inert` is a real HTML
+          boolean attribute where *presence* (any value, even "false") means
+          inert - so writing `String(!open)` would leave `inert="false"`
+          in the DOM when open, which HTML still treats as inert. The
+          attribute has to be omitted entirely for the "not inert" case,
+          not stringified to "false". */}
       <div
         className={`ui-popover-shell ui-popover-shell--${placement}${slideFrom ? ` ui-popover-shell--slide-${slideFrom}` : ""}${shellClassName ? ` ${shellClassName}` : ""}${open ? " is-open" : ""}`}
         aria-hidden={!open}
-        {...{ inert: !open }}
+        {...{ inert: !open ? "" : undefined }}
       >
         <div
           className={`ui-popover${className ? ` ${className}` : ""}`}

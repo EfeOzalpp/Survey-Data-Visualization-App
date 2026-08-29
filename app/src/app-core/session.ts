@@ -1,5 +1,5 @@
 // Session stored information
-import type { Mode } from "./state/ui-store";
+import type { Mode } from "./state/stores/ui-store";
 
 const LOCAL_BACKED_KEYS = new Set([
   "be.myEntryId",

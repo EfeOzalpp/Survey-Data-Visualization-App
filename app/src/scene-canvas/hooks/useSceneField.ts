@@ -25,7 +25,7 @@ import { resolvePaddingPolicyVariants, resolvePaddingSpec } from "../scene-rules
 import type { ScenePlacementRules } from "../scene-rules/placement-rules";
 
 import { getViewportSize, type DeviceCountScale, type DeviceType } from "../shared/responsiveness";
-import { usePreferences } from "../../app-core/state/preferences-context";
+import { usePreferences } from "../../app-core/state/context/preferences-context";
 import type { Place } from "../grid-layout/occupancy";
 
 type Engine = ReturnType<typeof useCanvasEngine>;

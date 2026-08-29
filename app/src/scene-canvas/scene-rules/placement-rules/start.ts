@@ -82,16 +82,7 @@ export const START_PLACEMENTS: ScenePlacementRules = {
           sun: { count: count(1, 0, 0), quota: FLAT_QUOTA },
         },
       },
-      {
-        id: "weather-right-close",
-        band: "sky",
-        center: { x: 0.65, y: 0},
-        radius: { tiles: 6, xDistort: 3, yTiles: 0.6 },
-        shapes: {
-          clouds: { count: count(0, 0, 2), quota: S.clouds },
-          snow: { count: count(0, 0, 1), quota: S.snow },
-        },
-      },
+
       {
         id: "weather-right-close-2",
         band: "sky",

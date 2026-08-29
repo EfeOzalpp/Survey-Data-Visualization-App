@@ -4,11 +4,10 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 
-import { usePreferences } from '../../app-core/state/preferences-context';
-import { useUiStore } from '../../app-core/state/ui-store';
-import { useIdentity } from '../../app-core/state/identity-context';
+import { usePreferences } from '../../app-core/state/context/preferences-context';
+import { useUiStore } from '../../app-core/state/stores/ui-store';
 import { useShallow } from 'zustand/react/shallow';
-import { useSurveyDataStore } from '../../app-core/state/survey-data-store';
+import { useSurveyDataStore } from '../../app-core/state/stores/survey-data-store';
 import { useSharedGraphData } from '../useSharedGraphData';
 import { bumpGeneration, resetQueue } from '../sprites/entry';
 import { DEFAULT_VIEWPORT_WIDTH, isMobileWidth } from '../../lib/responsive/breakpoints';
@@ -29,7 +28,6 @@ export default function DotGraph() {
   const observerMode = useUiStore((s) => s.observerMode);
   const mode = useUiStore((s) => s.mode);
   const setPersonalPanelOpen = useUiStore((s) => s.setPersonalPanelOpen);
-  const { myEntryId, mySection } = useIdentity();
   const { section, allFilteredRows: fullSurveyData, loading } = useSurveyDataStore(
     useShallow((s) => ({ section: s.section, allFilteredRows: s.allFilteredRows, loading: s.loading }))
   );
@@ -47,9 +45,6 @@ export default function DotGraph() {
   const showCompleteUI = useObserverDelay(observerMode, 2000);
 
   const personalizationGate = usePersonalizationGate({
-    myEntryId,
-    mySection,
-    section,
     safeData,
     observerMode,
     isSmallScreen: isMobileWidth(typeof window === 'undefined' ? DEFAULT_VIEWPORT_WIDTH : window.innerWidth),
@@ -64,7 +59,7 @@ export default function DotGraph() {
     personalizationGate.shouldShowPersonalized;
 
   // For non-observer: apply personalized framing as soon as personalizedEntryId
-  // is available from session storage, without waiting for Sanity to confirm.
+  // is available from session storage, without waiting for Postgres to confirm.
   // This ensures the initial zoom is set on first mount rather than on data arrival.
   const showPersonalizedForZoom = observerMode
     ? isPersonalizedGraphView
@@ -74,7 +69,7 @@ export default function DotGraph() {
     () => [
       section,
       // Non-observer: keep personalized framing stable across the pending id ->
-      // saved Sanity id handoff. Section/view changes still reset the camera.
+      // saved Postgres id handoff. Section/view changes still reset the camera.
       // Observer: keep the confirmed-dataset gate so view switches are still detected.
       !observerMode && personalizationGate.personalizedEntryId && personalizationGate.shouldShowPersonalized
         ? 'personalized'

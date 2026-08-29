@@ -2,9 +2,9 @@
 // Builds the section options used by the graph picker and the radar widget.
 
 import { useMemo, useCallback } from "react";
-import { ROLE_SECTIONS } from "../../onboarding/section-picker/sections";
-import { useSurveyDataStore } from "../../app-core/state/survey-data-store";
-import { useIdentity } from "../../app-core/state/identity-context";
+import { ROLE_SECTIONS } from "../../domain/survey/sections";
+import { useSurveyDataStore } from "../../app-core/state/stores/survey-data-store";
+import { useIdentity } from "../../app-core/state/context/identity-context";
 
 interface GraphOption {
   id: string;

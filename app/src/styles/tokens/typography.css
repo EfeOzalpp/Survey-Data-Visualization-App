@@ -35,6 +35,6 @@
     /* moved here for font size on larger devices */
     --type-small-size: 0.94rem;
     --type-label-size: 0.98rem;
-    --type-h1-size: clamp(2.4rem, 1.6rem + 2.8vw, 7.2rem);
+    --type-h1-size: clamp(2.4rem, 2rem + 2.4vw, 6.4rem);
   }
 }

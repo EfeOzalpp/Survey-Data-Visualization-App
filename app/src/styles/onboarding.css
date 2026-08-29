@@ -62,7 +62,7 @@
 .welcome-title-layer { position: relative; display: flex; justify-content: center; align-items: flex-start; z-index: 5; }
 .welcome-title-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-md); }
 .welcome-title { background: var(--ui-text-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; }
-.welcome-text { color: var(--ui-title); opacity: 0.9; }
+.welcome-text { color: var(--ui-title); opacity: 0.9;}
 
 button.more-info-trigger { display: inline-flex; align-items: center; justify-content: center; margin: 0; padding: 0; border: 0; background: transparent; }
 .more-info-trigger:hover .more-info-trigger__icon-box { background: var(--btn-secondary-hover-bg); }

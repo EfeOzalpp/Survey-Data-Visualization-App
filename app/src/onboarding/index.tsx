@@ -3,12 +3,13 @@ import React, { Profiler, Suspense, useCallback, useEffect, useMemo, useReducer,
 import { profilerOnRender, recordOwnRender } from '../render-test/renderProfilerStats';
 
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "../app-core/state/ui-store";
+import { useUiStore } from "../app-core/state/stores/ui-store";
 import "../styles/onboarding.css";
 import "../styles/questionnaire.css";
 
-import { ROLE_SECTIONS } from "./section-picker/sections";
-import type { RoleSection, SectionItem, SectionOption } from "./section-picker/sections";
+import { ROLE_SECTIONS } from "../domain/survey/sections";
+import type { RoleSection } from "../domain/survey/sections";
+import type { SectionItem, SectionOption } from "./section-picker/sections";
 import ButtonQuestionnaireFlow from "./questionnaire";
 import { showDuplicateSurveyNotice } from "../app-core/notices";
 import { surveyReducer, initialSurveyState, type Audience } from "./survey-reducer";

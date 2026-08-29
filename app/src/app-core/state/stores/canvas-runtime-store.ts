@@ -1,32 +1,13 @@
-// src/app-core/state/canvas-runtime-store.ts
-//
-// STATE AUDIT (2026-08-21):
-// - CALL SITES: 6 source files, 2 folders only — onboarding/ (root,
-//   questionnaire, canvas-info) and scene-canvas-instances/
-//   (OnboardingEntry, QuestionnaireEntry, CityEntry — all 3 canvas mount
-//   points). Narrowest spread of the three Zustand stores; tightly scoped to
-//   the canvas-engine boundary + the questionnaire flow that feeds it.
-
-// - WRAPPING: none. Zustand module singleton, no provider/{children}.
-
-// - RE-RENDER SCOPE: per-field selector everywhere, including every
-//   scene-canvas-instances/ entry (`useCanvasRuntimeStore(s => s.liveAvg)` etc,
-//   checked directly) — no blanket `useCanvasRuntimeStore()` call exists.
-//   Note scene-canvas/ (the actual imperative 2D renderer) never imports
-//   this store at all — it receives values as props through the
-//   scene-canvas-instances/ React boundary, so the renderer itself sits outside
-//   React's re-render model entirely.
-
-// - FOLDER-LOCAL STATE ALONGSIDE: none of significance found in
-//   scene-canvas-instances/; those files are thin — they select fields here and
-//   pass them down. No competing module-level state to reconcile.
+// src/app-core/state/stores/canvas-runtime-store.ts
 
 import { create } from 'zustand';
 import { startTransition, useEffect } from 'react';
-import { getSessionItem } from '../session';
-import type { Place } from '../../scene-canvas/grid-layout/occupancy';
-import type { SpotlightSignal } from '../../scene-canvas/hooks/signals';
-import type { EngineFieldItem } from '../../scene-canvas/runtime/engine/field';
+
+import { getSessionItem } from '../../session';
+
+import type { Place } from '../../../scene-canvas/grid-layout/occupancy';
+import type { SpotlightSignal } from '../../../scene-canvas/hooks/signals';
+import type { EngineFieldItem } from '../../../scene-canvas/runtime/engine/field';
 
 const DEFAULT_AVG = 0.5;
 export const DEFAULT_SPOTLIGHT_SIGNAL: SpotlightSignal = { index: 0, paused: false };
