@@ -1,6 +1,6 @@
 {
   "name": "butterfly-effect",
-  "version": "1.0.0",
+  "version": "0.8.0-alpha",
   "private": true,
   "overrides": {
     "three": "0.171.0",
